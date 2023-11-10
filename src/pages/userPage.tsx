@@ -2,7 +2,7 @@ import { faCommentAlt, faPenAlt, faUserFriends, faWarning } from "@fortawesome/f
 import { useRouteData } from "@solidjs/router";
 import { Fa } from "solid-fa";
 import { Show } from "solid-js";
-import { GroupBadge } from "../components/GroupBadge";
+import { GroupBadge } from "../components/accounts/GroupBadge";
 import { UserData } from "../data/UserRouteData";
 import { Account } from "../structures/Account";
 import { Permissions, PermissionsUtils } from "../util/Permissions";

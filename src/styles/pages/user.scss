@@ -199,6 +199,19 @@
             }
         }
 
+        &-badges {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(98px, 1fr));
+            grid-gap: 5px;
+            padding: 20px 40px;
+            margin-top: calc(var(--corner-radius) * -2);
+            background-color: var(--hsl-c6);
+
+            &--badge {
+                pointer-events: none;
+            }
+        }
+
         &-ranking {
             position: relative;
             display: flex;

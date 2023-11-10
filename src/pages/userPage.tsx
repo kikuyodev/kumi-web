@@ -10,7 +10,7 @@ import "../styles/pages/user.scss";
 
 export function UserPage() {
     const user = useRouteData<typeof UserData>();
-    
+
     return <div class="user">
         <div class="user--background">
             <img src={"https://pbs.twimg.com/media/F-Our2oagAAuDGA?format=jpg&name=orig"} alt="background" />
@@ -29,8 +29,12 @@ export function UserPage() {
                                 </For>
                             </Show>
                         </div>
-                        <Show when={user()?.primary !== undefined}>
-                            <div class="user--content-profile-left-info-group" style={{ color: user()?.title ? user()?.primary?.color : "inherit" }}>{user()?.title ? user()?.title : user()?.primary?.name}</div>
+                        <Show when={user()?.title !== undefined}>
+                            <div class="user--content-profile-left-info-group" style={{
+                                color: user()?.primary !== undefined ? user()?.primary?.color : "white"
+                            }}>
+                                {user()?.title}
+                            </div>
                         </Show>
                         <div class="user--content-profile-left-buttons">
                             <div class="user--content-profile-left-buttons-left">
@@ -62,6 +66,13 @@ export function UserPage() {
                     </Show>
                 </div>
             </div>
+            <Show when={user()?.badges.length >= 0}>
+                <div class="user--content-badges">
+                    <For each={user()?.badges}>
+                        {badge => <img class="user--content-badges--badge" src={badge.asset_url} alt="badge" />}
+                    </For>
+                </div>
+            </Show>
             <div class="user--content-ranking">
                 <div class="user--content-ranking-graph" />
                 <div class="user--content-ranking-info">

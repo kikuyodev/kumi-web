@@ -1,0 +1,22 @@
+html,
+body {
+    font-family: var(--font-base);
+    background: var(--hsl-c6);
+    color: var(--hsl-l2);
+    min-height: 100vh;
+}
+
+#app {
+    z-index: 9999;
+    position: relative;
+    min-height: 100vh;
+}
+
+*, :after, :before {
+    box-sizing: border-box;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}

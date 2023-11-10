@@ -1,0 +1,13 @@
+:root {
+    --base-hue: 195;
+    --content-width: 1152px;
+    --corner-radius: 5px;
+    
+    --font-base: "Inter", "Segoe UI", "Roboto", sans-serif;
+    --font-header: "Montserrat", "Inter", "Segoe UI", "Roboto", sans-serif;
+}
+
+@import "utils/reset.scss";
+@import "utils/color_palette.scss";
+@import "fonts.scss";
+@import "app.scss";

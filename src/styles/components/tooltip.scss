@@ -1,0 +1,33 @@
+.tooltip {
+    position: relative;
+    display: inline-block;
+
+    &--content {
+        left: 50%;
+        bottom: calc(100% + 0.75em);
+        position: absolute;
+        width: max-content;
+        transform: translateX(-50%);
+        z-index: 2;
+        
+        border-radius: 5px;
+        padding: 7.5px;
+
+        color: var(--content);
+        font-size: 10px;
+        //font-family: var(--font-header);
+        font-weight: 300;
+        background-color: var(--hsl-c6);
+
+        &:after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--hsl-c6) transparent transparent transparent;
+        }
+    }
+}

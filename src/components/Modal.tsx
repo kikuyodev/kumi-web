@@ -1,5 +1,4 @@
 import { JSX, ParentProps, Show } from "solid-js";
-import { ModalButtons } from "./modals/ModalButtons";
 import { Portal } from "solid-js/web";
 
 export interface ModalProps {
@@ -36,7 +35,7 @@ export function Modal(props: ParentProps<ModalProps>) {
                             <div class="modal--body-content">
                                 {props.children}
                             </div>
-                            {props.buttons ? <ModalButtons>{props.buttons}</ModalButtons> : undefined}
+                            {props.buttons ? <div class="modal--body-buttons">{props.buttons}</div> : undefined}
                         </div>
                     </div>
                 </div>

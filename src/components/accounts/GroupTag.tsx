@@ -1,15 +1,15 @@
 import { ApiGroup } from "../../structures/api/ApiAccount";
-import styles from "../../styles/components/accounts/groupBadge.module.scss";
+import styles from "../../styles/components/accounts/groupTag.module.scss";
 import { Tooltip } from "../Tooltip";
 
-export interface GroupBadgeProps {
+export interface GroupTagProps {
     group: ApiGroup;
 }
 
-export function GroupBadge(props: GroupBadgeProps) {
+export function GroupTag(props: GroupTagProps) {
     return (
         <Tooltip text={props.group.name}>
-            <div class={styles.badge} style={{ color: props.group.color }}>
+            <div class={styles.tag} style={{ color: props.group.color }}>
                 {props.group.tag}
             </div>
         </Tooltip>

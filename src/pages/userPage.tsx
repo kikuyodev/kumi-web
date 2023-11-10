@@ -2,7 +2,7 @@ import { faCommentAlt, faPenAlt, faUserFriends, faWarning } from "@fortawesome/f
 import { useRouteData } from "@solidjs/router";
 import { Fa } from "solid-fa";
 import { For, Show } from "solid-js";
-import { GroupBadge } from "../components/accounts/GroupBadge";
+import { GroupTag } from "../components/accounts/GroupTag";
 import { UserData } from "../data/UserRouteData";
 import { Account } from "../structures/Account";
 import { Permissions, PermissionsUtils } from "../util/Permissions";
@@ -25,7 +25,7 @@ export function UserPage() {
                             <p class="user--content-profile-left-info-username-username">{user()?.username}</p>
                             <Show when={user()?.primary !== undefined}>
                                 <For each={user()?.groups}>
-                                    {group => <GroupBadge group={group} />}
+                                    {group => <GroupTag group={group} />}
                                 </For>
                             </Show>
                         </div>

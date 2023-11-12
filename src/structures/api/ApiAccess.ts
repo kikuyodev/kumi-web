@@ -1,5 +1,6 @@
 import { ApiAccount } from "./ApiAccount";
 import { ApiChartSet } from "./ApiChartSet";
+import { ApiModdingPost } from "./ApiModdingPost";
 import { RestClient } from "../../util/RestClient";
 
 export class ApiAccess {
@@ -32,6 +33,17 @@ export class ApiAccess {
 
         if (response.code === 200) {
             return response.data!.set;
+        }
+    }
+
+    public async getModdingPosts(id: string | number) {
+        const response = await this.rest.send<["posts"], [ApiModdingPost[]]>(`/api/v1/chartsets/${id}/discussions`, {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (response.code === 200) {
+            return response.data!.posts;
         }
     }
 }

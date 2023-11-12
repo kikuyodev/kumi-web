@@ -6,12 +6,12 @@ import { Navbar } from "./components/Navbar";
 import { AccountProvider, useAccount } from "./contexts/AccountContext";
 import { ApiAccessProvider } from "./contexts/ApiAccessContext";
 import { UserData } from "./data/UserData";
-import { ChartModdingPage } from "./pages/ChartModdingPage";
 
 const { Notfound } = lazily(() => import("./pages/404"));
 const { Home } = lazily(() => import("./pages/HomePage"));
 const { ChartPage } = lazily(() => import("./pages/ChartPage"));
 const { UserPage } = lazily(() => import("./pages/UserPage"));
+const { ChartModdingPage } = lazily(() => import("./pages/ChartModdingPage"));
 
 render(() => {
     if (sessionStorage.getItem("logged_in") === "true") {

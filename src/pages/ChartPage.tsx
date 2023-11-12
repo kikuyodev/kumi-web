@@ -1,11 +1,12 @@
 import { useParams } from "@solidjs/router";
-import { For, Show, createEffect, createSignal } from "solid-js";
+import { createEffect, createSignal } from "solid-js";
+import { ChartMetadata } from "./charts/ChartMetadata";
 import { ChartBackground } from "../components/charts/ChartBackground";
-import { ChartBodyTab } from "../components/charts/ChartBodyTab";
+import { SegmentedControl } from "../components/controls/SegmentedControl";
 import { useApi } from "../contexts/ApiAccessContext";
-import "../styles/pages/chart.scss";
 import { ApiChart } from "../structures/api/ApiChartSet";
 import { Util } from "../util/Util";
+import "../styles/pages/chart.scss";
 
 export function ChartPage() {
     const params = useParams();
@@ -33,114 +34,27 @@ export function ChartPage() {
     return (
         <div class="chart">
             <div class="chart--background">
-                <img src={Util.getCdnFor("backgrounds", set()?.id)} alt="background" />
+                <img src={Util.getCdnFor("backgrounds", set()?.id, { format: "background" })} alt="background" />
                 <div class="chart--background-overlay" />
             </div>
-
             <div class="chart--content">
                 <div class="chart--content-title">
                     Chart <span>Info</span>
                 </div>
-
                 <div class="chart--content-details">
                     <ChartBackground
                         set={set()}
                         currentChart={chart}
                     />
-
                     <div class="chart--content-details--body">
-                        <div class="chart--content-details--body-tabs">
-                            <ChartBodyTab href={`/chartsets/${set()?.id}/${chart()?.id}`} selected text="Chart" />
-                            <ChartBodyTab href={`/chartsets/${set()?.id}/modding`} text="Modding" />
-                        </div>
+                        <SegmentedControl options={["Chart", "Modding"]} selected={"Chart"} onChange={v => {
+                            if (v === "Chart"){
+                                return;
+                            }
 
-                        <div class="chart--content-details--body-left">
-                            <div class="chart--content-details--difficulty-name">{chart()?.difficulty_name}</div>
-                            <div class="chart--content-details--creators">
-                                <span>
-                                    {chart()?.creators.find(creator => creator.id === set()?.creator.id) !== undefined
-                                        ? chart()?.creators.length === 1
-                                            ? "Created by "
-                                            : "Collaboration by "
-                                        : chart()?.creators.length === 1
-                                            ? "Guest chart by "
-                                            : "Guest collaboration by "}
-                                    <For each={chart()?.creators}>
-                                        {(creator, idx) => {
-                                            let prepend = "";
-                                            if (chart()?.creators.length === 1) {
-                                                return <a href={`/users/${creator.id}`} class="chart--content-details--creators-creator">
-                                                    {creator.username}
-                                                </a>;
-                                            } else {
-                                                if (idx() === chart()!.creators.length - 1) {
-                                                    prepend = "and ";
-                                                } else if (idx() == 0) {
-                                                    // do nothing
-                                                } else {
-                                                    prepend = ", ";
-                                                }
-                                            }
-
-                                            return (
-                                                <>
-                                                    {prepend}
-                                                    <a href={`/users/${creator.id}`} class="chart--content-details--creators-creator">
-                                                        {creator.username}
-                                                    </a>;
-                                                </>
-                                            );
-                                        }}
-                                    </For>
-                                </span>
-                            </div>
-
-                            { /* Currently unused. */}
-                            <div class="chart--content-details--body-strain-bar" />
-
-                            <div class="chart--content-details--body-left">
-                                <div class="chart--content-details--body-info-container">
-                                    <table class="chart--content-details--information">
-                                        <tbody>
-                                            <tr>
-                                                <td>Creator</td>
-                                                <td>{set()?.creator.username}</td>
-                                            </tr>
-                                            <Show when={chart()?.source}>
-                                                <tr>
-                                                    <td>Source</td>
-                                                    <td>{chart()?.source}</td>
-                                                </tr>
-                                            </Show>
-                                            <tr>
-                                                <td>Genre</td>
-                                                <td>Unknown</td>
-                                            </tr>
-                                            <tr class="chart--content-details--information-divisor" />
-                                            <tr>
-                                                <td>Language</td>
-                                                <td>Unknown</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Tags</td>
-                                                <td>{chart()?.tags}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                    <div class="chart--content-details--body-divider" />
-
-                                    <table class="chart--content-details--information">
-                                        <tbody>
-                                            <tr>
-                                                <td>Creator</td>
-                                                <td>{set()?.creator.username}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+                            window.location.href = `/chartsets/${params.set}/modding`;
+                        }} />
+                        <ChartMetadata set={set} chart={chart} />
                     </div>
                 </div>
             </div>

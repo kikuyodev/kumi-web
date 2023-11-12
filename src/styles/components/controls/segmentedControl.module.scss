@@ -1,0 +1,35 @@
+.control {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    background: hsl(var(--base-hue), 12%, 8%);
+    width: fit-content;
+    border-radius: var(--corner-radius);
+}
+
+.unselected {
+    padding: 4px 12px;
+    cursor: pointer;
+    z-index: 1;
+    transition: all 0.1s ease-out;
+    user-select: none;
+}
+
+.selected {
+    padding: 4px 12px;
+    color: var(--hsl-l1);
+    font-weight: 600;
+    cursor: pointer;
+    z-index: 1;
+    transition: all 0.1s ease-out;
+    user-select: none;
+}
+
+.highlight {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    background: var(--hsl-c4);
+    border-radius: var(--corner-radius);
+    transition: all 0.1s ease-out;
+}

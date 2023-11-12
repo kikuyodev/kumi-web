@@ -3,13 +3,13 @@ import { useRouteData } from "@solidjs/router";
 import { Fa } from "solid-fa";
 import { For, Show } from "solid-js";
 import { GroupTag } from "../components/accounts/GroupTag";
-import { UserData } from "../data/UserRouteData";
-import { Account } from "../structures/Account";
-import { Permissions, PermissionsUtils } from "../util/Permissions";
+import { useAccount } from "../contexts/AccountContext";
+import { UserData } from "../data/UserData";
 import "../styles/pages/user.scss";
 
 export function UserPage() {
     const user = useRouteData<typeof UserData>();
+    const account = useAccount();
 
     return <div class="user">
         <div class="user--background">
@@ -58,7 +58,7 @@ export function UserPage() {
                     </div>
                 </div>
                 <div class="user--content-profile-right">
-                    <Show when={Account.instance.apiAccount?.id === user()?.id}>
+                    <Show when={account.apiAccount?.id === user()?.id}>
                         <button class="user--content-profile-right-edit">
                             <Fa icon={faPenAlt} />
                             <p>Change Banner</p>
@@ -66,7 +66,7 @@ export function UserPage() {
                     </Show>
                 </div>
             </div>
-            <Show when={user()?.badges.length >= 0}>
+            <Show when={user() !== undefined && user()!.badges.length >= 0}>
                 <div class="user--content-badges">
                     <For each={user()?.badges}>
                         {badge => <img class="user--content-badges--badge" src={badge.asset_url} alt="badge" />}
@@ -133,9 +133,5 @@ export function UserPage() {
 }
 
 function currentIsModerator() {
-    if (Account.instance.apiAccount === undefined) {
-        return false;
-    }
-
-    return Account.instance.apiAccount.groups.some(group => PermissionsUtils.hasPermission(group.permissions, Permissions.MODERATE_ACCOUNTS));
+    return false;
 }

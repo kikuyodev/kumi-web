@@ -2,7 +2,7 @@ import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import { Fa } from "solid-fa";
 import { onMount } from "solid-js";
 import "../../styles/components/flyouts/loginFlyout.scss";
-import { Account } from "../../structures/Account";
+import { useAccount } from "../../contexts/AccountContext";
 import { ApiResponseError } from "../../util/errors/ApiResponseError";
 
 export function LoginFlyout() {
@@ -19,10 +19,11 @@ export function LoginFlyout() {
         signin?.addEventListener("click", () => {
             (async () => {
                 try {
-                    const result = await Account.instance.login(username!.value, password!.value);
+                    //const result = await Account.instance.login(username!.value, password!.value);
+                    const account = useAccount();
+                    await account.login(username!.value, password!.value);
 
-                    Account.instance.apiAccount = result.data?.account;
-                    sessionStorage.setItem("_KUMI_ACCOUNT_", JSON.stringify(Account.instance.apiAccount));
+                    sessionStorage.setItem("logged_in", "true");
 
                     // refresh page
                     window.location.reload();

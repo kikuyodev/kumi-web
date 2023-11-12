@@ -2,13 +2,13 @@ import { A } from "@solidjs/router";
 import { Show, onMount } from "solid-js";
 import { Portal } from "solid-js/web";
 import { LoginFlyout } from "./flyouts/LoginFlyout";
-import { Account } from "../structures/Account";
 import "../styles/components/navbar.scss";
+import { useAccount } from "../contexts/AccountContext";
 
 let FLYOUT_OPEN = false;
 
 export function Navbar() {
-    const account = Account.instance;
+    const account = useAccount();
 
     // eslint-disable-next-line prefer-const
     let flyoutMenu: HTMLDivElement | undefined = undefined;
@@ -76,7 +76,7 @@ export function Navbar() {
                     </div>
                     <div class="navbar--content-flex-account">
                         <div class="navbar--content-flex-account-details">
-                            <Show when={account.isLoggedIn}>
+                            <Show when={account.isLoggedIn()}>
                                 <div class="navbar--content-flex-account-details-username">{account.apiAccount?.username ?? "Saryu"}</div>
                                 <div class="navbar--content-flex-account-details-rank">12,425</div>
                                 <Portal ref={flyoutMenu} mount={document.body}>
@@ -85,10 +85,10 @@ export function Navbar() {
                             </Show>
                         </div>
                         <div class="navbar--content-flex-account-avatar">
-                            <Show when={account.isLoggedIn}>
+                            <Show when={account.isLoggedIn()}>
                                 <img ref={avatar} src={`${import.meta.env.KUMI_API_URL}cdn/avatars/${account.apiAccount!.id}`} alt="" />
                             </Show>
-                            <Show when={!account.isLoggedIn}>
+                            <Show when={!account.isLoggedIn()}>
                                 <img ref={avatar} src={`${import.meta.env.KUMI_API_URL}cdn/avatars/default`} alt="" />
                                 <Portal ref={flyoutMenu} mount={document.body}>
                                     <LoginFlyout />

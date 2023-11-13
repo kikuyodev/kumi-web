@@ -37,7 +37,7 @@ export class ApiAccess {
     }
 
     public async getModdingPosts(id: string | number) {
-        const response = await this.rest.send<["posts"], [ApiModdingPost[]]>(`/api/v1/chartsets/${id}/discussions`, {
+        const response = await this.rest.send<["posts"], [ApiModdingPost[]]>(`/api/v1/chartsets/${id}/modding`, {
             method: "GET",
             credentials: "include"
         });

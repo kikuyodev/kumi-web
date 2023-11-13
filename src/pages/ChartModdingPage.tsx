@@ -1,18 +1,19 @@
 import { useParams } from "@solidjs/router";
 import { Match, Switch, createEffect, createSignal } from "solid-js";
 import { ChartModding } from "./charts/ChartModding";
+import { GeneralModding } from "./charts/GeneralModding";
 import { ChartBackground } from "../components/charts/ChartBackground";
 import { SegmentedControl } from "../components/controls/SegmentedControl";
 import { useApi } from "../contexts/ApiAccessContext";
 import { ApiChart } from "../structures/api/ApiChartSet";
 import "../styles/pages/chart.scss";
 import { Util } from "../util/Util";
-import { GeneralModding } from "./charts/GeneralModding";
+import { ChartHistory } from "./charts/ChartHistory";
 
 export function ChartModdingPage() {
     const params = useParams();
     const set = useApi(async (access) => access.getChartSet(params.set));
-    const posts = useApi(async (access) => access.getModdingPosts(params.set));
+    const data = useApi(async (access) => access.getModdingData(params.set));
     const [chart, setChart] = createSignal<ApiChart | undefined>(undefined);
     const [section, setSection] = createSignal<"general" | "chart" | "history">("general");
 
@@ -50,7 +51,7 @@ export function ChartModdingPage() {
 
                             window.location.href = `/chartsets/${params.set}/${chart()?.id}`;
                         }} />
-                        <ChartModding set={set} chart={chart} posts={posts} />
+                        <ChartModding set={set} chart={chart} posts={data()?.posts} />
                     </div>
                 </div>
                 <div class="chart--content-modding">
@@ -69,13 +70,13 @@ export function ChartModdingPage() {
                     }} />
                     <Switch fallback={<div>Not found</div>}>
                         <Match when={section() === "general"}>
-                            <GeneralModding posts={posts} />
+                            <GeneralModding posts={data()?.posts} />
                         </Match>
                         <Match when={section() === "chart"}>
                             <div>Chart</div>
                         </Match>
                         <Match when={section() === "history"}>
-                            <div>History</div>
+                            <ChartHistory history={data()?.events} />
                         </Match>
                     </Switch>
                 </div>

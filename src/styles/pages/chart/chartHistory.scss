@@ -1,0 +1,55 @@
+.chart_history {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    &--point {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        z-index: 1;
+
+        &-circle {
+            position: relative;
+            width: 12px;
+            height: 12px;
+            border-radius: 1000px;
+            border: 2px solid var(--hsl-c4);
+            background-color: var(--hsl-c5);
+        }
+
+        &-separator {
+            width: 40px;
+            height: 3px;
+            background: var(--hsl-c4);
+            margin-left: 4px;
+            margin-right: 4px;
+        }
+
+        &-time {
+            margin-left: 4px;
+            margin-right: 8px;
+            color: var(--hsl-c1);
+            font-family: var(--font-header);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        &-data {
+            margin-left: 4px;
+            font-size: 14px;
+        }
+    }
+
+    &--line {
+        position: absolute;
+        top: -12px;
+        bottom: 5px;
+        left: 4.5px;
+        width: 3px;
+        background: var(--hsl-c4);
+        border-radius: 100px;
+    }
+}

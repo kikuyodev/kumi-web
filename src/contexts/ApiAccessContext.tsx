@@ -1,6 +1,6 @@
 /* eslint-disable solid/reactivity */
 import { Context, ParentProps, ResourceSource, createContext, createResource, createSignal, useContext } from "solid-js";
-import { ApiAccess } from "../structures/api/ApiAccess";
+import { ApiAccess } from "../structures/ApiAccess";
 
 const ApiAccessContext: Context<ApiAccess | undefined> = createContext<ApiAccess>();
 

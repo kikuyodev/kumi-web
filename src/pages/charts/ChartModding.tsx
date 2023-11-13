@@ -10,7 +10,7 @@ import "../../styles/pages/chart/moddingPanel.scss";
 export function ChartModding(props: {
     set: Resource<ApiChartSet | undefined>,
     chart: Accessor<ApiChart | undefined>,
-    posts: Resource<ApiModdingPost[] | undefined>
+    posts: ApiModdingPost[] | undefined
 }) {
     const { set: _set, chart, posts } = props!;
 
@@ -82,7 +82,7 @@ export function ChartModding(props: {
                 <div class="chart_modding--info-users-charters">
                     <h1>Modders</h1>
                     <div class="chart_modding--info-users-charters-list">
-                        <For each={posts()?.filter(x => x.type === ApiModdingPostType.Problem || x.type === ApiModdingPostType.Suggestion).map(x => x.author)}>
+                        <For each={posts?.filter(x => x.type === ApiModdingPostType.Problem || x.type === ApiModdingPostType.Suggestion).map(x => x.author)}>
                             {creator => <UserFlyout account={creator} >
                                 <AccountChip account={creator} />
                             </UserFlyout>}
@@ -95,32 +95,32 @@ export function ChartModding(props: {
                     <tr>
                         <td />
                         <td>All</td>
-                        <td>{posts()?.filter(x => x.type !== ApiModdingPostType.System).length}</td>
+                        <td>{posts?.filter(x => x.type !== ApiModdingPostType.System).length}</td>
                     </tr>
                     <tr>
                         <td style={{ color: "hsl(255, 100%, 60%)" }}><Fa icon={faClipboard} /></td>
                         <td>Notes</td>
-                        <td>{posts()?.filter(x => x.type === ApiModdingPostType.Note).length}</td>
+                        <td>{posts?.filter(x => x.type === ApiModdingPostType.Note).length}</td>
                     </tr>
                     <tr>
                         <td style={{ color: "hsl(195, 100%, 60%)" }}><Fa icon={faClipboardQuestion} /></td>
                         <td>Suggestions</td>
-                        <td>{posts()?.filter(x => x.type === ApiModdingPostType.Suggestion).length}</td>
+                        <td>{posts?.filter(x => x.type === ApiModdingPostType.Suggestion).length}</td>
                     </tr>
                     <tr>
                         <td style={{ color: "hsl(0, 0%, 60%)" }}><Fa icon={faCommentAlt} /></td>
                         <td>Comments</td>
-                        <td>{posts()?.filter(x => x.type === ApiModdingPostType.Comment).length}</td>
+                        <td>{posts?.filter(x => x.type === ApiModdingPostType.Comment).length}</td>
                     </tr>
                     <tr>
                         <td style={{ color: "hsl(345, 100%, 60%)" }}><Fa icon={faTimesCircle} /></td>
                         <td>Problems</td>
-                        <td>{posts()?.filter(x => x.type === ApiModdingPostType.Problem).length}</td>
+                        <td>{posts?.filter(x => x.type === ApiModdingPostType.Problem).length}</td>
                     </tr>
                     <tr>
                         <td style={{ color: "hsl(140, 100%, 60%)" }}><Fa icon={faAtom} /></td>
                         <td>Praises</td>
-                        <td>{posts()?.filter(x => x.type === ApiModdingPostType.Praise).length}</td>
+                        <td>{posts?.filter(x => x.type === ApiModdingPostType.Praise).length}</td>
                     </tr>
                 </tbody>
             </table>

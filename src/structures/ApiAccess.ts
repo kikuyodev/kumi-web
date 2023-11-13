@@ -47,4 +47,17 @@ export class ApiAccess {
             return response.data!;
         }
     }
+
+    public async sendModdingPost(id: string | number, body: Record<string, unknown>) {
+        console.log("nya");
+        const response = await this.rest.send<["post"], [ApiModdingPost]>(`/api/v1/chartsets/${id}/modding`, {
+            method: "POST",
+            credentials: "include"
+        }, body);
+
+
+        if (response.code === 200) {
+            return response.data!.post;
+        }
+    }
 }

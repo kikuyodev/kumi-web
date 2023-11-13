@@ -30,7 +30,7 @@ export class Account {
     }
 
     public async login(username: string, password: string, rememberMe: boolean = false) {
-        const response = await this.client.send<["account"], [ account: ApiAccount ]>("/api/v1/accounts/login", {
+        const response = await this.client.send<["account"], [account: ApiAccount]>("/api/v1/accounts/login", {
             method: "POST",
             credentials: "include"
         }, {
@@ -57,14 +57,18 @@ export class Account {
     }
 
     public async me() {
-        const response = await this.client.send<["account"], [ account: ApiAccount ]>("/api/v1/accounts/me", {
-            method: "GET",
-            credentials: "include"
-        });
+        try {
+            const response = await this.client.send<["account"], [account: ApiAccount]>("/api/v1/accounts/me", {
+                method: "GET",
+                credentials: "include"
+            });
 
-        if (response.code === 200) {
-            this.apiAccount = response.data!.account;
-            this.setState("login", true);
+            if (response.code === 200) {
+                this.apiAccount = response.data!.account;
+                this.setState("login", true);
+            }
+        } catch (e) {
+            sessionStorage.setItem("logged_in", "false");
         }
 
         return response;

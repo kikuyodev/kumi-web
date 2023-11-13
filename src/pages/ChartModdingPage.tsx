@@ -46,7 +46,7 @@ export function ChartModdingPage() {
                                 return;
                             }
 
-                            window.location.href = `/chartsets/${params.set}`;
+                            window.location.href = `/chartsets/${params.set}/${chart()?.id}`;
                         }} />
                         <ChartModding set={set} chart={chart} posts={posts} />
                     </div>

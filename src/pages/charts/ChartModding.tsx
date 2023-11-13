@@ -2,6 +2,8 @@ import { faAtom, faClipboard, faClipboardQuestion, faCommentAlt, faTimesCircle }
 import { Fa } from "solid-fa";
 import { Accessor, For, Resource, Show } from "solid-js";
 import { ApiChart, ApiChartSet } from "src/structures/api/ApiChartSet";
+import { AccountChip } from "../../components/accounts/AccountChip";
+import { UserFlyout } from "../../components/flyouts/UserFlyout";
 import { ApiModdingPost, ApiModdingPostType } from "../../structures/api/ApiModdingPost";
 import "../../styles/pages/chart/moddingPanel.scss";
 
@@ -12,16 +14,25 @@ export function ChartModding(props: {
 }) {
     const { set: _set, chart, posts } = props!;
 
+    const formatter = new Intl.DateTimeFormat("en-us", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        hour12: false,
+        minute: "numeric",
+    });
+
     return <div class="chart_modding">
         <div class="chart_modding--data">
             <div class="chart_modding--data-name">{chart()?.difficulty_name}</div>
             <div class="chart_modding--data-strain" />
             <div class="chart_modding--data-mods">
-                <span class="chart_modding--data-mods-bar" data-type="notes" style={{left: "10%"}} />
-                <span class="chart_modding--data-mods-bar" data-type="suggestions" style={{left: "20%"}} />
-                <span class="chart_modding--data-mods-bar" data-type="comments" style={{left: "30%"}} />
-                <span class="chart_modding--data-mods-bar" data-type="problems" style={{left: "40%"}} />
-                <span class="chart_modding--data-mods-bar" data-type="praises" style={{left: "50%"}} />
+                <span class="chart_modding--data-mods-bar" data-type="notes" style={{ left: "10%" }} />
+                <span class="chart_modding--data-mods-bar" data-type="suggestions" style={{ left: "20%" }} />
+                <span class="chart_modding--data-mods-bar" data-type="comments" style={{ left: "30%" }} />
+                <span class="chart_modding--data-mods-bar" data-type="problems" style={{ left: "40%" }} />
+                <span class="chart_modding--data-mods-bar" data-type="praises" style={{ left: "50%" }} />
             </div>
         </div>
         <div class="chart_modding--info">
@@ -49,11 +60,11 @@ export function ChartModding(props: {
                     <tr class="chart_modding--info-table-divisor" />
                     <tr>
                         <td>Submitted</td>
-                        <td>{chart()?.created_at?.toLocaleString()}</td>
+                        <td>{formatter.format(chart()?.created_at === undefined ? new Date() : new Date(chart()!.created_at!))}</td>
                     </tr>
                     <tr>
                         <td>Updated</td>
-                        <td>{chart()?.updated_at?.toLocaleString()}</td>
+                        <td>{formatter.format(chart()?.updated_at === undefined ? new Date() : new Date(chart()!.updated_at!))}</td>
                     </tr>
                 </tbody>
             </table>
@@ -62,15 +73,9 @@ export function ChartModding(props: {
                     <h1>Charters</h1>
                     <div class="chart_modding--info-users-charters-list">
                         <For each={chart()?.creators}>
-                            {creator => <a class="chart_modding--info-users-charters-list--user" href={`/users/${creator.id}`}>
-                                <div class="chart_modding--info-users-charters-list--user-avatar">
-                                    <img src={`${import.meta.env.KUMI_API_URL}cdn/avatars/${creator.id}`} alt="" loading="lazy" />
-                                </div>
-                                <div class="chart_modding--info-users-charters-list--user-info">
-                                    <h1>{creator.username}</h1>
-                                    <p>Host</p>
-                                </div>
-                            </a>}
+                            {creator => <UserFlyout account={creator} >
+                                <AccountChip account={creator} description="Host" />
+                            </UserFlyout>}
                         </For>
                     </div>
                 </div>
@@ -78,15 +83,9 @@ export function ChartModding(props: {
                     <h1>Modders</h1>
                     <div class="chart_modding--info-users-charters-list">
                         <For each={posts()?.filter(x => x.type === ApiModdingPostType.Problem || x.type === ApiModdingPostType.Suggestion).map(x => x.author)}>
-                            {creator => <a class="chart_modding--info-users-charters-list--user" href={`/users/${creator.id}`}>
-                                <div class="chart_modding--info-users-charters-list--user-avatar">
-                                    <img src={`${import.meta.env.KUMI_API_URL}cdn/avatars/${creator.id}`} alt="" loading="lazy" />
-                                </div>
-                                <div class="chart_modding--info-users-charters-list--user-info">
-                                    <h1>{creator.username}</h1>
-                                    <p>{/* TODO: resolved / unresolved problems */}</p>
-                                </div>
-                            </a>}
+                            {creator => <UserFlyout account={creator} >
+                                <AccountChip account={creator} />
+                            </UserFlyout>}
                         </For>
                     </div>
                 </div>

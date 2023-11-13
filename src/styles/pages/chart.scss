@@ -165,5 +165,15 @@
                 }
             }
         }
+
+        &-modding {
+            margin-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background-color: var(--hsl-c5);
+            padding: 20px 40px;
+            border-radius: var(--corner-radius);
+        }
     }
 }

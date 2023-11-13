@@ -1,5 +1,5 @@
 import { useParams } from "@solidjs/router";
-import { createEffect, createSignal } from "solid-js";
+import { Match, Switch, createEffect, createSignal } from "solid-js";
 import { ChartModding } from "./charts/ChartModding";
 import { ChartBackground } from "../components/charts/ChartBackground";
 import { SegmentedControl } from "../components/controls/SegmentedControl";
@@ -7,12 +7,14 @@ import { useApi } from "../contexts/ApiAccessContext";
 import { ApiChart } from "../structures/api/ApiChartSet";
 import "../styles/pages/chart.scss";
 import { Util } from "../util/Util";
+import { GeneralModding } from "./charts/GeneralModding";
 
 export function ChartModdingPage() {
     const params = useParams();
     const set = useApi(async (access) => access.getChartSet(params.set));
     const posts = useApi(async (access) => access.getModdingPosts(params.set));
     const [chart, setChart] = createSignal<ApiChart | undefined>(undefined);
+    const [section, setSection] = createSignal<"general" | "chart" | "history">("general");
 
     createEffect(() => {
         if (!set()) {
@@ -50,6 +52,32 @@ export function ChartModdingPage() {
                         }} />
                         <ChartModding set={set} chart={chart} posts={posts} />
                     </div>
+                </div>
+                <div class="chart--content-modding">
+                    <SegmentedControl options={["General (All difficulties)", "General (This difficulty)", "History"]} selected="General (All difficulties)" onChange={v => {
+                        switch (v) {
+                            case "General (All difficulties)":
+                                setSection("general");
+                                break;
+                            case "General (This difficulty)":
+                                setSection("chart");
+                                break;
+                            case "History":
+                                setSection("history");
+                                break;
+                        }
+                    }} />
+                    <Switch fallback={<div>Not found</div>}>
+                        <Match when={section() === "general"}>
+                            <GeneralModding posts={posts} />
+                        </Match>
+                        <Match when={section() === "chart"}>
+                            <div>Chart</div>
+                        </Match>
+                        <Match when={section() === "history"}>
+                            <div>History</div>
+                        </Match>
+                    </Switch>
                 </div>
             </div>
         </div>

@@ -3,6 +3,7 @@ import { ApiChart, ApiChartSet } from "../../structures/api/ApiChartSet";
 import { Colors } from "../../util/Colors";
 import { Util } from "../../util/Util";
 import "../../styles/components/charts/chartBackground.scss";
+import { UserFlyout } from "../flyouts/UserFlyout";
 
 export interface ChartBackgroundProps {
     set?: ApiChartSet;
@@ -20,7 +21,10 @@ export function ChartBackground(props: ChartBackgroundProps) {
                 <div class="chart_background--info-title">{props.set?.title}</div>
                 <div class="chart_background--info-artist">{props.set?.artist}</div> {/* TODO: have settings to prefer original metadata*/}
                 <div class="chart_background--info-creator">
-                    Created by <a href={`/users/${props.set?.creator.id}`}>{props.set?.creator.username}</a>
+                    Created by
+                    <UserFlyout account={props.set?.creator}>
+                        <a href={`/users/${props.set?.creator.id}`}>{props.set?.creator.username}</a>
+                    </UserFlyout>
                 </div>
             </div>
             <div class="chart_background--difficulties">

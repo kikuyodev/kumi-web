@@ -19,7 +19,8 @@
     "sass": "^1.69.5",
     "solid-fa": "^0.2.0",
     "solid-js": "^1.7.8",
-    "solidjs-lazily": "^0.1.2"
+    "solidjs-lazily": "^0.1.2",
+    "solidjs-use": "^2.3.0"
   },
   "devDependencies": {
     "@dream2023/cypress-ct-solid-js": "^1.0.0",

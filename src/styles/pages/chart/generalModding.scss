@@ -1,3 +1,203 @@
 .general_modding {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    &--posts {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        &-post {
+            display: flex;
+            flex-direction: row;
+
+            &-left {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                width: 113px;
+                margin-top: 16px;
+
+                &-status {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 8px;
+                    align-items: center;
+
+                    svg {
+                        color: var(--col);
+                    }
+
+                    p {
+                        font-size: 16px;
+                        font-weight: 600;
+                    }
+
+                    &[data-type="note"] {
+                        --col: hsl(255, 100%, 60%);
+                    }
     
+                    &[data-type="suggestion"] {
+                        --col: hsl(195, 100%, 60%);
+                    }
+    
+                    &[data-type="comment"] {
+                        --col: hsl(0, 0%, 60%);
+                    }
+    
+                    &[data-type="problem"] {
+                        --col: hsl(345, 100%, 60%);
+                    }
+    
+                    &[data-type="praise"] {
+                        --col: hsl(140, 100%, 60%);
+                    }
+                }
+                
+                p {
+                    font-family: var(--font-header);
+                    font-size: 14px;
+                    color: var(--hsl-l1);
+                }
+            }
+
+            &-right {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 24px;
+                background-color: var(--hsl-c4);
+                border-radius: var(--corner-radius);
+                padding: 16px;
+
+                &--content {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 16px;
+
+                    &-account {
+                        position: relative;
+                        display: flex;
+                        flex-direction: row;
+                        gap: 16px;
+                        height: 48px;
+                        width: 100%;
+
+                        &-avatar {
+                            width: 48px;
+                            height: 100%;
+                            border-radius: var(--corner-radius);
+                            background-color: var(--hsl-c3);
+                            overflow: hidden;
+
+                            img {
+                                width: 100%;
+                                height: 100%;
+                            }
+                        }
+
+                        &-details {
+                            position: relative;
+                            display: flex;
+                            flex-direction: row;
+                            gap: 12px;
+                            flex: 1;
+
+                            &-name {
+                                display: flex;
+                                flex-direction: row;
+                                gap: 6px;
+                                font-family: var(--font-header);
+                                font-size: 16px;
+                                font-weight: 500;
+                                
+                                h1 {
+                                    color: var(--hsl-l2);
+                                }
+
+                                p {
+                                    color: var(--hsl-c1);
+                                }
+                            }
+
+                            &-group {
+                                margin-top: -4px;
+                            }
+
+                            &-line {
+                                position: absolute;
+                                height: 3px;
+                                bottom: 0;
+                                width: 100%;
+                                border-radius: var(--corner-radius);
+                            }
+                        }
+                    }
+
+                    &-content {
+                        flex: 1;
+                        margin-left: calc(48px + 16px);
+                    }
+
+                    &-buttons {
+                        flex: 1;
+                        display: flex;
+                        flex-direction: row;
+                        margin-left: calc(48px + 16px);
+                        gap: 12px;
+
+                        button {
+                            border: none;
+                            outline: none;
+                            font: inherit;
+                            color: inherit;
+                            background-color: transparent;
+                            padding: 0;
+                            cursor: pointer;
+
+                            color: var(--hsl-c1);
+                        }
+                    }
+
+                    &-resolved {
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+
+                        &-line_short {
+                            height: 3px;
+                            width: calc(48px + 16px);
+                            border-radius: var(--corner-radius);
+                            background-color: #CCFFDD;
+                            box-shadow: 0px 0px 4px 0px rgba(51, 255, 119, 0.25);
+                            margin-right: 16px;
+                        }
+
+                        p {
+                            display: flex;
+                            flex-direction: row;
+                            gap: 6px;
+                            font-size: 12px;
+                            color: #33FF77;
+                            margin-right: 16px;
+
+                            span {
+                                font-weight: 600;
+                                color: var(--hsl-links);
+                            }
+                        }
+
+                        &-line_long {
+                            flex: 1;                            
+                            height: 3px;
+                            border-radius: var(--corner-radius);
+                            background-color: #CCFFDD;
+                            box-shadow: 0px 0px 4px 0px rgba(51, 255, 119, 0.25);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

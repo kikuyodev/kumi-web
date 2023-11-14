@@ -1,15 +1,19 @@
-import { faAtom, faCheck, faClipboard, faClipboardQuestion, faCommentAlt, faPenAlt, faQuestionCircle, faTimes, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { faAtom, faCheck, faClipboard, faClipboardQuestion, faCommentAlt, faPenAlt, faQuestionCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { Fa } from "solid-fa";
 import { Accessor, For, Match, Resource, Show, Switch, createSignal } from "solid-js";
 import { GroupTag } from "../../components/accounts/GroupTag";
 import { ChartPostTextBox } from "../../components/charts/ChartPostTextBox";
+import { TextBox } from "../../components/controls/TextBox";
+import { useAccount } from "../../contexts/AccountContext";
+import { useApi } from "../../contexts/ApiAccessContext";
 import { ApiChart, ApiChartSet } from "../../structures/api/ApiChartSet";
 import { ApiModdingPost, ApiModdingPostStatus, ApiModdingPostType } from "../../structures/api/ApiModdingPost";
 import "../../styles/pages/chart/generalModding.scss";
 import { Util } from "../../util/Util";
-import { TextBox } from "../../components/controls/TextBox";
-import { useAccess, useApi } from "../../contexts/ApiAccessContext";
-import { useAccount } from "../../contexts/AccountContext";
+import { SolidMarkdown } from "solid-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
+import { Markdown } from "../../components/Markdown";
 
 type MetaType = {
     can_nominate: boolean;
@@ -243,7 +247,7 @@ export function ModdingThreadPost(props: {
                 </div>
                 <div class="general_modding--thread-post--content-content">
                     <Show when={editing()}>
-                        <TextBox ref={editTextBox} value={props.post.message} lightness="var(--hsl-c3)">
+                        <TextBox ref={editTextBox} value={content()} lightness="var(--hsl-c3)">
                             <div class="general_modding--thread-post--content-content-buttons">
                                 <button class="general_modding--thread-post--content-content-buttons-cancel" onClick={() => {
                                     setEditing(false);
@@ -271,7 +275,7 @@ export function ModdingThreadPost(props: {
                         </TextBox>
                     </Show>
                     <Show when={!editing()}>
-                        <p>{content()}</p>
+                        <Markdown>{content()}</Markdown>
                     </Show>
                 </div>
                 <div class="general_modding--thread-post--content-buttons">

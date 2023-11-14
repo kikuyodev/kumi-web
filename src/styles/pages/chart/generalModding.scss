@@ -207,9 +207,9 @@
                 &-content {
                     flex: 1;
                     margin-left: calc(48px + 16px);
-                    word-wrap: break-word;
-                    word-break: break-all;
-                    white-space: pre-line;                    
+                    // word-wrap: break-word;
+                    // word-break: break-all;
+                    // white-space: pre-line;
 
                     &-buttons {
                         display: flex;

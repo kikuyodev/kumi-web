@@ -8,7 +8,6 @@ export default defineConfig({
     envPrefix: "KUMI_",
     plugins: [solid()],
     server: {
-        hmr: false,
         port: parseInt(process.env?.KUMI_PORT ?? "3000"),
     },
     define: {

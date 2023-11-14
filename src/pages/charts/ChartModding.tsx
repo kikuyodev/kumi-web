@@ -1,16 +1,23 @@
-import { faAtom, faClipboard, faClipboardQuestion, faCommentAlt, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { faAtom, faAward, faClipboard, faClipboardQuestion, faCommentAlt, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { Fa } from "solid-fa";
-import { Accessor, For, Resource, Show } from "solid-js";
+import { Accessor, For, Resource, Show, createEffect, createSignal, onMount } from "solid-js";
 import { ApiChart, ApiChartSet } from "src/structures/api/ApiChartSet";
 import { AccountChip } from "../../components/accounts/AccountChip";
+import { ChartNominationSection } from "../../components/charts/nominations/ChartNominationSection";
 import { UserFlyout } from "../../components/flyouts/UserFlyout";
 import { ApiModdingPost, ApiModdingPostType } from "../../structures/api/ApiModdingPost";
 import "../../styles/pages/chart/moddingPanel.scss";
 
+type MetaType = {
+    can_nominate: boolean;
+    can_moderate_posts: boolean;
+};
+
 export function ChartModding(props: {
     set: Resource<ApiChartSet | undefined>,
     chart: Accessor<ApiChart | undefined>,
-    posts: ApiModdingPost[] | undefined
+    posts: ApiModdingPost[] | undefined,
+    meta: MetaType | undefined
 }) {
     const { set: _set, chart, posts } = props!;
 
@@ -28,11 +35,26 @@ export function ChartModding(props: {
             <div class="chart_modding--data-name">{chart()?.difficulty_name}</div>
             <div class="chart_modding--data-strain" />
             <div class="chart_modding--data-mods">
-                <span class="chart_modding--data-mods-bar" data-type="notes" style={{ left: "10%" }} />
-                <span class="chart_modding--data-mods-bar" data-type="suggestions" style={{ left: "20%" }} />
-                <span class="chart_modding--data-mods-bar" data-type="comments" style={{ left: "30%" }} />
-                <span class="chart_modding--data-mods-bar" data-type="problems" style={{ left: "40%" }} />
-                <span class="chart_modding--data-mods-bar" data-type="praises" style={{ left: "50%" }} />
+                <For each={posts?.filter(x => x.attributes.timestamp !== undefined)}>
+                    {post => {
+                        const songLength = chart()?.statistics.music_length ?? 0;
+                        const percentage = post.attributes.timestamp! / songLength;
+                        switch (post.type) {
+                            case ApiModdingPostType.Note:
+                                return <div class="chart_modding--data-mods-bar" data-type="notes" style={{ left: `${percentage * 100}%` }} />;
+                            case ApiModdingPostType.Suggestion:
+                                return <div class="chart_modding--data-mods-bar" data-type="suggestions" style={{ left: `${percentage * 100}%` }} />;
+                            case ApiModdingPostType.Comment:
+                                return <div class="chart_modding--data-mods-bar" data-type="comments" style={{ left: `${percentage * 100}%` }} />;
+                            case ApiModdingPostType.Problem:
+                                return <div class="chart_modding--data-mods-bar" data-type="problems" style={{ left: `${percentage * 100}%` }} />;
+                            case ApiModdingPostType.Praise:
+                                return <div class="chart_modding--data-mods-bar" data-type="praises" style={{ left: `${percentage * 100}%` }} />;
+                            default:
+                                return <></>;
+                        }
+                    }}
+                </For>
             </div>
         </div>
         <div class="chart_modding--info">
@@ -124,6 +146,17 @@ export function ChartModding(props: {
                     </tr>
                 </tbody>
             </table>
+        </div>
+        <div class="chart_modding--nominations">
+            <span class="chart_modding--nominations-title">Nominations</span>
+            <ChartNominationSection set={_set} />
+            <div class="chart_modding--nominations--buttons">
+                <Show when={props.meta?.can_nominate}>
+                    <button class="chart_modding--nominations--buttons-button chart_modding--nominations--buttons-button-nominate">
+                        <Fa icon={faAward} />Nominate
+                    </button>
+                </Show>
+            </div>
         </div>
     </div>;
 }

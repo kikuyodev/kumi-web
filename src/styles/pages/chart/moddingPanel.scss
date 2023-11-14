@@ -178,4 +178,73 @@
             }
         }
     }
+
+    &--nominations {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        &-title {
+            color: var(--hsl-c1);
+            font-size: 14px;
+            padding-right: 20px;
+        }
+
+        &--nominator {
+            align-items: center;
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+
+            &-avatar {
+                width: 34px;
+                height: 34px;
+                background: var(--hsl-c6);
+                border-radius: 5px;
+
+                img {
+                    border-radius: 5px;
+                    width: 34px;
+                    height: 34px;
+                }
+
+                &[data-nominator="none"] {
+                    img {
+                        display: none;
+                    }
+                }
+            }
+
+            &-username {
+                font-size: 14px;
+
+                &[data-nominator="none"] {
+                    background-color: var(--hsl-c6);
+                    border-radius: 5px;
+                    color: rgba(0, 0, 0, 0);
+                }
+            }
+        }
+
+        &--buttons {
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+            margin-left: auto;
+
+            &-button {
+                display: flex;
+                border-radius: 5px;
+                padding: 8px 16px;
+                border-style: none;
+                transform: skew(-10deg);
+                color: var(--hsl-l1);
+                gap: 8px;
+
+                &-nominate {
+                    background: var(--hsl-l6);
+                }
+            }
+        }
+    }
 }

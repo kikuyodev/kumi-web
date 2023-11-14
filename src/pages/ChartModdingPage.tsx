@@ -10,12 +10,17 @@ import "../styles/pages/chart.scss";
 import { Util } from "../util/Util";
 import { ChartHistory } from "./charts/ChartHistory";
 
+type MetaType = {
+    can_nominate: boolean;
+    can_moderate_posts: boolean;
+};
+
 export function ChartModdingPage() {
     const params = useParams();
     const set = useApi(async (access) => access.getChartSet(params.set));
     const data = useApi(async (access) => access.getModdingData(params.set));
     const [chart, setChart] = createSignal<ApiChart | undefined>(undefined);
-    const [section, setSection] = createSignal<"general" | "chart" | "history">("general");
+    const [section, setSection] = createSignal<"general" | "chart" | "history" | "timeline">("general");
 
     createEffect(() => {
         if (!set()) {
@@ -51,17 +56,20 @@ export function ChartModdingPage() {
 
                             window.location.href = `/chartsets/${params.set}/${chart()?.id}`;
                         }} />
-                        <ChartModding set={set} chart={chart} posts={data()?.data?.posts.filter(x => !x.has_parent)} />
+                        <ChartModding set={set} chart={chart} posts={data()?.data?.posts.filter(x => !x.has_parent)} meta={data()?.meta as MetaType} />
                     </div>
                 </div>
                 <div class="chart--content-modding">
-                    <SegmentedControl options={["General (All difficulties)", "General (This difficulty)", "History"]} selected="General (All difficulties)" onChange={v => {
+                    <SegmentedControl options={["General (All difficulties)", "General (This difficulty)", "Timeline", "History"]} selected="General (All difficulties)" onChange={v => {
                         switch (v) {
                             case "General (All difficulties)":
                                 setSection("general");
                                 break;
                             case "General (This difficulty)":
                                 setSection("chart");
+                                break;
+                            case "Timeline":
+                                setSection("timeline");
                                 break;
                             case "History":
                                 setSection("history");
@@ -70,11 +78,15 @@ export function ChartModdingPage() {
                     }} />
                     <Switch fallback={<div>Not found</div>}>
                         <Match when={section() === "general"}>
-                            { /* eslint-disable-next-line @typescript-eslint/no-explicit-any */ }
+                            { /* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                             <GeneralModding set={set} posts={data()?.data?.posts.filter(x => !x.has_parent)} meta={data()?.meta as any} />
                         </Match>
                         <Match when={section() === "chart"}>
                             <div>Chart</div>
+                        </Match>
+                        <Match when={section() === "timeline"}>
+                            { /* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                            <GeneralModding chart={chart} set={set} posts={data()?.data?.posts.filter(x => x.attributes.timestamp !== undefined)} meta={data()?.meta as any} isTimeline={true} />
                         </Match>
                         <Match when={section() === "history"}>
                             <ChartHistory history={data()?.data?.events} />

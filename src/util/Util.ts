@@ -43,4 +43,12 @@ export class Util {
         const rtf = new Intl.RelativeTimeFormat(lang, { numeric: "auto" });
         return rtf.format(Math.floor(deltaSeconds / divisor), units[unitIndex]);
     }
+
+    static formatTimestamp(timestamp: number) {
+        // expected format: 00:00.000
+        const minutes = Math.floor(timestamp / 60000);
+        const seconds = Math.floor(timestamp / 1000) - minutes * 60;
+        const ms = Math.floor(timestamp % 1000);
+        return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}.${String(ms).padStart(3, "0")}`;
+    }
 }

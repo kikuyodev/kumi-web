@@ -18,7 +18,6 @@ export function useAccess() {
 }
 
 export function useApi<T>(func: (access: ApiAccess) => Promise<T>, source?: ResourceSource<unknown>) {
-    console.log(useContext(ApiAccessContext));
     async function promise() {
         return await func(useContext(ApiAccessContext)!);
     }

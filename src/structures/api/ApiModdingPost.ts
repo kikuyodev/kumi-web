@@ -17,6 +17,7 @@ export interface ApiModdingPost extends ApiModal {
 }
 
 export interface ApiModdingPostAttributes {
+    timestamp?: number;
     resolved?: boolean;
     reopened?: boolean;
     muted?: boolean;

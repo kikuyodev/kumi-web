@@ -1,13 +1,15 @@
 import { faAtom, faQuestion, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { Fa } from "solid-fa";
-import { Resource } from "solid-js";
+import { Accessor, Resource } from "solid-js";
 import { useApi } from "../../contexts/ApiAccessContext";
-import { ApiChartSet } from "../../structures/api/ApiChartSet";
+import { ApiChart, ApiChartSet } from "../../structures/api/ApiChartSet";
 import { ApiModdingPostType } from "../../structures/api/ApiModdingPost";
 import { TextBox } from "../controls/TextBox";
 
 interface ChartPostTextBoxProps {
     set: Resource<ApiChartSet | undefined>,
+    chart: Accessor<ApiChart | undefined>,
+    isTimeline?: boolean
 }
 
 export function ChartPostTextBox(props: ChartPostTextBoxProps) {
@@ -28,12 +30,53 @@ export function ChartPostTextBox(props: ChartPostTextBoxProps) {
             dataType = ApiModdingPostType.Problem;
         }
 
+        let timestamp = -1;
+
+        // try and parse the timestamp from the text.
+        // the expected format: mm:ss.ms
+        const regex = /(\d+):(\d+)(?:\.(\d){3,3})/g;
+
+        const match = regex.exec(textArea.value);
+
+        if (match) {
+            const minutes = parseInt(match[1]);
+            const seconds = parseInt(match[2]);
+            const ms = parseInt(match[3]);
+
+            timestamp = ((minutes * 60 + seconds) * 1000) + ms;
+        }
+
+        if (timestamp === -1 && props.isTimeline) {
+            // require a timestamp for timeline posts.
+            return;
+        }
+        
+        if (props.isTimeline) {
+            if (timestamp === -1) {
+                // require a timestamp for timeline posts.
+                return;
+            }
+
+            if (props.chart() === undefined) {
+                // require a chart for timeline posts.
+                return;
+            }
+        }
+
         useApi(async (access) => {
-            const post = await access.sendModdingPost(props.set()!.id, {
+            const body: any = {
                 type: dataType,
                 message: textArea!.value
-            });
+            }
 
+            if (props.isTimeline) {
+                body.chart = props.chart()!.id;
+                body["attributes[timestamp]"] = timestamp;
+            } else if (props.chart() !== undefined) {
+                body.chart = props.chart()!.id;
+            }
+            
+            const post = await access.sendModdingPost(props.set()!.id, body);
             if (post) {
                 // refresh the page.
                 window.location.reload();

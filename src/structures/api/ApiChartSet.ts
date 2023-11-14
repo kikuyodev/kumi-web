@@ -19,10 +19,20 @@ export interface ApiChart extends ApiModalWithMetadata {
     difficulty: {
         bpms: number[];
         difficulty: number;
+    };
+    statistics: {
+        note_count: number;
+        drain_length: number;
+        total_length: number;
+        music_length: number;
     }
 }
 
 export interface ApiChartSet extends ApiModalWithMetadata {
     charts: ApiChart[];
     creator: ApiAccount;
+    nominators: ApiAccount[];
+    attributes: {
+        nominators_required: number;
+    }
 }

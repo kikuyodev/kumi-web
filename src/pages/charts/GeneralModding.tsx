@@ -1,14 +1,14 @@
 import { faAtom, faCheck, faClipboard, faClipboardQuestion, faCommentAlt, faPenAlt, faQuestionCircle, faTimes, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { Fa } from "solid-fa";
-import { For, Match, Resource, Show, Switch, createSignal } from "solid-js";
+import { Accessor, For, Match, Resource, Show, Switch, createSignal } from "solid-js";
 import { GroupTag } from "../../components/accounts/GroupTag";
 import { ChartPostTextBox } from "../../components/charts/ChartPostTextBox";
-import { ApiChartSet } from "../../structures/api/ApiChartSet";
+import { ApiChart, ApiChartSet } from "../../structures/api/ApiChartSet";
 import { ApiModdingPost, ApiModdingPostStatus, ApiModdingPostType } from "../../structures/api/ApiModdingPost";
 import "../../styles/pages/chart/generalModding.scss";
 import { Util } from "../../util/Util";
 import { TextBox } from "../../components/controls/TextBox";
-import { useApi } from "../../contexts/ApiAccessContext";
+import { useAccess, useApi } from "../../contexts/ApiAccessContext";
 import { useAccount } from "../../contexts/AccountContext";
 
 type MetaType = {
@@ -18,6 +18,7 @@ type MetaType = {
 };
 
 type PostMetaType = {
+    can_reply: boolean;
     can_resolve: boolean;
     can_reopen: boolean;
     can_edit: boolean;
@@ -25,13 +26,13 @@ type PostMetaType = {
 
 export function GeneralModding(props: {
     set: Resource<ApiChartSet | undefined>,
+    chart?: Accessor<ApiChart | undefined>,
     posts: ApiModdingPost[] | undefined,
     meta: MetaType | undefined
+    isTimeline?: boolean
 }) {
-    console.log(props.meta);
-    
     return <div class="general_modding">
-        <ChartPostTextBox set={props.set} />
+        <ChartPostTextBox set={props.set} isTimeline={props.isTimeline} chart={props.chart ?? (() => undefined)} />
         <div class="general_modding--posts">
             <For each={props.posts}>
                 {(post, idx) => <GeneralModdingThread set={props.set} post={post} meta={props.meta} idx={idx()} />}
@@ -46,11 +47,12 @@ export function GeneralModdingThread(props: {
     meta: MetaType | undefined,
     idx: number
 }) {
-    console.log(props.meta);
-    
     // create an array of all the posts in the thread.
     // this requires a recursive function.
     const posts: ApiModdingPost[] = [];
+    const [responding, setResponding] = createSignal(false);
+    const parentMeta = props.meta?.posts[props.post.id];
+    let respondTextBox: HTMLTextAreaElement | undefined = undefined;
 
     function getPosts(post: ApiModdingPost) {
         posts.push(post);
@@ -68,6 +70,29 @@ export function GeneralModdingThread(props: {
     posts.sort((a, b) => {
         return new Date(a.created_at!).getTime() - new Date(b.created_at!).getTime();
     });
+
+    function respondToPost(data: {
+        resolved?: boolean,
+        reopened?: boolean
+    }) {
+        useApi(async (access) => {
+            const result = data.resolved ? await access.sendModdingPost(props.set()!.id, {
+                parent: props.post.id,
+                message: respondTextBox!.value,
+                "attributes[resolved]": data.resolved,
+            }) : await access.sendModdingPost(props.set()!.id, {
+                parent: props.post.id,
+                message: respondTextBox!.value,
+                "attributes[reopened]": data.reopened
+            });
+
+            console.log(result);
+
+            if (result) {
+                window.location.reload();
+            }
+        });
+    }
 
     return (
         <div class="general_modding--thread">
@@ -92,7 +117,10 @@ export function GeneralModdingThread(props: {
                     </Switch>
                     <p>{ApiModdingPostStatus[props.post.status].toUpperCase()}</p>
                 </div>
-                <p>00:01:13:422</p>
+                <Show when={props.post.attributes.timestamp}>
+                    {/* convert the timeestamp to 00:00.000 format. */}
+                    {Util.formatTimestamp(props.post.attributes.timestamp!)}
+                </Show>
             </div>
             <div class="general_modding--thread-right">
                 <For each={posts}>
@@ -100,7 +128,7 @@ export function GeneralModdingThread(props: {
                         if (post.type === ApiModdingPostType.System) {
                             return <ModdingThreadSystemPost post={post} />;
                         } else {
-                            let result = <ModdingThreadPost set={props.set} post={post} meta={props.meta?.posts[post.id]} />;
+                            let result = <ModdingThreadPost set={props.set} post={post} meta={props.meta?.posts[post.id]} isParent={idx() == 0} />;
 
                             if (idx() !== posts.length - 1 && posts[idx() + 1]?.type !== ApiModdingPostType.System) {
                                 return <>
@@ -113,6 +141,51 @@ export function GeneralModdingThread(props: {
                         }
                     }}
                 </For>
+                <Show when={responding()}>
+                    <TextBox ref={respondTextBox} placeholder={`Type your reply here (replying to ${props.post.author.username})`} lightness="var(--hsl-c3)">
+                        <div class="general_modding--thread-reply-buttons">
+                            <button class="general_modding--thread-reply-buttons-cancel" onClick={() => {
+                                setResponding(false);
+                            }}>Cancel</button>
+                            <Show when={parentMeta?.can_resolve}>
+                                <button class={"general_modding--thread-reply-buttons-resolve"} onClick={() => respondToPost({
+                                    resolved: true
+                                })}>
+                                    <Fa icon={faCheck} />
+                                    <p>{"Resolve"}</p>
+                                </button>
+                            </Show>
+                            <Show when={parentMeta?.can_reopen}>
+                                <button class={"general_modding--thread-reply-buttons-unresolve"} onClick={() => respondToPost({
+                                    reopened: true
+                                })}>
+                                    <Fa icon={faTimesCircle} />
+                                    <p>{"Reopen"}</p>
+                                </button>
+                            </Show>
+                            <button class="general_modding--thread-reply-buttons-post" onClick={() => {
+                                useApi(async (access) => {
+                                    const result = await access.sendModdingPost(props.set()!.id, {
+                                        parent: props.post.id,
+                                        message: respondTextBox!.value
+                                    });
+
+                                    if (result) {
+                                        window.location.reload();
+                                    }
+                                });
+                            }}>
+                                <Fa icon={faCommentAlt} />
+                                <p>Post</p>
+                            </button>
+                        </div>
+                    </TextBox>
+                </Show>
+                <Show when={!responding() && useAccount().isLoggedIn() && props.meta?.posts[props.post.id]}>
+                    <div class="general_modding--thread-buttons">
+                        <button class="general_modding--thread-buttons-button" onClick={() => setResponding(true)}>Respond</button>
+                    </div>
+                </Show>
             </div>
         </div>
     );
@@ -122,24 +195,18 @@ export function ModdingThreadPost(props: {
     set: Resource<ApiChartSet | undefined>,
     post: ApiModdingPost,
     meta: PostMetaType | undefined
+    isParent?: boolean
 }) {
     const account = useAccount();
 
     const [editing, setEditing] = createSignal(false);
     const [replying, setReplying] = createSignal(false);
-    const [reopening, setReopening] = createSignal(false);
     const [content, setContent] = createSignal<string | undefined>(props.post.message);
 
     let editTextBox: HTMLTextAreaElement | undefined = undefined;
     let replyTextBox: HTMLTextAreaElement | undefined = undefined;
     let editButton: HTMLButtonElement | undefined = undefined;
     let replyButton: HTMLButtonElement | undefined = undefined;
-
-    let root = props.post;
-
-    while (root.has_parent) {
-        root = root.parent!;
-    }
 
     return <>
         <div class="general_modding--thread-post" id={props.post.id.toString()}>
@@ -217,22 +284,15 @@ export function ModdingThreadPost(props: {
                         }}>Edit</button>
                     </Show>
                     <button>Share</button>
-                    <Show when={account.isLoggedIn()}>
-                        <button ref={replyButton} onClick={(v) => {
-                            setReplying(!replying());
+                    {!props.isParent &&
+                        <Show when={account.isLoggedIn()}>
+                            <button ref={replyButton} onClick={(v) => {
+                                setReplying(!replying());
 
-                            let target = v.target as HTMLButtonElement;
-                            target.style.setProperty("color", editing() ? "var(--hsl-l2)" : "var(--hsl-c1)");
-                        }}>Reply</button>
-                    </Show>
-                    <Show when={props.meta?.can_reopen}>
-                        <button ref={editButton} onClick={(v) => {
-                            setReopening(!reopening());
-
-                            let target = v.target as HTMLButtonElement;
-                            target.style.setProperty("color", editing() ? "var(--hsl-l2)" : "var(--hsl-c1)");
-                        }}>Reopen</button>
-                    </Show>
+                                let target = v.target as HTMLButtonElement;
+                                target.style.setProperty("color", editing() ? "var(--hsl-l2)" : "var(--hsl-c1)");
+                            }}>Reply</button>
+                        </Show>}
                     <button>Report</button>
                 </div>
             </div>
@@ -245,30 +305,12 @@ export function ModdingThreadPost(props: {
                             setReplying(false);
                             replyButton!.style.setProperty("color", "var(--hsl-c1)");
                         }}>Cancel</button>
-                        <Show when={props.meta?.can_resolve}>
-                            <button class={"general_modding--thread-reply-buttons-resolve"} onClick={() => {
-                                useApi(async (access) => {
-                                    const result = await access.sendModdingPost(props.set()!.id, {
-                                        parent: root.id,
-                                        message: replyTextBox!.value,
-                                        "attributes[resolved]": true
-                                    })
-
-                                    if (result) {
-                                        window.location.reload();
-                                    }
-                                });
-                            }}>
-                                <Fa icon={faCheck} />
-                                <p>{"Resolve"}</p>
-                            </button>
-                        </Show>
                         <button class="general_modding--thread-reply-buttons-post" onClick={() => {
                             useApi(async (access) => {
                                 const result = await access.sendModdingPost(props.set()!.id, {
-                                    parent: root.id,
+                                    parent: props.post.id,
                                     message: replyTextBox!.value
-                                })
+                                });
 
                                 if (result) {
                                     window.location.reload();
@@ -277,35 +319,6 @@ export function ModdingThreadPost(props: {
                         }}>
                             <Fa icon={faCommentAlt} />
                             <p>Post</p>
-                        </button>
-                    </div>
-                </TextBox>
-            </div>
-        </Show>
-
-        <Show when={reopening()}>
-            <div class="general_modding--thread-reply">
-                <TextBox ref={replyTextBox} placeholder={`Type your reply here (replying to ${props.post.author.username})`} lightness="var(--hsl-c3)">
-                    <div class="general_modding--thread-reply-buttons">
-                        <button class="general_modding--thread-reply-buttons-cancel" onClick={() => {
-                            setReplying(false);
-                            replyButton!.style.setProperty("color", "var(--hsl-c1)");
-                        }}>Cancel</button>
-                        <button class={"general_modding--thread-reply-buttons-unresolve"} onClick={() => {
-                            useApi(async (access) => {
-                                const result = await access.sendModdingPost(props.set()!.id, {
-                                    parent: root.id,
-                                    message: replyTextBox!.value,
-                                    "attributes[reopened]": true
-                                })
-
-                                if (result) {
-                                    window.location.reload();
-                                }
-                            });
-                        }}>
-                            <Fa icon={faTimes} />
-                            <p>Reopen</p>
                         </button>
                     </div>
                 </TextBox>

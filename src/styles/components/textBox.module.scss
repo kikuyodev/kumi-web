@@ -1,6 +1,6 @@
 .textbox {
     width: 100%;
-    border: 1px solid var(--hsl-c4);
+    border: 1px solid var(--textbox-lightness);
     border-radius: var(--corner-radius);
 
     textarea {
@@ -23,6 +23,6 @@
 .bottom {
     min-height: 32px;
     width: 100%;
-    background: var(--hsl-c4);
+    background: var(--textbox-lightness);
     border-radius: var(--corner-radius);
 }

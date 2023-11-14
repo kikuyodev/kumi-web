@@ -36,10 +36,10 @@ export function UserFlyout(props: ParentProps<{
             if (componentRect && portalRect) {
                 if (componentRect.right + portalRect.width + 16 > window.innerWidth) {
                     portal?.style.setProperty("left", `${(componentRect.left - 16) - portalRect.width}px`);
-                    portal?.style.setProperty("top", `${componentRect.top}px`);
+                    portal?.style.setProperty("top", `${componentRect.top + window.scrollY}px`);
                 } else {
                     portal?.style.setProperty("left", `${componentRect.right + 16}px`);
-                    portal?.style.setProperty("top", `${componentRect.top}px`);
+                    portal?.style.setProperty("top", `${componentRect.top + window.scrollY}px`);
                 }
             }
         } else {

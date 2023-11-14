@@ -1,31 +1,53 @@
-import { faAtom, faClipboard, faClipboardQuestion, faCommentAlt, faQuestionCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { faAtom, faCheck, faClipboard, faClipboardQuestion, faCommentAlt, faPenAlt, faQuestionCircle, faTimes, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { Fa } from "solid-fa";
-import { For, Match, Resource, Show, Switch } from "solid-js";
+import { For, Match, Resource, Show, Switch, createSignal } from "solid-js";
 import { GroupTag } from "../../components/accounts/GroupTag";
-import { UserFlyout } from "../../components/flyouts/UserFlyout";
+import { ChartPostTextBox } from "../../components/charts/ChartPostTextBox";
+import { ApiChartSet } from "../../structures/api/ApiChartSet";
 import { ApiModdingPost, ApiModdingPostStatus, ApiModdingPostType } from "../../structures/api/ApiModdingPost";
 import "../../styles/pages/chart/generalModding.scss";
 import { Util } from "../../util/Util";
-import { ChartPostTextBox } from "../../components/charts/ChartPostTextBox";
-import { ApiChartSet } from "../../structures/api/ApiChartSet";
+import { TextBox } from "../../components/controls/TextBox";
+import { useApi } from "../../contexts/ApiAccessContext";
+import { useAccount } from "../../contexts/AccountContext";
+
+type MetaType = {
+    can_nominate: boolean;
+    can_moderate_posts: boolean;
+    posts: PostMetaType[];
+};
+
+type PostMetaType = {
+    can_resolve: boolean;
+    can_reopen: boolean;
+    can_edit: boolean;
+}
 
 export function GeneralModding(props: {
     set: Resource<ApiChartSet | undefined>,
-    posts: ApiModdingPost[] | undefined
+    posts: ApiModdingPost[] | undefined,
+    meta: MetaType | undefined
 }) {
+    console.log(props.meta);
+    
     return <div class="general_modding">
         <ChartPostTextBox set={props.set} />
         <div class="general_modding--posts">
             <For each={props.posts}>
-                {post => <GeneralModdingThread post={post} />}
+                {(post, idx) => <GeneralModdingThread set={props.set} post={post} meta={props.meta} idx={idx()} />}
             </For>
         </div>
     </div>;
 }
 
 export function GeneralModdingThread(props: {
-    post: ApiModdingPost
+    set: Resource<ApiChartSet | undefined>,
+    post: ApiModdingPost,
+    meta: MetaType | undefined,
+    idx: number
 }) {
+    console.log(props.meta);
+    
     // create an array of all the posts in the thread.
     // this requires a recursive function.
     const posts: ApiModdingPost[] = [];
@@ -78,7 +100,7 @@ export function GeneralModdingThread(props: {
                         if (post.type === ApiModdingPostType.System) {
                             return <ModdingThreadSystemPost post={post} />;
                         } else {
-                            let result = <ModdingThreadPost post={post} />;
+                            let result = <ModdingThreadPost set={props.set} post={post} meta={props.meta?.posts[post.id]} />;
 
                             if (idx() !== posts.length - 1 && posts[idx() + 1]?.type !== ApiModdingPostType.System) {
                                 return <>
@@ -97,15 +119,30 @@ export function GeneralModdingThread(props: {
 }
 
 export function ModdingThreadPost(props: {
-    post: ApiModdingPost
+    set: Resource<ApiChartSet | undefined>,
+    post: ApiModdingPost,
+    meta: PostMetaType | undefined
 }) {
-    const formatter = new Intl.RelativeTimeFormat("en-us", {
-        style: "narrow",
-        numeric: "auto"
-    });
+    const account = useAccount();
 
-    return (
-        <div class="general_modding--thread-post" id={props.post.id}>
+    const [editing, setEditing] = createSignal(false);
+    const [replying, setReplying] = createSignal(false);
+    const [reopening, setReopening] = createSignal(false);
+    const [content, setContent] = createSignal<string | undefined>(props.post.message);
+
+    let editTextBox: HTMLTextAreaElement | undefined = undefined;
+    let replyTextBox: HTMLTextAreaElement | undefined = undefined;
+    let editButton: HTMLButtonElement | undefined = undefined;
+    let replyButton: HTMLButtonElement | undefined = undefined;
+
+    let root = props.post;
+
+    while (root.has_parent) {
+        root = root.parent!;
+    }
+
+    return <>
+        <div class="general_modding--thread-post" id={props.post.id.toString()}>
             <div class="general_modding--thread-post--content">
                 <div class="general_modding--thread-post--content-account">
                     <div class="general_modding--thread-post--content-account-avatar">
@@ -125,26 +162,156 @@ export function ModdingThreadPost(props: {
                             <div class="general_modding--thread-post--content-parent">
                                 {">"}
                                 <div class="general_modding--thread-post--content-parent-id">
-                                    <a href={`#${props.post.parent.id}`}>
-                                        {`#${props.post.parent.id}`}
+                                    <a href={`#${props.post.parent?.id}`}>
+                                        {`#${props.post.parent?.id}`}
                                     </a>
                                 </div>
                             </div>
+                        </Show>
+                        <Show when={props.post.is_edited}>
+                            <p class="general_modding--thread-post--content-account-details-edited">(edited by {props.post.editor?.username})</p>
                         </Show>
                         <div class="general_modding--thread-post--content-account-details-line" style={{ "background-color": props.post.author.primary?.color ?? "var(--hsl-l4)" }} />
                     </div>
                 </div>
                 <div class="general_modding--thread-post--content-content">
-                    <p>{props.post.message}</p>
+                    <Show when={editing()}>
+                        <TextBox ref={editTextBox} value={props.post.message} lightness="var(--hsl-c3)">
+                            <div class="general_modding--thread-post--content-content-buttons">
+                                <button class="general_modding--thread-post--content-content-buttons-cancel" onClick={() => {
+                                    setEditing(false);
+                                    editButton!.style.setProperty("color", "var(--hsl-c1)");
+                                }}>
+                                    <p>Cancel</p>
+                                </button>
+                                <button class="general_modding--thread-post--content-content-buttons-edit" onClick={() => {
+                                    useApi(async (access) => {
+                                        const result = await access.editModdingPost(props.set()?.id ?? -1, props.post.id, editTextBox!.value);
+
+                                        if (result) {
+                                            setContent(result.message);
+                                            props.post.is_edited = true;
+                                        }
+                                    });
+
+                                    setEditing(false);
+                                    editButton!.style.setProperty("color", "var(--hsl-c1)");
+                                }}>
+                                    <Fa icon={faPenAlt} />
+                                    <p>Edit</p>
+                                </button>
+                            </div>
+                        </TextBox>
+                    </Show>
+                    <Show when={!editing()}>
+                        <p>{content()}</p>
+                    </Show>
                 </div>
                 <div class="general_modding--thread-post--content-buttons">
+                    <Show when={props.meta?.can_edit}>
+                        <button ref={editButton} onClick={(v) => {
+                            setEditing(!editing());
+
+                            let target = v.target as HTMLButtonElement;
+                            target.style.setProperty("color", editing() ? "var(--hsl-l2)" : "var(--hsl-c1)");
+                        }}>Edit</button>
+                    </Show>
                     <button>Share</button>
-                    <button>Reply</button>
+                    {/* <Show when={account.isLoggedIn()}>
+                        <button ref={replyButton} onClick={(v) => {
+                            setReplying(!replying());
+
+                            let target = v.target as HTMLButtonElement;
+                            target.style.setProperty("color", editing() ? "var(--hsl-l2)" : "var(--hsl-c1)");
+                        }}>Reply</button>
+                    </Show>
+                    <Show when={props.meta?.can_reopen}>
+                        <button ref={editButton} onClick={(v) => {
+                            setReopening(!reopening());
+
+                            let target = v.target as HTMLButtonElement;
+                            target.style.setProperty("color", editing() ? "var(--hsl-l2)" : "var(--hsl-c1)");
+                        }}>Reopen</button>
+                    </Show> */}
                     <button>Report</button>
                 </div>
             </div>
         </div>
-    );
+        <Show when={replying()}>
+            <div class="general_modding--thread-reply">
+                <TextBox ref={replyTextBox} placeholder={`Type your reply here (replying to ${props.post.author.username})`} lightness="var(--hsl-c3)">
+                    <div class="general_modding--thread-reply-buttons">
+                        <button class="general_modding--thread-reply-buttons-cancel" onClick={() => {
+                            setReplying(false);
+                            replyButton!.style.setProperty("color", "var(--hsl-c1)");
+                        }}>Cancel</button>
+                        <Show when={props.meta?.can_resolve}>
+                            <button class={"general_modding--thread-reply-buttons-resolve"} onClick={() => {
+                                useApi(async (access) => {
+                                    const result = await access.sendModdingPost(props.set()!.id, {
+                                        parent: root.id,
+                                        message: replyTextBox!.value,
+                                        "attributes[resolved]": true
+                                    })
+
+                                    if (result) {
+                                        window.location.reload();
+                                    }
+                                });
+                            }}>
+                                <Fa icon={faCheck} />
+                                <p>{"Resolve"}</p>
+                            </button>
+                        </Show>
+                        <button class="general_modding--thread-reply-buttons-post" onClick={() => {
+                            useApi(async (access) => {
+                                const result = await access.sendModdingPost(props.set()!.id, {
+                                    parent: root.id,
+                                    message: replyTextBox!.value
+                                })
+
+                                if (result) {
+                                    window.location.reload();
+                                }
+                            });
+                        }}>
+                            <Fa icon={faCommentAlt} />
+                            <p>Post</p>
+                        </button>
+                    </div>
+                </TextBox>
+            </div>
+        </Show>
+
+        <Show when={reopening()}>
+            <div class="general_modding--thread-reply">
+                <TextBox ref={replyTextBox} placeholder={`Type your reply here (replying to ${props.post.author.username})`} lightness="var(--hsl-c3)">
+                    <div class="general_modding--thread-reply-buttons">
+                        <button class="general_modding--thread-reply-buttons-cancel" onClick={() => {
+                            setReplying(false);
+                            replyButton!.style.setProperty("color", "var(--hsl-c1)");
+                        }}>Cancel</button>
+                        <button class={"general_modding--thread-reply-buttons-unresolve"} onClick={() => {
+                            useApi(async (access) => {
+                                const result = await access.sendModdingPost(props.set()!.id, {
+                                    parent: root.id,
+                                    message: replyTextBox!.value,
+                                    "attributes[reopened]": true
+                                })
+
+                                if (result) {
+                                    window.location.reload();
+                                }
+                            });
+                        }}>
+                            <Fa icon={faTimes} />
+                            <p>Reopen</p>
+                        </button>
+                    </div>
+                </TextBox>
+            </div>
+        </Show>
+    </>;
 }
 
 export function ModdingThreadSystemPost(props: {
@@ -161,59 +328,15 @@ export function ModdingThreadSystemPost(props: {
                     <div class="general_modding--thread-system-post-bar" data-type="resolved" />
                 </div>
             </Show>
+            <Show when={props.post.attributes.reopened}>
+                <div class="general_modding--thread-system-post" data-system-type="reopened">
+                    <div class="general_modding--thread-system-post-bar" data-type="reopened" />
+                    <div class="general_modding--thread-system-post-text" data-type="reopened">
+                        Marked as reopened by <span><a href="#">{props.post.done_by?.username}</a></span>
+                    </div>
+                    <div class="general_modding--thread-system-post-bar" data-type="reopened" />
+                </div>
+            </Show>
         </>
     );
-}
-
-export function GeneralModdingPost(props: {
-    post: ApiModdingPost
-}) {
-    const formatter = new Intl.RelativeTimeFormat("en-us", {
-        style: "narrow",
-        numeric: "auto"
-    });
-
-    return <div class="general_modding--posts-post">
-        <div class="general_modding--posts-post-right">
-            <div class="general_modding--posts-post-right--content">
-                <div class="general_modding--posts-post-right--content-account">
-                    <div class="general_modding--posts-post-right--content-account-avatar">
-                        <img src={`${import.meta.env.KUMI_API_URL}cdn/avatars/${props.post.author.id}`} alt="avatar" />
-                    </div>
-                    <div class="general_modding--posts-post-right--content-account-details">
-                        <div class="general_modding--posts-post-right--content-account-details-name">
-                            <h1>{props.post.author.username}</h1>
-                            <p>• {formatter.format((((props.post.created_at == null ? new Date() : new Date(props.post.created_at)).getTime() - new Date().getTime()) / 1000), "seconds")}</p>
-                        </div>
-                        <Show when={props.post.author.primary}>
-                            <div class="general_modding--posts-post-right--content-account-details-group">
-                                <GroupTag group={props.post.author.primary!} />
-                            </div>
-                        </Show>
-                        <div class="general_modding--posts-post-right--content-account-details-line" style={{ "background-color": props.post.author.primary?.color ?? "var(--hsl-l4)" }} />
-                    </div>
-                </div>
-                <div class="general_modding--posts-post-right--content-content">
-                    <p>{props.post.message}</p>
-                </div>
-                <div class="general_modding--posts-post-right--content-buttons">
-                    <button>Share</button>
-                    <button>Report</button>
-                </div>
-                <Show when={props.post.attributes.resolved}>
-                    {/* <Show when={true}> */}
-                    <div class="general_modding--posts-post-right--content-resolved">
-                        <div class="general_modding--posts-post-right--content-resolved-line_short" />
-                        <p>
-                            Marked as resolved by
-                            <UserFlyout account={props.post.author}>
-                                <span>{props.post.author.username}</span>
-                            </UserFlyout>
-                        </p>
-                        <div class="general_modding--posts-post-right--content-resolved-line_long" />
-                    </div>
-                </Show>
-            </div>
-        </div>
-    </div>;
 }

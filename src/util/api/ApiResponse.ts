@@ -11,4 +11,5 @@ export type ApiResponse<Keys extends string[], Values extends unknown[]> = {
     code: number;
     message?: string;
     data?: RecordFromArray<Keys, Values>;
+    meta?: unknown;
 }

@@ -7,15 +7,18 @@ export interface ApiModdingPost extends ApiModal {
     status: ApiModdingPostStatus;
     attributes: ApiModdingPostAttributes;
     author: ApiAccount;
+    editor?: ApiAccount;
     done_by?: ApiAccount; // only for system posts
 
     has_parent: boolean;
+    is_edited: boolean;
     parent?: ApiModdingPost;
     children: ApiModdingPost[];
 }
 
 export interface ApiModdingPostAttributes {
     resolved?: boolean;
+    reopened?: boolean;
     muted?: boolean;
 }
 

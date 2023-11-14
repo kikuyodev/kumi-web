@@ -1,10 +1,10 @@
 import { faAtom, faQuestion, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
-import { TextBox } from "../TextBox";
-import Fa from "solid-fa";
-import { useApi } from "../../contexts/ApiAccessContext";
+import { Fa } from "solid-fa";
 import { Resource } from "solid-js";
+import { useApi } from "../../contexts/ApiAccessContext";
 import { ApiChartSet } from "../../structures/api/ApiChartSet";
-import { ApiModdingPost, ApiModdingPostType } from "../../structures/api/ApiModdingPost";
+import { ApiModdingPostType } from "../../structures/api/ApiModdingPost";
+import { TextBox } from "../controls/TextBox";
 
 interface ChartPostTextBoxProps {
     set: Resource<ApiChartSet | undefined>,
@@ -12,7 +12,7 @@ interface ChartPostTextBoxProps {
 
 export function ChartPostTextBox(props: ChartPostTextBoxProps) {
     let textArea: HTMLTextAreaElement | undefined = undefined;
-    
+
     const onClick = (type: "praise" | "suggestion" | "problem") => {
         if (textArea?.value === undefined || textArea?.value === "") {
             return;
@@ -28,7 +28,6 @@ export function ChartPostTextBox(props: ChartPostTextBoxProps) {
             dataType = ApiModdingPostType.Problem;
         }
 
-
         useApi(async (access) => {
             const post = await access.sendModdingPost(props.set()!.id, {
                 type: dataType,
@@ -40,11 +39,10 @@ export function ChartPostTextBox(props: ChartPostTextBoxProps) {
                 window.location.reload();
             }
         });
-    }
+    };
 
     return (
-        <div class="general_modding--textbox">
-            <textarea ref={textArea} placeholder={"test"} rows={2} />
+        <TextBox ref={textArea} placeholder={"Type your discussion post here"} rows={2}>
             <div class="general_modding--textbox-buttons">
                 <button
                     class="general_modding--textbox-button general_modding--textbox-button-praise"
@@ -65,6 +63,6 @@ export function ChartPostTextBox(props: ChartPostTextBoxProps) {
                     <Fa icon={faTimesCircle} /> Problem
                 </button>
             </div>
-        </div>
+        </TextBox>
     );
 }

@@ -44,17 +44,27 @@ export class ApiAccess {
         });
 
         if (response.code === 200) {
-            return response.data!;
+            return response;
         }
     }
 
     public async sendModdingPost(id: string | number, body: Record<string, unknown>) {
-        console.log("nya");
         const response = await this.rest.send<["post"], [ApiModdingPost]>(`/api/v1/chartsets/${id}/modding`, {
             method: "POST",
             credentials: "include"
         }, body);
 
+
+        if (response.code === 200) {
+            return response.data!.post;
+        }
+    }
+
+    public async editModdingPost(id: string | number, postId: string | number, message: string) {
+        const response = await this.rest.send<["post"], [ApiModdingPost]>(`/api/v1/chartsets/${id}/modding/${postId}`, {
+            method: "PATCH",
+            credentials: "include"
+        }, { message });
 
         if (response.code === 200) {
             return response.data!.post;

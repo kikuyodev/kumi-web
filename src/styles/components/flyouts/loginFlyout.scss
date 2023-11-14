@@ -1,4 +1,6 @@
 .login_flyout {
+    position: fixed;
+    top: calc(56px + 12px);
     display: flex;
     flex-direction: column;
     background-color: var(--hsl-c5);

@@ -51,7 +51,7 @@ export function ChartModdingPage() {
 
                             window.location.href = `/chartsets/${params.set}/${chart()?.id}`;
                         }} />
-                        <ChartModding set={set} chart={chart} posts={data()?.posts.filter(x => !x.has_parent)} />
+                        <ChartModding set={set} chart={chart} posts={data()?.data?.posts.filter(x => !x.has_parent)} />
                     </div>
                 </div>
                 <div class="chart--content-modding">
@@ -70,13 +70,14 @@ export function ChartModdingPage() {
                     }} />
                     <Switch fallback={<div>Not found</div>}>
                         <Match when={section() === "general"}>
-                            <GeneralModding set={set} posts={data()?.posts.filter(x => !x.has_parent)} />
+                            { /* eslint-disable-next-line @typescript-eslint/no-explicit-any */ }
+                            <GeneralModding set={set} posts={data()?.data?.posts.filter(x => !x.has_parent)} meta={data()?.meta as any} />
                         </Match>
                         <Match when={section() === "chart"}>
                             <div>Chart</div>
                         </Match>
                         <Match when={section() === "history"}>
-                            <ChartHistory history={data()?.events} />
+                            <ChartHistory history={data()?.data?.events} />
                         </Match>
                     </Switch>
                 </div>

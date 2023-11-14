@@ -40,6 +40,12 @@
         &-data {
             margin-left: 4px;
             font-size: 14px;
+
+            a {
+                color: var(--hsl-links);
+                font-weight: 500;
+                font-size: 14px;
+            }
         }
     }
 

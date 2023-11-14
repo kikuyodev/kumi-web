@@ -1,8 +1,11 @@
+import { ApiAccount } from "./ApiAccount";
+
 export interface ApiChartHistory {
     id: number;
     type: ApiChartHistoryType;
     alternate_message?: string;
     created_at?: string;
+    player?: ApiAccount;
 }
 
 export enum ApiChartHistoryType {
@@ -13,6 +16,7 @@ export enum ApiChartHistoryType {
     ChartSetNominated,
     ChartSetQualified,
     ChartSetDisqualified,
+    ChartSetReset,
     ChartSetRanked,
     ChartSetUnranked,
 

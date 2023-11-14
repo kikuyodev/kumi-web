@@ -217,7 +217,7 @@ export function ModdingThreadPost(props: {
                         }}>Edit</button>
                     </Show>
                     <button>Share</button>
-                    {/* <Show when={account.isLoggedIn()}>
+                    <Show when={account.isLoggedIn()}>
                         <button ref={replyButton} onClick={(v) => {
                             setReplying(!replying());
 
@@ -232,7 +232,7 @@ export function ModdingThreadPost(props: {
                             let target = v.target as HTMLButtonElement;
                             target.style.setProperty("color", editing() ? "var(--hsl-l2)" : "var(--hsl-c1)");
                         }}>Reopen</button>
-                    </Show> */}
+                    </Show>
                     <button>Report</button>
                 </div>
             </div>

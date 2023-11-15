@@ -7,6 +7,7 @@ import { ChartNominationSection } from "../../components/charts/nominations/Char
 import { UserFlyout } from "../../components/flyouts/UserFlyout";
 import { ApiModdingPost, ApiModdingPostType } from "../../structures/api/ApiModdingPost";
 import "../../styles/pages/chart/moddingPanel.scss";
+import { ApiAccount } from "../../structures/api/ApiAccount";
 
 type MetaType = {
     can_nominate: boolean;
@@ -19,8 +20,27 @@ export function ChartModding(props: {
     posts: ApiModdingPost[] | undefined,
     meta: MetaType | undefined
 }) {
-    const { set: _set, chart, posts } = props!;
+    const { set, chart, posts } = props!;
 
+    const [modders, setModders] = createSignal<ApiAccount[] | undefined>();
+
+    createEffect(() => {
+        if (posts === undefined) {
+            return;
+        }
+        
+        const modders = posts?.filter(x => x.type === ApiModdingPostType.Problem || x.type === ApiModdingPostType.Suggestion).map(x => x.author);
+        const map = new Map<number, ApiAccount>();
+
+        modders.forEach(modder => {
+            if (!map.has(modder.id)) {
+                map.set(modder.id, modder);
+            }
+        });
+
+        setModders(Array.from(map.values()));
+    });
+    
     const formatter = new Intl.DateTimeFormat("en-us", {
         year: "numeric",
         month: "short",
@@ -104,7 +124,7 @@ export function ChartModding(props: {
                 <div class="chart_modding--info-users-charters">
                     <h1>Modders</h1>
                     <div class="chart_modding--info-users-charters-list">
-                        <For each={posts?.filter(x => x.type === ApiModdingPostType.Problem || x.type === ApiModdingPostType.Suggestion).map(x => x.author)}>
+                        <For each={modders()}>
                             {creator => <UserFlyout account={creator} >
                                 <AccountChip account={creator} />
                             </UserFlyout>}
@@ -149,7 +169,7 @@ export function ChartModding(props: {
         </div>
         <div class="chart_modding--nominations">
             <span class="chart_modding--nominations-title">Nominations</span>
-            <ChartNominationSection set={_set} />
+            <ChartNominationSection set={set} />
             <div class="chart_modding--nominations--buttons">
                 <Show when={props.meta?.can_nominate}>
                     <button class="chart_modding--nominations--buttons-button chart_modding--nominations--buttons-button-nominate">

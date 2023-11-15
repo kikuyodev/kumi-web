@@ -256,7 +256,7 @@ export function ModdingThreadPost(props: {
                             </div>
                         </Show>
                         <Show when={props.post.is_edited}>
-                            <p class="general_modding--thread-post--content-account-details-edited">(edited by {props.post.editor?.username})</p>
+                            <p class="general_modding--thread-post--content-account-details-edited">(edited by {props.post.editor?.username ?? "a moderator"})</p>
                         </Show>
                         <div class="general_modding--thread-post--content-account-details-line" style={{ "background-color": props.post.author.primary?.color ?? "var(--hsl-l4)" }} />
                     </div>

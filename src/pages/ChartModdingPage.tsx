@@ -1,5 +1,6 @@
 import { useParams } from "@solidjs/router";
 import { Match, Switch, createEffect, createSignal } from "solid-js";
+import { ChartHistory } from "./charts/ChartHistory";
 import { ChartModding } from "./charts/ChartModding";
 import { GeneralModding } from "./charts/GeneralModding";
 import { ChartBackground } from "../components/charts/ChartBackground";
@@ -8,7 +9,6 @@ import { useApi } from "../contexts/ApiAccessContext";
 import { ApiChart } from "../structures/api/ApiChartSet";
 import "../styles/pages/chart.scss";
 import { Util } from "../util/Util";
-import { ChartHistory } from "./charts/ChartHistory";
 
 type MetaType = {
     can_nominate: boolean;
@@ -62,18 +62,18 @@ export function ChartModdingPage() {
                 <div class="chart--content-modding">
                     <SegmentedControl options={["General (All difficulties)", "General (This difficulty)", "Timeline", "History"]} selected="General (All difficulties)" onChange={v => {
                         switch (v) {
-                            case "General (All difficulties)":
-                                setSection("general");
-                                break;
-                            case "General (This difficulty)":
-                                setSection("chart");
-                                break;
-                            case "Timeline":
-                                setSection("timeline");
-                                break;
-                            case "History":
-                                setSection("history");
-                                break;
+                        case "General (All difficulties)":
+                            setSection("general");
+                            break;
+                        case "General (This difficulty)":
+                            setSection("chart");
+                            break;
+                        case "Timeline":
+                            setSection("timeline");
+                            break;
+                        case "History":
+                            setSection("history");
+                            break;
                         }
                     }} />
                     <Switch fallback={<div>Not found</div>}>

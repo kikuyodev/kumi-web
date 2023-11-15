@@ -67,7 +67,7 @@ export function ChartPostTextBox(props: ChartPostTextBoxProps) {
             const body: any = {
                 type: dataType,
                 message: textArea!.value
-            }
+            };
 
             if (props.isTimeline) {
                 body.chart = props.chart()!.id;

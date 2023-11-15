@@ -22,7 +22,7 @@ export function ChartPostReplyTextBox(props: ChartPostReplyTextBoxProps) {
         useApi(async (access) => {
             // unused
         });
-    }
+    };
 
     return (
         <div class="general_modding--textbox">

@@ -1,6 +1,6 @@
 import { For, Resource, createEffect, createSignal } from "solid-js";
-import { ApiChartSet } from "../../../structures/api/ApiChartSet";
 import { ApiAccount } from "../../../structures/api/ApiAccount";
+import { ApiChartSet } from "../../../structures/api/ApiChartSet";
 
 export interface ChartNominationSectionProps {
     set: Resource<ApiChartSet | undefined>,
@@ -23,7 +23,7 @@ export function ChartNominationSection(props: ChartNominationSectionProps) {
         }
 
         setNominators(nominations);
-    }, [props.set()?.nominators]);
+    }, );
 
     return (
         <For each={nominators()}>

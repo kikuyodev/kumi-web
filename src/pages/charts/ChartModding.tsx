@@ -69,18 +69,18 @@ export function ChartModding(props: {
                         const songLength = chart()?.statistics.music_length ?? 0;
                         const percentage = post.attributes.timestamp! / songLength;
                         switch (post.type) {
-                            case ApiModdingPostType.Note:
-                                return <div class="chart_modding--data-mods-bar" data-type="notes" style={{ left: `${percentage * 100}%` }} />;
-                            case ApiModdingPostType.Suggestion:
-                                return <div class="chart_modding--data-mods-bar" data-type="suggestions" style={{ left: `${percentage * 100}%` }} />;
-                            case ApiModdingPostType.Comment:
-                                return <div class="chart_modding--data-mods-bar" data-type="comments" style={{ left: `${percentage * 100}%` }} />;
-                            case ApiModdingPostType.Problem:
-                                return <div class="chart_modding--data-mods-bar" data-type="problems" style={{ left: `${percentage * 100}%` }} />;
-                            case ApiModdingPostType.Praise:
-                                return <div class="chart_modding--data-mods-bar" data-type="praises" style={{ left: `${percentage * 100}%` }} />;
-                            default:
-                                return <></>;
+                        case ApiModdingPostType.Note:
+                            return <div class="chart_modding--data-mods-bar" data-type="notes" style={{ left: `${percentage * 100}%` }} />;
+                        case ApiModdingPostType.Suggestion:
+                            return <div class="chart_modding--data-mods-bar" data-type="suggestions" style={{ left: `${percentage * 100}%` }} />;
+                        case ApiModdingPostType.Comment:
+                            return <div class="chart_modding--data-mods-bar" data-type="comments" style={{ left: `${percentage * 100}%` }} />;
+                        case ApiModdingPostType.Problem:
+                            return <div class="chart_modding--data-mods-bar" data-type="problems" style={{ left: `${percentage * 100}%` }} />;
+                        case ApiModdingPostType.Praise:
+                            return <div class="chart_modding--data-mods-bar" data-type="praises" style={{ left: `${percentage * 100}%` }} />;
+                        default:
+                            return <></>;
                         }
                     }}
                 </For>

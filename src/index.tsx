@@ -5,8 +5,8 @@ import { lazily } from "solidjs-lazily";
 import { Navbar } from "./components/Navbar";
 import { AccountProvider, useAccount } from "./contexts/AccountContext";
 import { ApiAccessProvider } from "./contexts/ApiAccessContext";
-import { UserData } from "./data/UserData";
 import { IntlProviderWrapperContext } from "./contexts/IntlProviderWrapperContext";
+import { UserData } from "./data/UserData";
 
 const { Notfound } = lazily(() => import("./pages/404"));
 const { Home } = lazily(() => import("./pages/HomePage"));

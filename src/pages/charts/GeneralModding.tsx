@@ -1,19 +1,19 @@
 import { faAtom, faCheck, faClipboard, faClipboardQuestion, faCommentAlt, faPenAlt, faQuestionCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { Fa } from "solid-fa";
 import { Accessor, For, Match, Resource, Show, Switch, createEffect, createSignal, onMount } from "solid-js";
+import { SolidMarkdown } from "solid-markdown";
 import { GroupTag } from "../../components/accounts/GroupTag";
 import { ChartPostTextBox } from "../../components/charts/ChartPostTextBox";
 import { TextBox } from "../../components/controls/TextBox";
+import { Markdown } from "../../components/Markdown";
 import { useAccount } from "../../contexts/AccountContext";
 import { useApi } from "../../contexts/ApiAccessContext";
 import { ApiChart, ApiChartSet } from "../../structures/api/ApiChartSet";
 import { ApiModdingPost, ApiModdingPostStatus, ApiModdingPostType } from "../../structures/api/ApiModdingPost";
 import "../../styles/pages/chart/generalModding.scss";
 import { Util } from "../../util/Util";
-import { SolidMarkdown } from "solid-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
-import { Markdown } from "../../components/Markdown";
 
 type MetaType = {
     can_nominate: boolean;

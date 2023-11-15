@@ -18,9 +18,9 @@ type MetaType = {
 const messages = defineMessages({
     nominate: {
         id: "chart.modding.nominate",
-        message: "Nominate",
+        defaultMessage: "Nominate",
     }
-})
+});
 
 export function ChartModding(props: {
     set: Resource<ApiChartSet | undefined>,

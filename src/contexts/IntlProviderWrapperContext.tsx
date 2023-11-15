@@ -1,53 +1,69 @@
 import { IntlProvider } from "@cookbook/solid-intl";
-import { ParentProps, Setter, Signal, createContext, createMemo, createSignal, useContext } from "solid-js";
+import { ParentProps, createContext, useContext } from "solid-js";
+import { createStore } from "solid-js/store";
+
+export type IntlProviderWrapperContextStore = {
+    name: string;
+    locale: string;
+    messages: Record<string, string>;
+    actions: {
+        setLocale: (key: LocaleUnion) => void;
+    }
+}
 
 export const possibleLocales = [
     { name: "English", locale: "en-US", messages: await import("../../intl/locales/en-US.json") },
 ] as const;
 
-type IntlValue = Signal<string | undefined>;
-const IntlContext = createContext<IntlValue>(undefined);
+const initialData = possibleLocales[0];
+
+type LocaleUnion = typeof possibleLocales[number]["locale"];
+
+export const IntlContext = createContext<IntlProviderWrapperContextStore>();
 
 export function IntlProviderWrapperContext(props: ParentProps) {
-    let [ locale, setLocale ] = createSignal<string | undefined>();
+    const setLocale = (key: LocaleUnion) => {
+        // look for the locale in the possible locales
+        const locale = possibleLocales.find(x => x.locale === key);
 
-    function setter() {
-        const stored = localStorage.getItem("locale");
-
-        if (stored) {
-            return stored;
+        if (!locale) {
+            throw new Error(`Locale ${key} not found`);
         }
+        
+        updateStore("name", () => locale.name);
+        updateStore("locale", () => locale.locale);
+        updateStore("messages", () => convertLocaleFileToMessages(locale.messages));
+    };
 
-        const language = navigator.language;
-        const internalLocale = possibleLocales.find(x => x.locale === language);
-        if (internalLocale) {
-            return internalLocale?.locale;
+    const [store, updateStore] = createStore<IntlProviderWrapperContextStore>({
+        name: initialData.name,
+        locale: initialData.locale,
+        messages: convertLocaleFileToMessages(initialData.messages), // todo
+        actions: {
+            setLocale
         }
-
-        return "en-US";
-    }
-
-    const provider = createMemo(() => [
-        locale,
-        (key: string) => {
-            localStorage.setItem("locale", key ?? "en-US");
-            setLocale(key);
-
-            return locale();
-        }
-    ], [locale()]);
-    
-    const messages = createMemo(() => possibleLocales.find(x => x.locale === locale())?.messages, [locale()])
+    });
 
     return (
-        <IntlContext.Provider value={provider()}>
-            <IntlProvider locale={locale() ?? "en-US"} messages={messages()?.default!}>
+        <IntlContext.Provider value={store}>
+            <IntlProvider locale={store.locale} messages={store.messages}>
                 {props.children}
             </IntlProvider>
         </IntlContext.Provider>
-    ) ;
+    );
 }
 
-export function useLocale(): IntlValue {
-    return useContext(IntlContext)!;
+export function useLocale() {
+    return useContext(IntlContext);
+}
+
+function convertLocaleFileToMessages(file: Record<string, object>) {
+    const messages: Record<string, string> = {};
+
+    // go through the defaults first.
+    for (const key in file.default) {
+        messages[key] = (file.default as Record<string, { defaultMessage: string }>)[key].defaultMessage;
+    }
+
+    return messages;
 }

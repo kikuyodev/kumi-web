@@ -82,11 +82,12 @@ export function ChartModdingPage() {
                             <GeneralModding set={set} posts={data()?.data?.posts.filter(x => !x.has_parent)} meta={data()?.meta as any} />
                         </Match>
                         <Match when={section() === "chart"}>
-                            <div>Chart</div>
+                            { /* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                            <GeneralModding chart={chart} set={set} posts={data()?.data?.posts.filter(x => x.chart?.id == chart()?.id)} meta={data()?.meta as any} isTimeline={false} />
                         </Match>
                         <Match when={section() === "timeline"}>
                             { /* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                            <GeneralModding chart={chart} set={set} posts={data()?.data?.posts.filter(x => x.attributes.timestamp !== undefined)} meta={data()?.meta as any} isTimeline={true} />
+                            <GeneralModding chart={chart} set={set} posts={data()?.data?.posts.filter(x => x.attributes.timestamp !== undefined && x.chart?.id == chart()?.id)} meta={data()?.meta as any} isTimeline={true} />
                         </Match>
                         <Match when={section() === "history"}>
                             <ChartHistory history={data()?.data?.events} />

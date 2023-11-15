@@ -1,6 +1,6 @@
 import { faAtom, faCheck, faClipboard, faClipboardQuestion, faCommentAlt, faPenAlt, faQuestionCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { Fa } from "solid-fa";
-import { Accessor, For, Match, Resource, Show, Switch, createSignal } from "solid-js";
+import { Accessor, For, Match, Resource, Show, Switch, createEffect, createSignal, onMount } from "solid-js";
 import { GroupTag } from "../../components/accounts/GroupTag";
 import { ChartPostTextBox } from "../../components/charts/ChartPostTextBox";
 import { TextBox } from "../../components/controls/TextBox";
@@ -212,6 +212,22 @@ export function ModdingThreadPost(props: {
     let editButton: HTMLButtonElement | undefined = undefined;
     let replyButton: HTMLButtonElement | undefined = undefined;
 
+    let markdown: HTMLDivElement | undefined = undefined;
+
+    onMount(() => {
+        // fetch the inner contents of the markdown element.
+        if (markdown === undefined) {
+            return;
+        }
+
+        let markdownContent = markdown!.innerHTML;
+        const regex = /(\d+):(\d+)(?:\.(\d){3,3})/g;
+
+        markdown!.innerHTML = markdownContent.replaceAll(regex, (match) => {
+            return `<a href="kumi://edit/${match}" class="general_modding--thread-post--content-content-timestamp">${match}</a>`;
+        });
+    });
+
     return <>
         <div class="general_modding--thread-post" id={props.post.id.toString()}>
             <div class="general_modding--thread-post--content">
@@ -275,7 +291,9 @@ export function ModdingThreadPost(props: {
                         </TextBox>
                     </Show>
                     <Show when={!editing()}>
-                        <Markdown>{content()}</Markdown>
+                        <div ref={markdown}>
+                            <Markdown>{content()}</Markdown>
+                        </div>
                     </Show>
                 </div>
                 <div class="general_modding--thread-post--content-buttons">

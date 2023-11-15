@@ -1,4 +1,5 @@
 import { ApiAccount } from "./ApiAccount";
+import { ApiChart, ApiChartSet } from "./ApiChartSet";
 import { ApiModal } from "./ApiModal";
 
 export interface ApiModdingPost extends ApiModal {
@@ -10,6 +11,8 @@ export interface ApiModdingPost extends ApiModal {
     editor?: ApiAccount;
     done_by?: ApiAccount; // only for system posts
 
+    set?: ApiChartSet;
+    chart?: ApiChart;
     has_parent: boolean;
     is_edited: boolean;
     parent?: ApiModdingPost;

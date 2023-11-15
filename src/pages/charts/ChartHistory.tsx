@@ -31,14 +31,14 @@ export function HistoryPoint(props: {
             historyElement = <>Nominated by <a href="">{props.point.player?.username}</a></>;
             break;
 
-            case ApiChartHistoryType.ChartSetQualified:
-                historyElement = <>Qualified by <a href="">{props.point.player?.username}</a></>;
-                break;
+        case ApiChartHistoryType.ChartSetQualified:
+            historyElement = <>Qualified by <a href="">{props.point.player?.username}</a></>;
+            break;
 
-                case ApiChartHistoryType.ChartSetDisqualified:
-                    historyElement = <>Disqualified by <a href="">{props.point.player?.username}</a> for reason <a href="">#0</a></>;
-                    break;
-            
+        case ApiChartHistoryType.ChartSetDisqualified:
+            historyElement = <>Disqualified by <a href="">{props.point.player?.username}</a> for reason <a href="">#0</a></>;
+            break;
+
         default:
             historyElement = <></>;
             break;

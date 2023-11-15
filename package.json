@@ -8,9 +8,11 @@
     "lint:fix": "npx eslint . --fix",
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "extract": "npx formatjs extract src \"src/**/*.{ts,tsx}\" --out-file intl/locales/en-US.json"
   },
   "dependencies": {
+    "@cookbook/solid-intl": "^0.1.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@solidjs/router": "^0.8.3",
     "animejs": "^3.2.1",
@@ -25,6 +27,7 @@
   },
   "devDependencies": {
     "@dream2023/cypress-ct-solid-js": "^1.0.0",
+    "@formatjs/cli": "^6.2.4",
     "@types/animejs": "^3.1.11",
     "@typescript-eslint/eslint-plugin": "^6.9.1",
     "cypress": "^13.4.0",

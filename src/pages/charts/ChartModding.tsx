@@ -8,11 +8,19 @@ import { UserFlyout } from "../../components/flyouts/UserFlyout";
 import { ApiModdingPost, ApiModdingPostType } from "../../structures/api/ApiModdingPost";
 import "../../styles/pages/chart/moddingPanel.scss";
 import { ApiAccount } from "../../structures/api/ApiAccount";
+import { defineMessages, useIntl } from "@cookbook/solid-intl";
 
 type MetaType = {
     can_nominate: boolean;
     can_moderate_posts: boolean;
 };
+
+const messages = defineMessages({
+    nominate: {
+        id: "chart.modding.nominate",
+        message: "Nominate",
+    }
+})
 
 export function ChartModding(props: {
     set: Resource<ApiChartSet | undefined>,
@@ -21,6 +29,7 @@ export function ChartModding(props: {
     meta: MetaType | undefined
 }) {
     const { set, chart, posts } = props!;
+    const intl = useIntl();
 
     const [modders, setModders] = createSignal<ApiAccount[] | undefined>();
 
@@ -173,7 +182,7 @@ export function ChartModding(props: {
             <div class="chart_modding--nominations--buttons">
                 <Show when={props.meta?.can_nominate}>
                     <button class="chart_modding--nominations--buttons-button chart_modding--nominations--buttons-button-nominate">
-                        <Fa icon={faAward} />Nominate
+                        <Fa icon={faAward} />{intl.formatMessage(messages.nominate)}
                     </button>
                 </Show>
             </div>

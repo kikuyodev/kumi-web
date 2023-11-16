@@ -24,6 +24,17 @@ export class ApiAccess {
         if (response.code === 200) {
             return response.data!.account;
         }
+    }    
+
+    public async searchCharts(query: string) {
+        const response = await this.rest.send<["results"], [ApiChartSet[]]>(`/api/v1/chartsets/search?query=${encodeURIComponent(query)}`, {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (response.code === 200) {
+            return response;
+        }
     }
 
     public async getChartSet(id: string | number) {

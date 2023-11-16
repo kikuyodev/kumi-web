@@ -5,6 +5,7 @@ export interface ApiModalWithMetadata extends ApiModal {
     artist: string;
     title: string;
     source?: string;
+    tags?: string;
     romanised_metadata?: {
         artist_romanised?: string;
         title_romanised?: string;
@@ -29,10 +30,23 @@ export interface ApiChart extends ApiModalWithMetadata {
 }
 
 export interface ApiChartSet extends ApiModalWithMetadata {
+    description?: string;
     charts: ApiChart[];
     creator: ApiAccount;
     nominators: ApiAccount[];
     attributes: {
+        is_unavailable: boolean;
+        unavailable_reason?: string;
         nominators_required: number;
     }
+    status: ApiChartSetStatus;
+    ranked_on?: string;
+}
+
+export enum ApiChartSetStatus {
+    WorkInProgress,
+    Pending,
+    Ranked,
+    Qualified,
+    Graveyard
 }

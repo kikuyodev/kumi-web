@@ -4,7 +4,7 @@ import { Accessor, For, Resource, Show, createEffect, createSignal, onMount } fr
 import { ApiChart, ApiChartSet } from "src/structures/api/ApiChartSet";
 import { AccountChip } from "../../components/accounts/AccountChip";
 import { ChartNominationSection } from "../../components/charts/nominations/ChartNominationSection";
-import { UserFlyout } from "../../components/flyouts/UserFlyout";
+import { AccountFlyout } from "../../components/flyouts/AccountFlyout";
 import { ApiModdingPost, ApiModdingPostType } from "../../structures/api/ApiModdingPost";
 import "../../styles/pages/chart/moddingPanel.scss";
 import { ApiAccount } from "../../structures/api/ApiAccount";
@@ -124,9 +124,9 @@ export function ChartModding(props: {
                     <h1>Charters</h1>
                     <div class="chart_modding--info-users-charters-list">
                         <For each={chart()?.creators}>
-                            {creator => <UserFlyout account={creator} >
+                            {creator => <AccountFlyout account={creator} >
                                 <AccountChip account={creator} description="Host" />
-                            </UserFlyout>}
+                            </AccountFlyout>}
                         </For>
                     </div>
                 </div>
@@ -134,9 +134,9 @@ export function ChartModding(props: {
                     <h1>Modders</h1>
                     <div class="chart_modding--info-users-charters-list">
                         <For each={modders()}>
-                            {creator => <UserFlyout account={creator} >
+                            {creator => <AccountFlyout account={creator} >
                                 <AccountChip account={creator} />
-                            </UserFlyout>}
+                            </AccountFlyout>}
                         </For>
                     </div>
                 </div>

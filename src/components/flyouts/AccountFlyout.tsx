@@ -5,7 +5,7 @@ import { useMouse } from "solidjs-use";
 import { ApiAccount } from "../../structures/api/ApiAccount";
 import "../../styles/components/flyouts/userFlyout.scss";
 
-export function UserFlyout(props: ParentProps<{
+export function AccountFlyout(props: ParentProps<{
     account?: ApiAccount
 }>) {
     let interval: NodeJS.Timeout | undefined = undefined;

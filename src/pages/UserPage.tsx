@@ -6,10 +6,12 @@ import { GroupTag } from "../components/accounts/GroupTag";
 import { useAccount } from "../contexts/AccountContext";
 import { UserData } from "../data/UserData";
 import "../styles/pages/user.scss";
+import { useIntl } from "@cookbook/solid-intl";
 
 export function UserPage() {
     const user = useRouteData<typeof UserData>();
     const account = useAccount();
+    const intl = useIntl();
 
     return <div class="user">
         <div class="user--background">
@@ -78,11 +80,11 @@ export function UserPage() {
                 <div class="user--content-ranking-info">
                     <div class="user--content-ranking-info-ranking">
                         <h1>GLOBAL RANKING</h1>
-                        <p>#12,485</p>
+                        <p>#{intl.formatNumber(user()?.ranking.global_rank ?? 0)}</p>
                     </div>
                     <div class="user--content-ranking-info-ranking">
                         <h1>COUNTRY RANKING</h1>
-                        <p>#485</p>
+                        <p>#{intl.formatNumber(user()?.ranking.country_rank ?? 0)}</p>
                     </div>
                 </div>
             </div>
@@ -94,7 +96,7 @@ export function UserPage() {
                     <div class="user--content-activity-about_me--container">
                         <h1>ABOUT ME</h1>
                         <div class="user--content-activity-about_me--container-content">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus facilisis sapien metus, et placerat nisl lobortis id. Praesent ac imperdiet tortor. Praesent blandit nunc.</p>
+                            <p>{user()?.biography ?? "No biography provided..."}</p>
                         </div>
                     </div>
                 </div>
@@ -103,27 +105,45 @@ export function UserPage() {
                     <div class="user--content-activity-statistics-container">
                         <div class="user--content-activity-statistics-container-group">
                             <h1>Total score</h1>
-                            <p>1,995,625,525</p>
+                            <p>{intl.formatNumber(BigInt(user()?.statistics.total_score ?? "0"))}</p>
                         </div>
                         <div class="user--content-activity-statistics-container-group">
                             <h1>Ranked score</h1>
-                            <p>634,172,238</p>
+                            <p>{intl.formatNumber(BigInt(user()?.statistics.ranked_score ?? "0"))}</p>
                         </div>
                         <div class="user--content-activity-statistics-container-group">
                             <h1>Play count</h1>
-                            <p>3,792</p>
+                            <p>{intl.formatNumber(user()?.statistics.total_playcount ?? 0)}</p>
                         </div>
                         <div class="user--content-activity-statistics-container-group">
                             <h1>Maximum combo</h1>
-                            <p>1,707</p>
+                            <p>{intl.formatNumber(BigInt(user()?.statistics.maximum_combo ?? "0"))}</p>
                         </div>
                         <div class="user--content-activity-statistics-container-group">
                             <h1>Total play time</h1>
-                            <p>4d 19h 3m</p>
+                            <p>{intl.formatList([
+                                (() => {
+                                    // split the play time into hours, minutes, and seconds.
+                                    const seconds = user()?.statistics.total_playtime ?? 0;
+                                    const hours = Math.floor(seconds / 3600);
+                                    const minutes = Math.floor((seconds % 3600) / 60);
+                                    const secondsLeft = seconds % 60;
+
+                                    return [
+                                        hours > 0 ? `${hours}h` : undefined,
+                                        minutes > 0 ? `${minutes}m` : undefined,
+                                        secondsLeft >= 0 ? `${secondsLeft}s` : undefined
+                                    ].filter(v => v !== undefined);
+                                })()
+                            ], { type: "unit" })}</p>
                         </div>
                         <div class="user--content-activity-statistics-container-group">
                             <h1>Joined on</h1>
-                            <p>9th November 2023</p>
+                            <p>{intl.formatDate(new Date(user()?.created_at ?? ""), {
+                                day: "numeric",
+                                month: "long",
+                                year: "numeric",
+                            })}</p>
                         </div>
                     </div>
                 </div>

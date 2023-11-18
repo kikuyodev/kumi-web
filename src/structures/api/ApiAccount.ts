@@ -11,6 +11,7 @@ export type ApiAccount = {
     username: string;
     title?: string;
     biography?: string;
+    status: "online" | "offline";
     created_at: Date;
     updated_at: Date;
     logged_in_at: Date;
@@ -45,6 +46,7 @@ export type ApiGroup = {
     visible: boolean;
     priority: number;
     permissions: number;
+    description?: string;
     created_at: Date;
     updated_at: Date;
 }

@@ -27,13 +27,16 @@ export class ApiAccess {
     }
 
     public async getGroup(id: string | number) {
-        const response = await this.rest.send<["group"], [ApiGroup]>(`/api/v1/groups/${id}`, {
+        const response = await this.rest.send<["group", "members"], [ApiGroup, ApiAccount[]]>(`/api/v1/groups/${id}`, {
             method: "GET",
             credentials: "include"
         });
 
         if (response.code === 200) {
-            return response.data!.group;
+            return {
+                group: response.data!.group,
+                members: response.data!.members
+            };
         }
     }
 

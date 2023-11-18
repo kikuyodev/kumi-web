@@ -129,6 +129,14 @@
                     }
                 }
             }
+
+            &-bottom {
+                padding: 24px 40px;
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                grid-template-rows: repeat(auto-fill, 88px);
+                gap: 8px;
+            }
         }
     }
 }

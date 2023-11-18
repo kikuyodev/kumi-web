@@ -78,7 +78,6 @@ export function Navbar() {
                         <div class="navbar--content-flex-account-details">
                             <Show when={account.isLoggedIn()}>
                                 <div class="navbar--content-flex-account-details-username">{account.apiAccount?.username ?? "Saryu"}</div>
-                                <div class="navbar--content-flex-account-details-rank">12,425</div>
                                 <Portal ref={flyoutMenu} mount={document.body}>
                                     <p>haiiii</p>
                                 </Portal>

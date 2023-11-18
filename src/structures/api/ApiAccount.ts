@@ -17,6 +17,11 @@ export type ApiAccount = {
     primary?: ApiGroup;
     groups: ApiGroup[];
     badges: ApiBadge[];
+    country: {
+        code: string;
+        name: string;
+        native: string;
+    };
     statistics: {
         ranked_score: string;
         total_score: string;

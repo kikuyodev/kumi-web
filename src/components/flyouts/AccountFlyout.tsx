@@ -4,6 +4,7 @@ import { Portal } from "solid-js/web";
 import { useMouse } from "solidjs-use";
 import { ApiAccount } from "../../structures/api/ApiAccount";
 import "../../styles/components/flyouts/userFlyout.scss";
+import { EmojiUtil } from "../../util/EmojiUtil";
 
 export function AccountFlyout(props: ParentProps<{
     account?: ApiAccount
@@ -104,7 +105,11 @@ export function AccountFlyout(props: ParentProps<{
                             }} />
                         </div>
                         <div class="user_flyout--content-info">
-                            <div class="user_flyout--content-info-username">{props.account?.username}</div>
+                            <div class="user_flyout--content-info-username">
+                                {props.account?.username}
+                                { /* eslint-disable-next-line solid/no-innerhtml */}
+                                <div class="user_flyout--content-info-username-flag" innerHTML={EmojiUtil.getFlagEmoji(props.account?.country.code ?? "XX")} />
+                            </div>
                         </div>
                     </div>
                 </a>

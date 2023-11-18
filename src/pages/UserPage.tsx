@@ -1,3 +1,4 @@
+import { useIntl } from "@cookbook/solid-intl";
 import { faCommentAlt, faPenAlt, faUserFriends, faWarning } from "@fortawesome/free-solid-svg-icons";
 import { useRouteData } from "@solidjs/router";
 import { Fa } from "solid-fa";
@@ -6,7 +7,7 @@ import { GroupTag } from "../components/accounts/GroupTag";
 import { useAccount } from "../contexts/AccountContext";
 import { UserData } from "../data/UserData";
 import "../styles/pages/user.scss";
-import { useIntl } from "@cookbook/solid-intl";
+import { EmojiUtil } from "../util/EmojiUtil";
 
 export function UserPage() {
     const user = useRouteData<typeof UserData>();
@@ -25,6 +26,8 @@ export function UserPage() {
                     <div class="user--content-profile-left-info">
                         <div class="user--content-profile-left-info-username">
                             <p class="user--content-profile-left-info-username-username">{user()?.username}</p>
+                            { /* eslint-disable-next-line solid/no-innerhtml */ } 
+                            <div class="user--content-profile-left-info-username-flag" innerHTML={EmojiUtil.getFlagEmoji(user()?.country.code ?? "XX")} />
                             <Show when={user()?.primary !== undefined}>
                                 <For each={user()?.groups}>
                                     {group => <GroupTag group={group} />}

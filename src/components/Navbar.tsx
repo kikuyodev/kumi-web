@@ -24,8 +24,6 @@ export function Navbar() {
                 const avatarRect = avatar?.getBoundingClientRect();
                 flyoutMenu?.style.setProperty("display", "block");
 
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
                 const flyoutRect = flyoutMenu!.children[0]!.getBoundingClientRect();
 
                 flyoutMenu?.style.setProperty("position", "absolute");
@@ -35,8 +33,6 @@ export function Navbar() {
 
                 window.addEventListener("resize", () => {
                     const avatarRect = avatar?.getBoundingClientRect();
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
                     const flyoutRect = flyoutMenu!.children[0]!.getBoundingClientRect();
 
                     flyoutMenu?.style.setProperty("position", "absolute");

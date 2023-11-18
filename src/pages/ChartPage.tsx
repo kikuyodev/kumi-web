@@ -7,10 +7,12 @@ import { useApi } from "../contexts/ApiAccessContext";
 import { ApiChart } from "../structures/api/ApiChartSet";
 import { Util } from "../util/Util";
 import "../styles/pages/chart.scss";
+import { CommentMeta, Comments } from "../components/Comments";
 
 export function ChartPage() {
     const params = useParams();
     const set = useApi(async (access) => access.getChartSet(params.set));
+    const comments = useApi(async (access) => access.getChartSetComments(params.set));
     const [chart, setChart] = createSignal<ApiChart | undefined>(undefined);
 
     createEffect(() => {
@@ -57,6 +59,7 @@ export function ChartPage() {
                         <ChartMetadata set={set} chart={chart} />
                     </div>
                 </div>
+                <Comments comments={comments()?.data?.comments} meta={comments()?.meta as CommentMeta} />
             </div>
         </div>
     );

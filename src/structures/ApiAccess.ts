@@ -3,6 +3,7 @@ import { ApiChartHistory } from "./api/ApiChartHistory";
 import { ApiChartSet } from "./api/ApiChartSet";
 import { ApiModdingPost } from "./api/ApiModdingPost";
 import { RestClient } from "../util/RestClient";
+import { ApiComment } from "./api/ApiComment";
 
 export class ApiAccess {
     private _restClient: RestClient;
@@ -59,6 +60,17 @@ export class ApiAccess {
 
         if (response.code === 200) {
             return response.data!.set;
+        }
+    }
+
+    public async getChartSetComments(id: string | number) {
+        const response = await this.rest.send<["comments"], [ApiComment[]]>(`/api/v1/chartsets/${id}/comments`, {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (response.code === 200) {
+            return response;
         }
     }
 

@@ -11,6 +11,7 @@ import { Twemoji } from "./components/Twemoji";
 
 const { Notfound } = lazily(() => import("./pages/404"));
 const { Home } = lazily(() => import("./pages/HomePage"));
+const { Group } = lazily(() => import("./pages/Group"));
 const { ChartListing } = lazily(() => import("./pages/ChartListing"));
 const { ChartPage } = lazily(() => import("./pages/ChartPage"));
 const { UserPage } = lazily(() => import("./pages/UserPage"));
@@ -36,6 +37,7 @@ render(() => {
                                     <Routes>
                                         <Route path="/" element={<Navigate href="/home" />} />
                                         <Route path="/home" component={Home} />
+                                        <Route path="/groups/:id" component={Group} />
                                         <Route path="/users/:id" component={UserPage} data={UserData} />
                                         <Route path="/chartsets" component={ChartListing} />
                                         <Route path="/chartsets/:set" component={ChartPage} />

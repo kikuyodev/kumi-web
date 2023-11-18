@@ -1,4 +1,4 @@
-import { ApiAccount } from "./api/ApiAccount";
+import { ApiAccount, ApiGroup } from "./api/ApiAccount";
 import { ApiChartHistory } from "./api/ApiChartHistory";
 import { ApiChartSet } from "./api/ApiChartSet";
 import { ApiModdingPost } from "./api/ApiModdingPost";
@@ -24,7 +24,18 @@ export class ApiAccess {
         if (response.code === 200) {
             return response.data!.account;
         }
-    }    
+    }
+
+    public async getGroup(id: string | number) {
+        const response = await this.rest.send<["group"], [ApiGroup]>(`/api/v1/groups/${id}`, {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (response.code === 200) {
+            return response.data!.group;
+        }
+    }
 
     public async searchCharts(query: string) {
         const response = await this.rest.send<["results"], [ApiChartSet[]]>(`/api/v1/chartsets/search?query=${encodeURIComponent(query)}`, {

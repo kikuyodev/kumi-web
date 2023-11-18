@@ -52,6 +52,9 @@
             height: 328px;
             padding: 12px;
             background-color: var(--hsl-c5);
+            border-radius: var(--corner-radius);
+            position: sticky;
+            top: calc(48px + 32px);
 
             input[type="text"] {
                 border: none;

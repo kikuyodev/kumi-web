@@ -51,4 +51,17 @@ export class Util {
         const ms = Math.floor(timestamp % 1000);
         return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}.${String(ms).padStart(3, "0")}`;
     }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    static debounce<T extends (...args: any[]) => any>(func: T, wait: number) {
+        let timeout: NodeJS.Timeout;
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const debounced = (...args: Parameters<T>) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func(...args), wait);
+        };
+
+        return debounced as (...args: Parameters<T>) => ReturnType<T>;
+    }
 }

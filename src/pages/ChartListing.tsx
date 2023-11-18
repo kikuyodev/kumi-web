@@ -10,19 +10,42 @@ export function ChartListing() {
     const [charts, setCharts] = createSignal<ApiChartSet[]>();
 
     let background: HTMLImageElement | undefined = undefined;
+    let input: HTMLInputElement | undefined = undefined;
 
     createEffect(() => {
-        if (charts()!.length === 0) {
-            return;
+        if (charts() !== undefined && charts()!.length !== 0) {
+            background?.setAttribute("src", Util.getCdnFor("backgrounds", charts()![0].id ?? 0, { format: "scaled" }));
+
+            anime({
+                targets: ".chart_listing--content-list-item",
+                opacity: [
+                    { value: 0, duration: 0 },
+                    { value: 1, duration: 1000 }
+                ],
+                translateY: [
+                    { value: -10, duration: 0 },
+                    { value: 0, duration: 1000 }
+                ],
+                delay: anime.stagger(50),
+                easing: "easeOutExpo"
+            });
         }
 
-        background?.setAttribute("src", Util.getCdnFor("backgrounds", charts()![0].id ?? 0, { format: "scaled" }));
+        input?.addEventListener("input", queryInput);
     });
 
-    useApi(async (access) => {
-        const charts = await access.searchCharts("bpm==195");
-        setCharts(charts?.data?.results ?? []);
-    });
+    const queryInput = Util.debounce(() => {
+        const value = input?.value ?? "";
+
+        if (value.length === 0) {
+            return;
+        }
+        
+        useApi(async (access) => {
+            const charts = await access.searchCharts(value);
+            setCharts(charts?.data?.results ?? []);
+        });
+    }, 250);
 
     return <div class="chart_listing">
         <div class="chart_listing--background">
@@ -33,7 +56,7 @@ export function ChartListing() {
                         { value: 0, duration: 0 },
                         { value: 1, duration: 1000 }
                     ],
-                    easing: "easeOutExpo"
+                    easing: "linear"
                 });
             }} />
             <div class="chart_listing--background-overlay" />
@@ -41,14 +64,11 @@ export function ChartListing() {
         <div class="chart_listing--content">
             <div class="chart_listing--content-list">
                 <For each={charts()}>
-                    {chart => <div class="chart_listing--content-list-item"><ChartCard {...chart} /></div>}
-                </For>
-                <For each={charts()}>
-                    {chart => <div class="chart_listing--content-list-item"><ChartCard {...chart} /></div>}
+                    {chart => <div class="chart_listing--content-list-item" style={{ opacity: 0 }}><ChartCard {...chart} /></div>}
                 </For>
             </div>
             <div class="chart_listing--content-query">
-                <input type="text" placeholder="Search (title, artist, creator...)" name="query" class="chart_listing--query-text" />
+                <input ref={input} type="text" placeholder="Search (title, artist, creator...)" name="query" class="chart_listing--query-text" />
                 {/* TODO: other controls */}
             </div>
         </div>

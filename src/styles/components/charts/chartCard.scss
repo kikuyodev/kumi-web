@@ -115,6 +115,10 @@
                     background: hsla(150, 50%, 45%, 1);
                 }
 
+                &[data-status="qualified"] {
+                    background: hsla(200, 50%, 45%, 1);
+                }
+
                 &[data-status="graveyard"] {
                     color: var(--hsl-c1);
                     background-color: var(--hsl-c5);

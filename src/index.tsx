@@ -11,6 +11,7 @@ import { Twemoji } from "./components/Twemoji";
 import { Exception } from "./util/errors/Exception";
 import { ErrorPage } from "./pages/ErrorPage";
 import { ApiResponseError } from "./util/errors/ApiResponseError";
+import { GlobalAudioProvider } from "./contexts/AudioContext";
 
 const { Notfound } = lazily(() => import("./pages/404"));
 const { Home } = lazily(() => import("./pages/HomePage"));
@@ -27,43 +28,47 @@ render(() => {
     }
 
     return (
-        <IntlProviderWrapperContext>
-            <AccountProvider>
-                <ApiAccessProvider>
-                    <Twemoji>
-                        <div id="app">
-                            <Router>
-                                <div class="wrapper--navbar">
-                                    <Navbar />
-                                </div>
-                                <div class="wrapper-app">
-                                    <ErrorBoundary fallback={err => {
-                                        if (err instanceof Exception) {
-                                            return <ErrorPage {...err} />;
-                                        } else if (err instanceof ApiResponseError) {
-                                            return <ErrorPage code={err.code} message={err.message} />;
-                                        } else {
-                                            return <ErrorPage code={500} message="An unknown error occurred." />;
-                                        }
-                                    }}>
-                                        <Routes>
-                                            <Route path="/" element={<Navigate href="/home" />} />
-                                            <Route path="/home" component={Home} />
-                                            <Route path="/groups/:id" component={Group} />
-                                            <Route path="/users/:id" component={UserPage} data={UserData} />
-                                            <Route path="/chartsets" component={ChartListing} />
-                                            <Route path="/chartsets/:set" component={ChartPage} />
-                                            <Route path="/chartsets/:set/modding" component={ChartModdingPage} />
-                                            <Route path="/chartsets/:set/:chart" component={ChartPage} />
-                                            <Route path="*" element={<ErrorPage code={404} message={"nya"} />} />
-                                        </Routes>
-                                    </ErrorBoundary>
-                                </div>
-                            </Router>
-                        </div >
-                    </Twemoji>
-                </ApiAccessProvider>
-            </AccountProvider>
-        </IntlProviderWrapperContext>
+        <GlobalAudioProvider>
+            <IntlProviderWrapperContext>
+                <AccountProvider>
+                    <ApiAccessProvider>
+                        <Twemoji>
+                            <div id="app">
+                                <Router>
+                                    <div class="wrapper--navbar">
+                                        <Navbar />
+                                    </div>
+                                    <div class="wrapper-app">
+                                        <ErrorBoundary fallback={err => {
+                                            console.error(err);
+                                            
+                                            if (err instanceof Exception) {
+                                                return <ErrorPage {...err} />;
+                                            } else if (err instanceof ApiResponseError) {
+                                                return <ErrorPage code={err.code} message={err.message} />;
+                                            } else {
+                                                return <ErrorPage code={500} message="An unknown error occurred." />;
+                                            }
+                                        }}>
+                                            <Routes>
+                                                <Route path="/" element={<Navigate href="/home" />} />
+                                                <Route path="/home" component={Home} />
+                                                <Route path="/groups/:id" component={Group} />
+                                                <Route path="/users/:id" component={UserPage} data={UserData} />
+                                                <Route path="/chartsets" component={ChartListing} />
+                                                <Route path="/chartsets/:set" component={ChartPage} />
+                                                <Route path="/chartsets/:set/modding" component={ChartModdingPage} />
+                                                <Route path="/chartsets/:set/:chart" component={ChartPage} />
+                                                <Route path="*" element={<ErrorPage code={404} message={"nya"} />} />
+                                            </Routes>
+                                        </ErrorBoundary>
+                                    </div>
+                                </Router>
+                            </div >
+                        </Twemoji>
+                    </ApiAccessProvider>
+                </AccountProvider>
+            </IntlProviderWrapperContext>
+        </GlobalAudioProvider>
     );
 }, document.getElementById("webroot") as HTMLDivElement);

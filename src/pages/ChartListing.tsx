@@ -36,16 +36,14 @@ export function ChartListing() {
 
     const queryInput = Util.debounce(() => {
         const value = input?.value ?? "";
-
-        if (value.length === 0) {
-            return;
-        }
         
         useApi(async (access) => {
             const charts = await access.searchCharts(value);
             setCharts(charts?.data?.results ?? []);
         });
     }, 250);
+
+    queryInput();
 
     return <div class="chart_listing">
         <div class="chart_listing--background">

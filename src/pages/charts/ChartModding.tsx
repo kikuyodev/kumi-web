@@ -9,6 +9,7 @@ import { ApiModdingPost, ApiModdingPostType } from "../../structures/api/ApiModd
 import "../../styles/pages/chart/moddingPanel.scss";
 import { ApiAccount } from "../../structures/api/ApiAccount";
 import { defineMessages, useIntl } from "@cookbook/solid-intl";
+import { useApi } from "../../contexts/ApiAccessContext";
 
 type MetaType = {
     can_nominate: boolean;
@@ -181,7 +182,13 @@ export function ChartModding(props: {
             <ChartNominationSection set={set} />
             <div class="chart_modding--nominations--buttons">
                 <Show when={props.meta?.can_nominate}>
-                    <button class="chart_modding--nominations--buttons-button chart_modding--nominations--buttons-button-nominate">
+                    <button class="chart_modding--nominations--buttons-button chart_modding--nominations--buttons-button-nominate" onClick={() => {
+                        useApi(async(access) => {
+                            await access.nominateChartSet(set()!.id);
+
+                            location.reload();
+                        });
+                    }}>
                         <Fa icon={faAward} />{intl.formatMessage(messages.nominate)}
                     </button>
                 </Show>

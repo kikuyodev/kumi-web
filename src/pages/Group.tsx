@@ -7,6 +7,7 @@ import { Markdown } from "../components/Markdown";
 import { useApi } from "../contexts/ApiAccessContext";
 import "../styles/pages/group.scss";
 import { ApiAccount } from "../structures/api/ApiAccount";
+import { Exception } from "../util/errors/Exception";
 
 export function Group() {
     const navigate = useNavigate();
@@ -22,7 +23,7 @@ export function Group() {
         }
 
         if (group()?.group?.description == undefined) {
-            navigate("/404");
+            throw new Exception("The group you are looking for does not exist.", 404);
         }
 
         const members = group()?.members.filter((user) => status() === "all" || user.status === status()).sort((a, b) => a.username.localeCompare(b.username));

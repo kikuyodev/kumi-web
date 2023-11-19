@@ -74,9 +74,8 @@ export function Navbar() {
                         <div class="navbar--content-flex-account-details">
                             <Show when={account.isLoggedIn()}>
                                 <div class="navbar--content-flex-account-details-username">{account.apiAccount?.username ?? "Saryu"}</div>
-                                <Portal ref={flyoutMenu} mount={document.body}>
-                                    <p>haiiii</p>
-                                </Portal>
+                                {/*<Portal ref={flyoutMenu} mount={document.body}>
+                                </Portal>*/}
                             </Show>
                         </div>
                         <div class="navbar--content-flex-account-avatar">

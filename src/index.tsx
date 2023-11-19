@@ -1,6 +1,6 @@
 import "./styles/index.scss";
 import { Navigate, Route, Router, Routes } from "@solidjs/router";
-import { render } from "solid-js/web";
+import { ErrorBoundary, render } from "solid-js/web";
 import { lazily } from "solidjs-lazily";
 import { Navbar } from "./components/Navbar";
 import { AccountProvider, useAccount } from "./contexts/AccountContext";
@@ -8,6 +8,9 @@ import { ApiAccessProvider } from "./contexts/ApiAccessContext";
 import { IntlProviderWrapperContext } from "./contexts/IntlProviderWrapperContext";
 import { UserData } from "./data/UserData";
 import { Twemoji } from "./components/Twemoji";
+import { Exception } from "./util/errors/Exception";
+import { ErrorPage } from "./pages/ErrorPage";
+import { ApiResponseError } from "./util/errors/ApiResponseError";
 
 const { Notfound } = lazily(() => import("./pages/404"));
 const { Home } = lazily(() => import("./pages/HomePage"));
@@ -34,17 +37,27 @@ render(() => {
                                     <Navbar />
                                 </div>
                                 <div class="wrapper-app">
-                                    <Routes>
-                                        <Route path="/" element={<Navigate href="/home" />} />
-                                        <Route path="/home" component={Home} />
-                                        <Route path="/groups/:id" component={Group} />
-                                        <Route path="/users/:id" component={UserPage} data={UserData} />
-                                        <Route path="/chartsets" component={ChartListing} />
-                                        <Route path="/chartsets/:set" component={ChartPage} />
-                                        <Route path="/chartsets/:set/modding" component={ChartModdingPage} />
-                                        <Route path="/chartsets/:set/:chart" component={ChartPage} />
-                                        <Route path="*" component={Notfound} />
-                                    </Routes>
+                                    <ErrorBoundary fallback={err => {
+                                        if (err instanceof Exception) {
+                                            return <ErrorPage {...err} />;
+                                        } else if (err instanceof ApiResponseError) {
+                                            return <ErrorPage code={err.code} message={err.message} />;
+                                        } else {
+                                            return <ErrorPage code={500} message="An unknown error occurred." />;
+                                        }
+                                    }}>
+                                        <Routes>
+                                            <Route path="/" element={<Navigate href="/home" />} />
+                                            <Route path="/home" component={Home} />
+                                            <Route path="/groups/:id" component={Group} />
+                                            <Route path="/users/:id" component={UserPage} data={UserData} />
+                                            <Route path="/chartsets" component={ChartListing} />
+                                            <Route path="/chartsets/:set" component={ChartPage} />
+                                            <Route path="/chartsets/:set/modding" component={ChartModdingPage} />
+                                            <Route path="/chartsets/:set/:chart" component={ChartPage} />
+                                            <Route path="*" element={<ErrorPage code={404} message={"nya"} />} />
+                                        </Routes>
+                                    </ErrorBoundary>
                                 </div>
                             </Router>
                         </div >

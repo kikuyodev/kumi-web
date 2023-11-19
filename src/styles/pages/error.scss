@@ -1,0 +1,63 @@
+.error {
+    overflow: hidden;
+
+    &--background {
+        &-cover {
+            background: var(--hsl-d6);
+            opacity: 0.85;
+            height: 100%;
+            width: 200px;
+        }
+
+        position: absolute;
+        right: 0;
+        height: 100%;
+        box-sizing: border-box;
+        // todo: move this to a cdn server
+        background: url("https://media.discordapp.net/attachments/1158522258160099430/1174135116684083360/shigatsu-wa-kimi-no-uso-tvoia-aprelskaia-lozh-anime-trava-de.jpg?ex=65667d8a&is=6554088a&hm=7752b2c3983547ba8dd8fbfb666aee94f00886c92370d7c6c1fc242ba3487c79&=&width=848&height=676");
+        background-repeat: no-repeat;
+        background-size: cover;
+        width: 968px;
+    }
+
+    &--content {
+        position: absolute;
+        top: 50%;
+        margin-left: 240px;
+        transform: translateY(-50%);
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        &-title {
+            color: var(--hsl-l6);
+            font-size: 192px;
+            font-weight: 900;
+        }
+
+        &-subtitle {
+            margin-top: 16px;
+            color: var(--hsl-c1);
+            font-size: 20px;
+        }
+
+        &-message {
+            margin-top: 32px;
+            font-size: 24px;
+        }
+
+        &-buttons {
+            margin-top: 12px;
+            display: flex;
+            gap: 10px;
+
+            a {
+                background: var(--hsl-l6);
+                padding: 4px 8px;
+                border-radius: 5px;
+            }
+        }
+    }
+}

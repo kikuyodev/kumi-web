@@ -87,6 +87,7 @@
         }
 
         &-right {
+            position: relative;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
@@ -101,6 +102,55 @@
                 font-size: 14px;
                 font-weight: 500;
                 gap: 4px;
+            }
+
+            &-statistics {
+                position: absolute;
+                bottom: 24px;
+                right: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            &-controls {
+                position: absolute;
+                bottom: 24px;
+                right: 0;
+                display: flex;
+                flex-direction: row;
+                gap: 4px;
+
+                button {
+                    height: 24px;
+                    width: 24px;
+                    border-radius: 100px;
+                    border: none;
+                    background-color: var(--hsl-c5);
+                    color: hsl(var(--base-hue), 15%, 80%);
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: var(--hsl-c4);
+                        color: var(--hsl-l1);
+                    }
+                }
+
+                &-control {
+                    position: relative;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 10px;
+
+                    &-border {
+                        position: absolute;
+                        inset: 0;
+                        stroke-dasharray: 0 44;
+                        stroke-linecap: round;
+                        stroke-width: 0;
+                    }
+                }
             }
 
             &-status {

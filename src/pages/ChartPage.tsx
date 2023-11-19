@@ -2,12 +2,13 @@ import { useParams } from "@solidjs/router";
 import { createEffect, createSignal } from "solid-js";
 import { ChartMetadata } from "./charts/ChartMetadata";
 import { ChartBackground } from "../components/charts/ChartBackground";
+import { CommentMeta, Comments } from "../components/Comments";
 import { SegmentedControl } from "../components/controls/SegmentedControl";
 import { useApi } from "../contexts/ApiAccessContext";
 import { ApiChart } from "../structures/api/ApiChartSet";
+import { ApiComment } from "../structures/api/ApiComment";
 import { Util } from "../util/Util";
 import "../styles/pages/chart.scss";
-import { CommentMeta, Comments } from "../components/Comments";
 
 export function ChartPage() {
     const params = useParams();
@@ -59,7 +60,55 @@ export function ChartPage() {
                         <ChartMetadata set={set} chart={chart} />
                     </div>
                 </div>
-                <Comments comments={comments()?.data?.comments} meta={comments()?.meta as CommentMeta} />
+                <Comments comments={comments()?.data?.comments} meta={comments()?.meta as CommentMeta} actions={
+                    {
+                        createComment: async (message: string, parent?: ApiComment) => {
+                            useApi(async (access) => {
+                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                let body: any = {
+                                    message: message
+                                };
+
+                                if (parent) {
+                                    body.parent = parent.id;
+                                }
+                                
+                                const result = await access.sendChartSetComment(params.set, body);
+        
+                                if (result) {
+                                    window.location.reload();
+                                }
+                            });
+                        },
+                        editComment: async (comment: ApiComment, message: string) => {
+                            useApi(async (access) => {
+                                const result = await access.editChartSetComment(params.set, comment.id, message);
+        
+                                if (result) {
+                                    window.location.reload();
+                                }
+                            });
+                        },
+                        deleteComment: async (comment: ApiComment) => {
+                            useApi(async (access) => {
+                                const result = await access.deleteChartSetComment(params.set, comment.id);
+        
+                                if (result) {
+                                    window.location.reload();
+                                }
+                            });
+                        },
+                        pinComment: async (comment: ApiComment) => {
+                            useApi(async (access) => {
+                                const result = await access.pinChartSetComment(params.set, comment.id);
+        
+                                if (result) {
+                                    window.location.reload();
+                                }
+                            });
+                        }
+                    }
+                } />
             </div>
         </div>
     );

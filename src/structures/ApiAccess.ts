@@ -1,9 +1,9 @@
 import { ApiAccount, ApiGroup } from "./api/ApiAccount";
 import { ApiChartHistory } from "./api/ApiChartHistory";
 import { ApiChartSet } from "./api/ApiChartSet";
+import { ApiComment } from "./api/ApiComment";
 import { ApiModdingPost } from "./api/ApiModdingPost";
 import { RestClient } from "../util/RestClient";
-import { ApiComment } from "./api/ApiComment";
 
 export class ApiAccess {
     private _restClient: RestClient;
@@ -71,6 +71,50 @@ export class ApiAccess {
 
         if (response.code === 200) {
             return response;
+        }
+    }
+
+    public async sendChartSetComment(id: string | number, body: Record<string, unknown>) {
+        const response = await this.rest.send<["comment"], [ApiComment]>(`/api/v1/chartsets/${id}/comments`, {
+            method: "POST",
+            credentials: "include"
+        }, body);
+
+        if (response.code === 200) {
+            return response.data!.comment;
+        }
+    }
+
+    public async deleteChartSetComment(id: string | number, commentId: string | number) {
+        const response = await this.rest.send<["comment"], [ApiComment]>(`/api/v1/chartsets/${id}/comments/${commentId}`, {
+            method: "DELETE",
+            credentials: "include"
+        });
+
+        if (response.code === 200) {
+            return response.data!.comment;
+        }
+    }
+
+    public async editChartSetComment(id: string | number, commentId: string | number, message: string) {
+        const response = await this.rest.send<["comment"], [ApiComment]>(`/api/v1/chartsets/${id}/comments/${commentId}`, {
+            method: "PATCH",
+            credentials: "include"
+        }, { message });
+
+        if (response.code === 200) {
+            return response.data!.comment;
+        }
+    }
+
+    public async pinChartSetComment(id: string | number, commentId: string | number) {
+        const response = await this.rest.send<["comment"], [ApiComment]>(`/api/v1/chartsets/${id}/comments/${commentId}/pin`, {
+            method: "PATCH",
+            credentials: "include"
+        });
+
+        if (response.code === 200) {
+            return response.data!.comment;
         }
     }
 

@@ -5,6 +5,7 @@ import { ApiModal } from "./ApiModal";
 export interface ApiComment extends ApiModal {
     message: string;
     pinned: boolean;
+    deleted: boolean;
     children: ApiComment[];
     author: ApiAccount;
     set?: ApiChartSet;

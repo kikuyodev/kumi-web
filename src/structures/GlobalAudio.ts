@@ -123,10 +123,8 @@ export class Song {
         this.interval = setInterval(() => {
             this.progress = this.source.context.currentTime / this.audioBuffer.duration;
             this.emit("progress", this.progress);
-            console.log(this.progress);
 
             if (this.progress >= 1) {
-                console.log("wan");
                 clearInterval(this.interval);
                 this.stop();
             }

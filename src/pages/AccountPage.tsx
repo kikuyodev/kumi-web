@@ -25,7 +25,7 @@ export function AccountPage() {
         }
 
         useApi(async (access) => {
-            let charts = await access.getChartSets(account()?.id ?? 0);
+            let charts = await access.chart.getChartSets(account()?.id ?? 0);
             setCharts(charts!);
         });
     });

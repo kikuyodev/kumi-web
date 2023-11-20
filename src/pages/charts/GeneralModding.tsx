@@ -80,11 +80,11 @@ export function GeneralModdingThread(props: {
         reopened?: boolean
     }) {
         useApi(async (access) => {
-            const result = data.resolved ? await access.sendModdingPost(props.set()!.id, {
+            const result = data.resolved ? await access.modding.sendModdingPost(props.set()!.id, {
                 parent: props.post.id,
                 message: respondTextBox!.value,
                 "attributes[resolved]": data.resolved,
-            }) : await access.sendModdingPost(props.set()!.id, {
+            }) : await access.modding.sendModdingPost(props.set()!.id, {
                 parent: props.post.id,
                 message: respondTextBox!.value,
                 "attributes[reopened]": data.reopened
@@ -169,7 +169,7 @@ export function GeneralModdingThread(props: {
                             </Show>
                             <button class="general_modding--thread-reply-buttons-post" onClick={() => {
                                 useApi(async (access) => {
-                                    const result = await access.sendModdingPost(props.set()!.id, {
+                                    const result = await access.modding.sendModdingPost(props.set()!.id, {
                                         parent: props.post.id,
                                         message: respondTextBox!.value
                                     });
@@ -273,7 +273,7 @@ export function ModdingThreadPost(props: {
                                 </button>
                                 <button class="general_modding--thread-post--content-content-buttons-edit" onClick={() => {
                                     useApi(async (access) => {
-                                        const result = await access.editModdingPost(props.set()?.id ?? -1, props.post.id, editTextBox!.value);
+                                        const result = await access.modding.editModdingPost(props.set()?.id ?? -1, props.post.id, editTextBox!.value);
 
                                         if (result) {
                                             setContent(result.message);
@@ -329,7 +329,7 @@ export function ModdingThreadPost(props: {
                         }}>Cancel</button>
                         <button class="general_modding--thread-reply-buttons-post" onClick={() => {
                             useApi(async (access) => {
-                                const result = await access.sendModdingPost(props.set()!.id, {
+                                const result = await access.modding.sendModdingPost(props.set()!.id, {
                                     parent: props.post.id,
                                     message: replyTextBox!.value
                                 });

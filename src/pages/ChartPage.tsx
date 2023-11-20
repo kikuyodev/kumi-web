@@ -12,8 +12,8 @@ import "../styles/pages/chart.scss";
 
 export function ChartPage() {
     const params = useParams();
-    const set = useApi(async (access) => access.getChartSet(params.set));
-    const comments = useApi(async (access) => access.getChartSetComments(params.set));
+    const set = useApi(async (access) => access.chart.getChartSet(params.set));
+    const comments = useApi(async (access) => access.chart.getChartSetComments(params.set));
     const [chart, setChart] = createSignal<ApiChart | undefined>(undefined);
 
     createEffect(() => {
@@ -73,7 +73,7 @@ export function ChartPage() {
                                     body.parent = parent.id;
                                 }
                                 
-                                const result = await access.sendChartSetComment(params.set, body);
+                                const result = await access.chart.sendChartSetComment(params.set, body);
         
                                 if (result) {
                                     window.location.reload();
@@ -82,7 +82,7 @@ export function ChartPage() {
                         },
                         editComment: async (comment: ApiComment, message: string) => {
                             useApi(async (access) => {
-                                const result = await access.editChartSetComment(params.set, comment.id, message);
+                                const result = await access.chart.editChartSetComment(params.set, comment.id, message);
         
                                 if (result) {
                                     window.location.reload();
@@ -91,7 +91,7 @@ export function ChartPage() {
                         },
                         deleteComment: async (comment: ApiComment) => {
                             useApi(async (access) => {
-                                const result = await access.deleteChartSetComment(params.set, comment.id);
+                                const result = await access.chart.deleteChartSetComment(params.set, comment.id);
         
                                 if (result) {
                                     window.location.reload();
@@ -100,7 +100,7 @@ export function ChartPage() {
                         },
                         pinComment: async (comment: ApiComment) => {
                             useApi(async (access) => {
-                                const result = await access.pinChartSetComment(params.set, comment.id);
+                                const result = await access.chart.pinChartSetComment(params.set, comment.id);
         
                                 if (result) {
                                     window.location.reload();

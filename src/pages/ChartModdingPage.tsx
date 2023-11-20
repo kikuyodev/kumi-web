@@ -17,8 +17,8 @@ type MetaType = {
 
 export function ChartModdingPage() {
     const params = useParams();
-    const set = useApi(async (access) => access.getChartSet(params.set));
-    const data = useApi(async (access) => access.getModdingData(params.set));
+    const set = useApi(async (access) => access.chart.getChartSet(params.set));
+    const data = useApi(async (access) => access.modding.getModdingData(params.set));
     const [chart, setChart] = createSignal<ApiChart | undefined>(undefined);
     const [section, setSection] = createSignal<"general" | "chart" | "history" | "timeline">("general");
 

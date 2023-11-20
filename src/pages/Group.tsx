@@ -12,7 +12,7 @@ import { Exception } from "../util/errors/Exception";
 export function Group() {
     const navigate = useNavigate();
     const params = useParams();
-    const group = useApi(async (access) => access.getGroup(params.id));
+    const group = useApi(async (access) => access.account.getGroup(params.id));
 
     const [accounts, setAccounts] = createSignal<ApiAccount[]>([]);
     const [status, setStatus] = createSignal<"online" | "offline" | "all">("online");

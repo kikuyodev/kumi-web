@@ -38,7 +38,7 @@ export function ChartListing() {
         const value = input?.value ?? "";
         
         useApi(async (access) => {
-            const charts = await access.searchCharts(value);
+            const charts = await access.chart.searchCharts(value);
             setCharts(charts?.data?.results ?? []);
         });
     }, 250);

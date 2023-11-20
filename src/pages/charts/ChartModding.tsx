@@ -184,7 +184,7 @@ export function ChartModding(props: {
                 <Show when={props.meta?.can_nominate}>
                     <button class="chart_modding--nominations--buttons-button chart_modding--nominations--buttons-button-nominate" onClick={() => {
                         useApi(async(access) => {
-                            await access.nominateChartSet(set()!.id);
+                            await access.chart.nominateChartSet(set()!.id);
 
                             location.reload();
                         });

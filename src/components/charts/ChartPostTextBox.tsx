@@ -76,7 +76,7 @@ export function ChartPostTextBox(props: ChartPostTextBoxProps) {
                 body.chart = props.chart()!.id;
             }
             
-            const post = await access.sendModdingPost(props.set()!.id, body);
+            const post = await access.modding.sendModdingPost(props.set()!.id, body);
             if (post) {
                 // refresh the page.
                 window.location.reload();

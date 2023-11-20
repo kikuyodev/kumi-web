@@ -63,6 +63,17 @@ export class ApiAccess {
         }
     }
 
+    public async getChartSets(id: string | number) {
+        const response = await this.rest.send<["charts"], [ApiChartSet[]]>(`/api/v1/accounts/${id}/chartsets`, {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (response.code === 200) {
+            return response.data!.charts;
+        }
+    }
+
     public async nominateChartSet(id: string | number) {
         const response = await this.rest.send<["set"], [ApiChartSet]>(`/api/v1/chartsets/${id}/nominations`, {
             method: "POST",

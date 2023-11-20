@@ -282,7 +282,7 @@
                 flex: 1;
                 margin-top: 16px;
                 margin-left: 16px;
-                padding: 24px 24px;
+                padding: 24px;
                 background-color: var(--hsl-c4);
                 border-radius: var(--corner-radius);
                 box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.08), 0px 0px 6px 0px rgba(0, 0, 0, 0.02);
@@ -306,7 +306,7 @@
                 flex: 1;
                 margin-top: 16px;
                 margin-right: 16px;
-                padding: 24px 24px;
+                padding: 24px;
                 background-color: var(--hsl-c4);
                 border-radius: var(--corner-radius);
                 box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.08), 0px 0px 6px 0px rgba(0, 0, 0, 0.02);
@@ -344,6 +344,54 @@
                             font-weight: 400;
                         }
                     }
+                }
+            }
+        }
+
+        &-maps {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: calc(var(--corner-radius) * -2);
+            padding-top: calc(var(--corner-radius) * 2);
+            background-color: var(--hsl-c5);
+            border-radius: var(--corner-radius);
+            padding: 16px;
+
+            &-container {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                padding: 24px;
+                background-color: var(--hsl-c4);
+                border-radius: var(--corner-radius);
+            }
+
+            &-section {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+
+                &-title {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 6px;
+                    font-family: var(--font-header);
+                    font-weight: 600;
+
+                    h1 {
+                        color: var(--hsl-l1);
+                    }
+
+                    p {
+                        color: var(--hsl-c1);
+                    }
+                }
+                
+                &-list {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, 376px);
+                    gap: 8px;
                 }
             }
         }

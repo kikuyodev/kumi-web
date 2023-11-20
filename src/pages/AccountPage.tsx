@@ -2,17 +2,33 @@ import { useIntl } from "@cookbook/solid-intl";
 import { faCommentAlt, faPenAlt, faUserFriends, faWarning } from "@fortawesome/free-solid-svg-icons";
 import { useRouteData } from "@solidjs/router";
 import { Fa } from "solid-fa";
-import { For, Show } from "solid-js";
+import { For, Show, createEffect, createSignal } from "solid-js";
 import { GroupTag } from "../components/accounts/GroupTag";
 import { useAccount } from "../contexts/AccountContext";
 import { AccountData } from "../data/AccountData";
 import "../styles/pages/account.scss";
 import { EmojiUtil } from "../util/EmojiUtil";
+import { useApi } from "../contexts/ApiAccessContext";
+import { ApiChartSet, ApiChartSetStatus } from "../structures/api/ApiChartSet";
+import { ChartCard } from "../components/charts/ChartCard";
 
 export function AccountPage() {
     const account = useRouteData<typeof AccountData>();
     const self = useAccount();
     const intl = useIntl();
+
+    let [charts, setCharts] = createSignal<ApiChartSet[]>([]);
+
+    createEffect(() => {
+        if (account() === undefined) {
+            return;
+        }
+
+        useApi(async (access) => {
+            let charts = await access.getChartSets(account()?.id ?? 0);
+            setCharts(charts!);
+        });
+    });
 
     return <div class="account">
         <div class="account--background">
@@ -142,7 +158,7 @@ export function AccountPage() {
                         </div>
                         <div class="account--content-activity-statistics-container-group">
                             <h1>Joined on</h1>
-                            <p>{intl.formatDate(new Date(account()?.created_at ?? ""), {
+                            <p>{intl.formatDate(account()?.created_at ? new Date(account()!.created_at) : new Date(), {
                                 day: "numeric",
                                 month: "long",
                                 year: "numeric",
@@ -152,40 +168,54 @@ export function AccountPage() {
                 </div>
             </div>
             <div class="account--content-maps">
-                <div class="account--content-maps-section">
-                    <div class="account--content-maps-section-title">
-                        <h1>MAPS</h1>
-                        <p>•</p>
-                        <p>FAVOURITE</p>
+                <div class="account--content-maps-container">
+                    {/* <div class="account--content-maps-section">
+                        <div class="account--content-maps-section-title">
+                            <h1>MAPS</h1>
+                            <p>•</p>
+                            <p>FAVOURITE</p>
+                        </div>
+                        <div class="account--content-maps-section-list">
+                        </div>
+                    </div> */}
+                    <div class="account--content-maps-section">
+                        <div class="account--content-maps-section-title">
+                            <h1>MAPS</h1>
+                            <p>•</p>
+                            <p>RANKED</p>
+                        </div>
+                        <div class="account--content-maps-section-list">
+                            <For each={charts()?.filter(v => v.status === ApiChartSetStatus.Ranked)}>
+                                {chart => <ChartCard {...chart} />}
+                            </For>
+                            <For each={charts()?.filter(v => v.status === ApiChartSetStatus.Qualified)}>
+                                {chart => <ChartCard {...chart} />}
+                            </For>
+                        </div>
                     </div>
-                    <div class="account--content-maps-section-list">
+                    <div class="account--content-maps-section">
+                        <div class="account--content-maps-section-title">
+                            <h1>MAPS</h1>
+                            <p>•</p>
+                            <p>PENDING</p>
+                        </div>
+                        <div class="account--content-maps-section-list">
+                            <For each={charts()?.filter(v => v.status === ApiChartSetStatus.Pending)}>
+                                {chart => <ChartCard {...chart} />}
+                            </For>
+                        </div>
                     </div>
-                </div>
-                <div class="account--content-maps-section">
-                    <div class="account--content-maps-section-title">
-                        <h1>MAPS</h1>
-                        <p>•</p>
-                        <p>RANKED</p>
-                    </div>
-                    <div class="account--content-maps-section-list">
-                    </div>
-                </div>
-                <div class="account--content-maps-section">
-                    <div class="account--content-maps-section-title">
-                        <h1>MAPS</h1>
-                        <p>•</p>
-                        <p>PENDING</p>
-                    </div>
-                    <div class="account--content-maps-section-list">
-                    </div>
-                </div>
-                <div class="account--content-maps-section">
-                    <div class="account--content-maps-section-title">
-                        <h1>MAPS</h1>
-                        <p>•</p>
-                        <p>GRAVEYARD</p>
-                    </div>
-                    <div class="account--content-maps-section-list">
+                    <div class="account--content-maps-section">
+                        <div class="account--content-maps-section-title">
+                            <h1>MAPS</h1>
+                            <p>•</p>
+                            <p>GRAVEYARD</p>
+                        </div>
+                        <div class="account--content-maps-section-list">
+                            <For each={charts()?.filter(v => v.status === ApiChartSetStatus.Graveyard)}>
+                                {chart => <ChartCard {...chart} />}
+                            </For>
+                        </div>
                     </div>
                 </div>
             </div>

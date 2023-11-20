@@ -1,6 +1,6 @@
 import { faAtom, faAward, faClipboard, faClipboardQuestion, faCommentAlt, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { Fa } from "solid-fa";
-import { Accessor, For, Resource, Show, createEffect, createSignal, onMount } from "solid-js";
+import { Accessor, For, Resource, Show, createEffect, createSignal } from "solid-js";
 import { ApiChart, ApiChartSet } from "src/structures/api/ApiChartSet";
 import { AccountChip } from "../../components/accounts/AccountChip";
 import { ChartNominationSection } from "../../components/charts/nominations/ChartNominationSection";
@@ -120,10 +120,10 @@ export function ChartModding(props: {
                     </tr>
                 </tbody>
             </table>
-            <div class="chart_modding--info-users">
-                <div class="chart_modding--info-users-charters">
+            <div class="chart_modding--info-accounts">
+                <div class="chart_modding--info-accounts-charters">
                     <h1>Charters</h1>
-                    <div class="chart_modding--info-users-charters-list">
+                    <div class="chart_modding--info-accounts-charters-list">
                         <For each={chart()?.creators}>
                             {creator => <AccountFlyout account={creator} >
                                 <AccountChip account={creator} description="Host" />
@@ -131,9 +131,9 @@ export function ChartModding(props: {
                         </For>
                     </div>
                 </div>
-                <div class="chart_modding--info-users-charters">
+                <div class="chart_modding--info-accounts-charters">
                     <h1>Modders</h1>
-                    <div class="chart_modding--info-users-charters-list">
+                    <div class="chart_modding--info-accounts-charters-list">
                         <For each={modders()}>
                             {creator => <AccountFlyout account={creator} >
                                 <AccountChip account={creator} />

@@ -1,7 +1,7 @@
 import { RouteDataFuncArgs } from "@solidjs/router";
 import { useApi } from "../contexts/ApiAccessContext";
 
-export function UserData({ params }: RouteDataFuncArgs) {
+export function AccountData({ params }: RouteDataFuncArgs) {
     const result = useApi(async (access) => access.getAccount(params.id));
 
     // TODO: fetch the "meta" data for the current account.

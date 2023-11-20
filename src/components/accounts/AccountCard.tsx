@@ -8,7 +8,7 @@ import "../../styles/components/accounts/accountCard.scss";
 export function AccountCard(props: {
     account: ApiAccount;
 }) {
-    return <a href={`/users/${props.account.id}`} class="account_card">
+    return <a href={`/accounts/${props.account.id}`} class="account_card">
         <div class="account_card--background">
             <img src={Util.getCdnFor("avatars", props.account.id)} alt="background" />
             <div class="account_card--background-overlay" />

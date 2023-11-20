@@ -3,7 +3,7 @@ import { ParentProps, Show, createEffect, createSignal } from "solid-js";
 import { Portal } from "solid-js/web";
 import { useMouse } from "solidjs-use";
 import { ApiAccount } from "../../structures/api/ApiAccount";
-import "../../styles/components/flyouts/userFlyout.scss";
+import "../../styles/components/flyouts/accountFlyout.scss";
 import { EmojiUtil } from "../../util/EmojiUtil";
 
 export function AccountFlyout(props: ParentProps<{
@@ -52,7 +52,7 @@ export function AccountFlyout(props: ParentProps<{
         }
     });
 
-    return <div class="user_flyout--hoverable" onMouseEnter={() => {
+    return <div class="account_flyout--hoverable" onMouseEnter={() => {
         clearInterval(interval);
         setShown(true);
     }} onMouseLeave={() => {
@@ -75,8 +75,8 @@ export function AccountFlyout(props: ParentProps<{
         </div>
         <Portal ref={portal} mount={document.body}>
             <Show when={shown()}>
-                <a href={`/users/${props.account?.id}`} ref={flyout} class="user_flyout">
-                    <div class="user_flyout--background">
+                <a href={`/accounts/${props.account?.id}`} ref={flyout} class="account_flyout">
+                    <div class="account_flyout--background">
                         <img src={`${import.meta.env.KUMI_API_URL}cdn/avatars/${props.account?.id}`} alt="" loading="lazy" onLoad={(v) => {
                             const img = v.target as HTMLImageElement;
                             img.style.opacity = "0";
@@ -88,10 +88,10 @@ export function AccountFlyout(props: ParentProps<{
                                 ],
                             });
                         }} />
-                        <div class="user_flyout--background-overlay" />
+                        <div class="account_flyout--background-overlay" />
                     </div>
-                    <div class="user_flyout--content">
-                        <div class="user_flyout--content-avatar">
+                    <div class="account_flyout--content">
+                        <div class="account_flyout--content-avatar">
                             <img src={`${import.meta.env.KUMI_API_URL}cdn/avatars/${props.account?.id}`} alt="" loading="lazy" onLoad={(v) => {
                                 const img = v.target as HTMLImageElement;
                                 img.style.opacity = "0";
@@ -104,11 +104,11 @@ export function AccountFlyout(props: ParentProps<{
                                 });
                             }} />
                         </div>
-                        <div class="user_flyout--content-info">
-                            <div class="user_flyout--content-info-username">
+                        <div class="account_flyout--content-info">
+                            <div class="account_flyout--content-info-username">
                                 {props.account?.username}
                                 { /* eslint-disable-next-line solid/no-innerhtml */}
-                                <div class="user_flyout--content-info-username-flag" innerHTML={EmojiUtil.getFlagEmoji(props.account?.country.code ?? "XX")} />
+                                <div class="account_flyout--content-info-username-flag" innerHTML={EmojiUtil.getFlagEmoji(props.account?.country.code ?? "XX")} />
                             </div>
                         </div>
                     </div>

@@ -23,7 +23,7 @@ export function ChartMetadata(props: {
                         {(creator, idx) => {
                             let prepend = "";
                             if (chart()?.creators.length === 1) {
-                                return <a href={`/users/${creator.id}`} class="chart--content-details--creators-creator">
+                                return <a href={`/accounts/${creator.id}`} class="chart--content-details--creators-creator">
                                     {creator.username}
                                 </a>;
                             } else {
@@ -39,7 +39,7 @@ export function ChartMetadata(props: {
                             return (
                                 <>
                                     {prepend}
-                                    <a href={`/users/${creator.id}`} class="chart--content-details--creators-creator">
+                                    <a href={`/accounts/${creator.id}`} class="chart--content-details--creators-creator">
                                         {creator.username}
                                     </a>;
                                 </>

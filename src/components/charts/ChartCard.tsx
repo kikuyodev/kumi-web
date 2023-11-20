@@ -49,7 +49,7 @@ export function ChartCard(props: ApiChartSet) {
                     <div class="chart_card--content-left-info-charter">
                         <p>Charted by</p>
                         <AccountFlyout account={props.creator}>
-                            <a href={`/users/${props.creator.id}`}>{props.creator.username}</a>
+                            <a href={`/accounts/${props.creator.id}`}>{props.creator.username}</a>
                         </AccountFlyout>
                     </div>
                 </div>
@@ -150,7 +150,7 @@ function PlayButton(props: ApiChartSet) {
     }}>
         <svg class="chart_card--content-right-controls-control-border" viewBox="0 0 20 20">
             <defs>
-                <linearGradient id="paint0_linear_9_9" x1="9" y1="0" x2="9" y2="18" gradientUnits="userSpaceOnUse">
+                <linearGradient id="paint0_linear_9_9" x1="9" y1="0" x2="9" y2="18" gradientUnits="accountSpaceOnUse">
                     <stop stop-color="#99E6FF" />
                     <stop offset="1" stop-color="#66D9FF" />
                 </linearGradient>

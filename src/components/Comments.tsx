@@ -68,7 +68,7 @@ export function Comments(props: {
                         </div>
                     </div>
                 </TextBox>
-                <p>Commenting as <a href={`/users/${account.apiAccount!.id}`}>{account.apiAccount!.username}</a></p>
+                <p>Commenting as <a href={`/accounts/${account.apiAccount!.id}`}>{account.apiAccount!.username}</a></p>
             </div>
         </Show>
         <div class="comments--list">
@@ -124,7 +124,7 @@ function Comment(props: {
             <img src={Util.getCdnFor("avatars", props.comment.author.id)} alt="avatar" />
             <div class="comments--list-comment-content-body">
                 <div class="comments--list-comment-content-body-username">
-                    <a href={`/users/${props.comment.author.id}`}>{props.comment.author.username}</a>
+                    <a href={`/accounts/${props.comment.author.id}`}>{props.comment.author.username}</a>
                     <p>• {Util.getRelativeTimeString(new Date(props.comment.created_at!))}</p>
                     <Show when={props.comment.pinned}>
                         <p>(Pinned)</p>

@@ -6,7 +6,7 @@ import { Navbar } from "./components/Navbar";
 import { AccountProvider, useAccount } from "./contexts/AccountContext";
 import { ApiAccessProvider } from "./contexts/ApiAccessContext";
 import { IntlProviderWrapperContext } from "./contexts/IntlProviderWrapperContext";
-import { UserData } from "./data/UserData";
+import { AccountData } from "./data/AccountData";
 import { Twemoji } from "./components/Twemoji";
 import { Exception } from "./util/errors/Exception";
 import { ErrorPage } from "./pages/ErrorPage";
@@ -18,12 +18,12 @@ const { Home } = lazily(() => import("./pages/HomePage"));
 const { Group } = lazily(() => import("./pages/Group"));
 const { ChartListing } = lazily(() => import("./pages/ChartListing"));
 const { ChartPage } = lazily(() => import("./pages/ChartPage"));
-const { UserPage } = lazily(() => import("./pages/UserPage"));
+const { AccountPage } = lazily(() => import("./pages/AccountPage"));
 const { ChartModdingPage } = lazily(() => import("./pages/ChartModdingPage"));
 
 render(() => {
     if (sessionStorage.getItem("logged_in") === "true") {
-        // check if the user is logged in.
+        // check if the account is logged in.
         useAccount().me();
     }
 
@@ -54,7 +54,7 @@ render(() => {
                                                 <Route path="/" element={<Navigate href="/home" />} />
                                                 <Route path="/home" component={Home} />
                                                 <Route path="/groups/:id" component={Group} />
-                                                <Route path="/users/:id" component={UserPage} data={UserData} />
+                                                <Route path="/accounts/:id" component={AccountPage} data={AccountData} />
                                                 <Route path="/chartsets" component={ChartListing} />
                                                 <Route path="/chartsets/:set" component={ChartPage} />
                                                 <Route path="/chartsets/:set/modding" component={ChartModdingPage} />

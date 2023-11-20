@@ -14,7 +14,7 @@ export function Group() {
     const params = useParams();
     const group = useApi(async (access) => access.getGroup(params.id));
 
-    const [users, setUsers] = createSignal<ApiAccount[]>([]);
+    const [accounts, setAccounts] = createSignal<ApiAccount[]>([]);
     const [status, setStatus] = createSignal<"online" | "offline" | "all">("online");
 
     createEffect(() => {
@@ -26,9 +26,9 @@ export function Group() {
             throw new Exception("The group you are looking for does not exist.", 404);
         }
 
-        const members = group()?.members.filter((user) => status() === "all" || user.status === status()).sort((a, b) => a.username.localeCompare(b.username));
+        const members = group()?.members.filter((account) => status() === "all" || account.status === status()).sort((a, b) => a.username.localeCompare(b.username));
 
-        setUsers(members ?? []);
+        setAccounts(members ?? []);
         console.log(members);
     });
 
@@ -76,8 +76,8 @@ export function Group() {
                     </div>
                 </div>
                 <div class="group--content-details-bottom">
-                    <For each={users()}>
-                        {(user) => <AccountCard account={user} />}
+                    <For each={accounts()}>
+                        {(account) => <AccountCard account={account} />}
                     </For>
                 </div>
             </div>

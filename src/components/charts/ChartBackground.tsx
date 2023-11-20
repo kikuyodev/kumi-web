@@ -23,7 +23,7 @@ export function ChartBackground(props: ChartBackgroundProps) {
                 <div class="chart_background--info-creator">
                     Created by
                     <AccountFlyout account={props.set?.creator}>
-                        <a href={`/users/${props.set?.creator.id}`}>{props.set?.creator.username}</a>
+                        <a href={`/accounts/${props.set?.creator.id}`}>{props.set?.creator.username}</a>
                     </AccountFlyout>
                 </div>
             </div>

@@ -16,6 +16,7 @@ import { Pagination } from "../../components/Pagination";
 import { PaginationMeta } from "../../util/api/ApiResponse";
 import { Fa } from "solid-fa";
 import { faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import { Exception } from "../../util/errors/Exception";
 
 interface ThreadPostMeta {
     can_edit: boolean;

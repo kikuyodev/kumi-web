@@ -59,5 +59,43 @@
                 border-radius: 5px;
             }
         }
+
+        &-stack {
+            overflow-y: scroll;
+            max-height: 256px;
+            margin-top: 32px;
+
+            // Code
+            code {
+                padding: 2px 4px;
+                font-size: 14px;
+                font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+                color: var(--hsl-l5);
+                background-color: var(--hsl-c5);
+                border-radius: var(--corner-radius);
+            }
+
+            pre {
+                display: block;
+                padding: 9.5px;
+                margin: 0 0 10px;
+                font-size: 13px;
+                line-height: 1.42857143;
+                color: var(--hsl-l5);
+                word-break: break-all;
+                word-wrap: break-word;
+                background-color: var(--hsl-c5);
+                border-radius: var(--corner-radius);
+
+                code {
+                    padding: 0;
+                    font-size: inherit;
+                    color: inherit;
+                    white-space: pre-wrap;
+                    background-color: transparent;
+                    border-radius: 0;
+                }
+            }
+        }
     }
 }

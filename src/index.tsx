@@ -50,9 +50,10 @@ render(() => {
                                             console.error(err);
                                             
                                             if (err instanceof Exception) {
+                                                console.log(err.stack);
                                                 return <ErrorPage {...err} />;
                                             } else if (err instanceof ApiResponseError) {
-                                                return <ErrorPage code={err.code} message={err.message} />;
+                                                return <ErrorPage {...err} />;
                                             } else {
                                                 return <ErrorPage code={500} message="An unknown error occurred." />;
                                             }

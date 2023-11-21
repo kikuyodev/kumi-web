@@ -63,13 +63,11 @@ export function Thread() {
                 <div class="thread--content-body-title">
                     <div class="thread--content-body-title-header">
                         <ForumHeader name={thread()?.forum.name ?? ""} description={`Posted ${Util.getRelativeTimeString(thread()?.created_at ? new Date(thread()!.created_at!) : new Date())}`} color="#33CCFF" fadedDescription={true} />
-                        <Show when={account.isLoggedIn()}>
-                            <div class="thread--content-body-title-header-actions">
-                                <button ref={scrollButton} style={{ display: "none" }} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-                                    <Fa icon={faChevronUp} />
-                                </button>
-                            </div>
-                        </Show>
+                        <div class="thread--content-body-title-header-actions">
+                            <button ref={scrollButton} style={{ display: "none" }} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+                                <Fa icon={faChevronUp} />
+                            </button>
+                        </div>
                     </div>
                     <ForumsBreadcrumbs crumbs={[{
                         name: thread()?.forum.name ?? "",

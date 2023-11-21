@@ -75,6 +75,12 @@
                     gap: 2px;
                 }
 
+                &-pagination {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+
                 &-comment {
                     padding: 0 40px;
                 }

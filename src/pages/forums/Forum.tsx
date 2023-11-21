@@ -12,6 +12,7 @@ import { Accessor, For, Show, createMemo } from "solid-js";
 import { AccountFlyout } from "../../components/flyouts/AccountFlyout";
 import { Util } from "../../util/Util";
 import { PaginationMeta } from "../../util/api/ApiResponse";
+import { Pagination } from "../../components/Pagination";
 
 interface ForumMeta extends PaginationMeta {
     threads: {
@@ -74,6 +75,9 @@ export function Forum() {
                         <div class="forum--content-body-content-section-list">
                             <For each={threads()?.data?.threads}>{thread => <Thread thread={thread} meta={meta} />}</For>
                         </div>
+                    </div>
+                    <div class="forum--content-body-content-pagination">
+                        <Pagination meta={meta} />
                     </div>
                 </div>
             </div>

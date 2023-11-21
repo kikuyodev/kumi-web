@@ -267,8 +267,8 @@ class ForumApiAccess {
         }
     }
 
-    public async getPosts(threadId: string | number) {
-        const response = await this.access.rest.send<["posts"], [ApiThreadPost[]]>(`/api/v1/forums/threads/${threadId}/posts`, {
+    public async getPosts(threadId: string | number, page: number = 1) {
+        const response = await this.access.rest.send<["posts"], [ApiThreadPost[]]>(`/api/v1/forums/threads/${threadId}/posts?page=${page}`, {
             method: "GET",
             credentials: "include"
         });

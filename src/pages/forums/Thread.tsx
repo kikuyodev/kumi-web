@@ -1,4 +1,4 @@
-import { useParams } from "@solidjs/router";
+import { useParams, useSearchParams } from "@solidjs/router";
 import { ForumsBreadcrumbs } from "../../components/forums/ForumBreadcrumbs";
 import { ForumHeader } from "../../components/forums/ForumHeader";
 import { useApi } from "../../contexts/ApiAccessContext";
@@ -6,18 +6,33 @@ import { Util } from "../../util/Util";
 import "../../styles/pages/forums/thread.scss";
 import { useAccount } from "../../contexts/AccountContext";
 import { TextBox } from "../../components/controls/TextBox";
-import { For, Show } from "solid-js";
+import { For, Show, createEffect, createSignal } from "solid-js";
 import { ApiThreadPost } from "../../structures/api/ApiForum";
 import { GroupTag } from "../../components/accounts/GroupTag";
 import { EmojiUtil } from "../../util/EmojiUtil";
 import { Tooltip } from "../../components/Tooltip";
 import { BBCode } from "../../components/markup/BBCode";
+import { Pagination } from "../../components/Pagination";
+import { PaginationMeta } from "../../util/api/ApiResponse";
 
 export function Thread() {
     const account = useAccount();
     const params = useParams();
+    const [searchParams] = useSearchParams();
+    
     const thread = useApi(async api => await api.forum.getForumThread(params.id));
-    const posts = useApi(async api => await api.forum.getPosts(params.id));
+
+    const [posts, setPosts] = createSignal<ApiThreadPost[] | undefined>(undefined);
+    const [meta, setMeta] = createSignal<PaginationMeta | undefined>(undefined);
+
+    createEffect(() => {
+        useApi(async api => {
+            const posts = await api.forum.getPosts(params.id, parseInt(searchParams.page ?? "1"));
+            
+            setPosts(posts?.data?.posts ?? []);
+            setMeta(posts?.parseMeta<PaginationMeta>());
+        });
+    });
 
     return <div class="thread">
         <div class="thread--background">
@@ -42,10 +57,20 @@ export function Thread() {
                 }]} />
                 <div class="thread--content-body-content">
                     <div class="thread--content-body-content-list">
-                        <For each={posts()?.data?.posts}>{post => <Post {...post} />}</For>
+                        <For each={posts()}>{post => <Post {...post} />}</For>
                     </div>
                     <div class="thread--content-body-content-pagination">
-                        { /* todo */}
+                        <Pagination meta={meta} requestPage={(p) => {
+                            useApi(async api => {
+                                const posts = await api.forum.getPosts(params.id, p);
+                                
+                                setPosts(posts?.data?.posts ?? []);
+                                setMeta(posts?.parseMeta<PaginationMeta>());
+
+                                // scroll to top
+                                window.scrollTo({ top: 0, behavior: "smooth" });
+                            });
+                        }} />
                     </div>
                     <div class="thread--content-body-content-comment">
                         <Show when={account.isLoggedIn()}>

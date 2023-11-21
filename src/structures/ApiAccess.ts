@@ -2,6 +2,7 @@ import { ApiAccount, ApiGroup } from "./api/ApiAccount";
 import { ApiChartHistory } from "./api/ApiChartHistory";
 import { ApiChartSet } from "./api/ApiChartSet";
 import { ApiComment } from "./api/ApiComment";
+import { ApiForum, ApiThread, ApiThreadPost } from "./api/ApiForum";
 import { ApiModdingPost } from "./api/ApiModdingPost";
 import { RestClient } from "../util/RestClient";
 
@@ -11,6 +12,7 @@ export class ApiAccess {
     public account: AccountApiAccess = new AccountApiAccess(this);
     public chart: ChartApiAccess = new ChartApiAccess(this);
     public modding: ModdingApiAccess = new ModdingApiAccess(this);
+    public forum: ForumApiAccess = new ForumApiAccess(this);
 
     constructor() {
         this._restClient = new RestClient();
@@ -199,6 +201,80 @@ class ModdingApiAccess {
 
         if (response.code === 200) {
             return response.data!.post;
+        }
+    }
+}
+
+class ForumApiAccess {
+    private access: ApiAccess;
+
+    constructor(access: ApiAccess) {
+        this.access = access;
+    }
+
+    public async getForums() {
+        const response = await this.access.rest.send<["forums"], [ApiForum[]]>("/api/v1/forums", {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (response.code === 200) {
+            return response.data!.forums;
+        }
+    }
+
+    // public async createForum(body: Record<string, unknown>) {
+    //     const response = await this.access.rest.send<["forum"], [ApiForum]>("/api/v1/forums", {
+    //         method: "POST",
+    //         credentials: "include"
+    //     }, body);
+
+    //     if (response.code === 200) {
+    //         return response.data!.forum;
+    //     }
+    // }
+
+    public async getForum(id: string | number) {
+        const response = await this.access.rest.send<["forum"], [ApiForum]>(`/api/v1/forums/${id}`, {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (response.code === 200) {
+            return response.data!.forum;
+        }
+    }
+
+    public async getForumThreads(id: string | number) {
+        const response = await this.access.rest.send<["threads"], [ApiThread[]]>(`/api/v1/forums/${id}/threads`, {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (response.code === 200) {
+            return response;
+        }
+    }
+
+    public async getForumThread(threadId: string | number) {
+        const response = await this.access.rest.send<["thread"], [ApiThread]>(`/api/v1/forums/threads/${threadId}`, {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (response.code === 200) {
+            return response.data!.thread;
+        }
+    }
+
+    public async getPosts(threadId: string | number) {
+        const response = await this.access.rest.send<["posts"], [ApiThreadPost[]]>(`/api/v1/forums/threads/${threadId}/posts`, {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (response.code === 200) {
+            return response;
         }
     }
 }

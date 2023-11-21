@@ -13,11 +13,11 @@ export function BBCode(props: ParentProps & { children: string }) {
 
         // // bbcode parser
         const bbcode = ref.innerText;
-        const processed = bbobHTML(bbcode, BBCodePreset());
+        let processed = bbobHTML(bbcode, BBCodePreset());
         ref.innerHTML = processed;
     });
 
-    return <div ref={ref} class="_markdown_">{props.children}</div>;
+    return <div ref={ref} class="_markdown_"><pre>{props.children}</pre></div>;
 }
 
 export const BBCodePreset = createPreset({

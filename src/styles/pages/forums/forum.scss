@@ -150,6 +150,10 @@
                                     background-color: hsl(var(--base-hue), 15%, 12%);
                                     border-radius: var(--corner-radius);
                                     font-size: 24px;
+
+                                    &-read {
+                                        color: hsl(var(--base-hue), 15%, 40%);
+                                    }
                                 }
 
                                 &-info {

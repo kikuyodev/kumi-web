@@ -16,6 +16,7 @@
     "@bbob/plugin-helper": "^3.0.2",
     "@bbob/preset": "^3.0.2",
     "@cookbook/solid-intl": "^0.1.2",
+    "@fortawesome/free-regular-svg-icons": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@solidjs/router": "^0.8.3",
     "animejs": "^3.2.1",

@@ -4,7 +4,7 @@ import { Portal } from "solid-js/web";
 import { useMouse } from "solidjs-use";
 import { ApiAccount } from "../../structures/api/ApiAccount";
 import "../../styles/components/flyouts/accountFlyout.scss";
-import { EmojiUtil } from "../../util/EmojiUtil";
+import { AccountCard } from "../accounts/AccountCard";
 
 export function AccountFlyout(props: ParentProps<{
     account?: ApiAccount
@@ -13,6 +13,7 @@ export function AccountFlyout(props: ParentProps<{
 
     const mouse = useMouse();
     const [shown, setShown] = createSignal(false);
+    const [visible, setVisible] = createSignal(false);
 
     let flyout: HTMLDivElement | undefined = undefined;
     let portal: HTMLDivElement | undefined = undefined;
@@ -23,31 +24,39 @@ export function AccountFlyout(props: ParentProps<{
         portal?.style.setProperty("z-index", "10000");
 
         if (shown()) {
+            setVisible(true);
             anime({
                 targets: portal,
                 opacity: 1,
                 duration: 200,
+                easing: "easeOutExpo"
             });
 
-            // move the portal to the right of the component if possible,
-            // otherwise overflow it to the left.
-            const componentRect = component?.getBoundingClientRect();
-            const portalRect = portal?.getBoundingClientRect();
+            setTimeout(() => {
+                // move the portal to the right of the component if possible,
+                // otherwise overflow it to the left.
+                const componentRect = component?.getBoundingClientRect();
+                const portalRect = portal?.getBoundingClientRect();
 
-            if (componentRect && portalRect) {
-                if (componentRect.right + portalRect.width + 16 > window.innerWidth) {
-                    portal?.style.setProperty("left", `${(componentRect.left - 16) - portalRect.width}px`);
-                    portal?.style.setProperty("top", `${componentRect.top + window.scrollY}px`);
-                } else {
-                    portal?.style.setProperty("left", `${componentRect.right + 16}px`);
-                    portal?.style.setProperty("top", `${componentRect.top + window.scrollY}px`);
+                if (componentRect && portalRect) {
+                    if (componentRect.right + portalRect.width + 16 > window.innerWidth) {
+                        portal?.style.setProperty("left", `${(componentRect.left - 16) - portalRect.width}px`);
+                        portal?.style.setProperty("top", `${componentRect.top + window.scrollY}px`);
+                    } else {
+                        portal?.style.setProperty("left", `${componentRect.right + 16}px`);
+                        portal?.style.setProperty("top", `${componentRect.top + window.scrollY}px`);
+                    }
                 }
-            }
+            }, 1);
         } else {
             anime({
                 targets: portal,
                 opacity: 0,
                 duration: 200,
+                easing: "easeOutExpo",
+                complete: () => {
+                    setVisible(false);
+                }
             });
         }
     });
@@ -74,45 +83,10 @@ export function AccountFlyout(props: ParentProps<{
             {props.children}
         </div>
         <Portal ref={portal} mount={document.body}>
-            <Show when={shown()}>
-                <a href={`/accounts/${props.account?.id}`} ref={flyout} class="account_flyout">
-                    <div class="account_flyout--background">
-                        <img src={`${import.meta.env.KUMI_API_URL}cdn/avatars/${props.account?.id}`} alt="" loading="lazy" onLoad={(v) => {
-                            const img = v.target as HTMLImageElement;
-                            img.style.opacity = "0";
-                            anime({
-                                targets: img,
-                                opacity: [
-                                    { value: 0, duration: 0 },
-                                    { value: 1, duration: 500 },
-                                ],
-                            });
-                        }} />
-                        <div class="account_flyout--background-overlay" />
-                    </div>
-                    <div class="account_flyout--content">
-                        <div class="account_flyout--content-avatar">
-                            <img src={`${import.meta.env.KUMI_API_URL}cdn/avatars/${props.account?.id}`} alt="" loading="lazy" onLoad={(v) => {
-                                const img = v.target as HTMLImageElement;
-                                img.style.opacity = "0";
-                                anime({
-                                    targets: img,
-                                    opacity: [
-                                        { value: 0, duration: 0 },
-                                        { value: 1, duration: 500 },
-                                    ],
-                                });
-                            }} />
-                        </div>
-                        <div class="account_flyout--content-info">
-                            <div class="account_flyout--content-info-username">
-                                {props.account?.username}
-                                { /* eslint-disable-next-line solid/no-innerhtml */}
-                                <div class="account_flyout--content-info-username-flag" innerHTML={EmojiUtil.getFlagEmoji(props.account?.country.code ?? "XX")} />
-                            </div>
-                        </div>
-                    </div>
-                </a>
+            <Show when={visible()}>
+                <div ref={flyout} class="account_flyout">
+                    <AccountCard account={props.account} />
+                </div>
             </Show>
         </Portal>
     </div>;

@@ -68,7 +68,8 @@ export function Navbar() {
                         <A href="/home" activeClass="navbar--content-flex-links-active">Home</A>
                         <A href="/chartsets" activeClass="navbar--content-flex-links-active">Charts</A>
                         <A href="/rankings" activeClass="navbar--content-flex-links-active">Rankings</A>
-                        <A href="/help" activeClass="navbar--content-flex-links-active">Help</A>
+                        <A href="/forums" activeClass="navbar--content-flex-links-active">Community</A>
+                        <A href="/help" activeClass="navbar--content-flex-links-active">Wiki</A>
                     </div>
                     <div class="navbar--content-flex-account">
                         <div class="navbar--content-flex-account-details">

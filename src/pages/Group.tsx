@@ -3,7 +3,7 @@ import { For, createEffect, createSignal } from "solid-js";
 import { AccountCard } from "../components/accounts/AccountCard";
 import { GroupTag } from "../components/accounts/GroupTag";
 import { SegmentedControl } from "../components/controls/SegmentedControl";
-import { Markdown } from "../components/Markdown";
+import { Markdown } from "../components/markup/Markdown";
 import { useApi } from "../contexts/ApiAccessContext";
 import "../styles/pages/group.scss";
 import { ApiAccount } from "../structures/api/ApiAccount";

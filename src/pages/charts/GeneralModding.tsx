@@ -5,7 +5,7 @@ import { SolidMarkdown } from "solid-markdown";
 import { GroupTag } from "../../components/accounts/GroupTag";
 import { ChartPostTextBox } from "../../components/charts/ChartPostTextBox";
 import { TextBox } from "../../components/controls/TextBox";
-import { Markdown } from "../../components/Markdown";
+import { Markdown } from "../../components/markup/Markdown";
 import { useAccount } from "../../contexts/AccountContext";
 import { useApi } from "../../contexts/ApiAccessContext";
 import { ApiChart, ApiChartSet } from "../../structures/api/ApiChartSet";

@@ -32,7 +32,9 @@ export type ApiAccount = {
     };
     forum_statistics: {
         level: number;
-        exp: number;
+        total_exp: number;
+        max_exp: number;
+        exp_progress: number;
         reputation: number;
         posts?: number;
     };

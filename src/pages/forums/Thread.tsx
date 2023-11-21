@@ -11,7 +11,7 @@ import { ApiThreadPost } from "../../structures/api/ApiForum";
 import { GroupTag } from "../../components/accounts/GroupTag";
 import { EmojiUtil } from "../../util/EmojiUtil";
 import { Tooltip } from "../../components/Tooltip";
-import { Markdown } from "../../components/Markdown";
+import { Markdown } from "../../components/markup/Markdown";
 
 export function Thread() {
     const account = useAccount();
@@ -107,7 +107,7 @@ export function Post(props: ApiThreadPost) {
                 <div class="thread--post-user-info-level">
                     <p>LVL. {props.author.forum_statistics.level}</p>
                     <div class="thread--post-user-info-level-progress">
-                        <span class="thread--post-user-info-level-progress-bar" style={{ width: "50%" }} />
+                        <span class="thread--post-user-info-level-progress-bar" style={{ width: props.author.forum_statistics.exp_progress}} />
                     </div>
                 </div>
                 <div class="thread--post-user-info-stats">

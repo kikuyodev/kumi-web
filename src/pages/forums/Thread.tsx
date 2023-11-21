@@ -14,24 +14,38 @@ import { Tooltip } from "../../components/Tooltip";
 import { BBCode } from "../../components/markup/BBCode";
 import { Pagination } from "../../components/Pagination";
 import { PaginationMeta } from "../../util/api/ApiResponse";
+import { Fa } from "solid-fa";
+import { faChevronUp } from "@fortawesome/free-solid-svg-icons";
 
 export function Thread() {
     const account = useAccount();
     const params = useParams();
     const [searchParams] = useSearchParams();
-    
+
     const thread = useApi(async api => await api.forum.getForumThread(params.id));
 
     const [posts, setPosts] = createSignal<ApiThreadPost[] | undefined>(undefined);
     const [meta, setMeta] = createSignal<PaginationMeta | undefined>(undefined);
 
+    let scrollButton: HTMLButtonElement | undefined = undefined;
+
     createEffect(() => {
         useApi(async api => {
             const posts = await api.forum.getPosts(params.id, parseInt(searchParams.page ?? "1"));
-            
+
             setPosts(posts?.data?.posts ?? []);
             setMeta(posts?.parseMeta<PaginationMeta>());
         });
+    });
+
+    document.addEventListener("scroll", () => {
+        if (scrollButton) {
+            if (window.scrollY > 200) {
+                scrollButton.style.display = "block";
+            } else {
+                scrollButton.style.display = "none";
+            }
+        }
     });
 
     return <div class="thread">
@@ -46,15 +60,26 @@ export function Thread() {
                 <p>Forums</p>
             </div>
             <div class="thread--content-body">
-                <ForumHeader name={thread()?.forum.name ?? ""} description={`Posted ${Util.getRelativeTimeString(thread()?.created_at ? new Date(thread()!.created_at!) : new Date())}`} color="#33CCFF" fadedDescription={true} />
-                <ForumsBreadcrumbs crumbs={[{
-                    name: thread()?.forum.name ?? "",
-                    href: `/forums/${thread()?.forum?.id}`
-                },
-                {
-                    name: thread()?.title ?? "",
-                    href: `/forums/thread/${thread()?.id}`
-                }]} />
+                <div class="thread--content-body-title">
+                    <div class="thread--content-body-title-header">
+                        <ForumHeader name={thread()?.forum.name ?? ""} description={`Posted ${Util.getRelativeTimeString(thread()?.created_at ? new Date(thread()!.created_at!) : new Date())}`} color="#33CCFF" fadedDescription={true} />
+                        <Show when={account.isLoggedIn()}>
+                            <div class="thread--content-body-title-header-actions">
+                                <button ref={scrollButton} style={{ display: "none" }} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+                                    <Fa icon={faChevronUp} />
+                                </button>
+                            </div>
+                        </Show>
+                    </div>
+                    <ForumsBreadcrumbs crumbs={[{
+                        name: thread()?.forum.name ?? "",
+                        href: `/forums/${thread()?.forum?.id}`
+                    },
+                    {
+                        name: thread()?.title ?? "",
+                        href: `/forums/thread/${thread()?.id}`
+                    }]} />
+                </div>
                 <div class="thread--content-body-content">
                     <div class="thread--content-body-content-list">
                         <For each={posts()}>{post => <Post {...post} />}</For>
@@ -63,7 +88,7 @@ export function Thread() {
                         <Pagination meta={meta} requestPage={(p) => {
                             useApi(async api => {
                                 const posts = await api.forum.getPosts(params.id, p);
-                                
+
                                 setPosts(posts?.data?.posts ?? []);
                                 setMeta(posts?.parseMeta<PaginationMeta>());
 

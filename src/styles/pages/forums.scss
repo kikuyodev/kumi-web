@@ -1,0 +1,225 @@
+.forums {
+    position: relative;
+    display: flex;
+    justify-content: center;
+
+    &--background {
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 90vh;
+        overflow: hidden;
+        opacity: 0.1;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+        }
+
+        &-overlay {
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(to bottom, hsla(var(--base-hue), 15%, 5%, 0%), hsla(var(--base-hue), 15%, 5%, 100%))
+        }
+    }
+
+    &--content {
+        display: flex;
+        flex-direction: column;
+        gap: 48px;
+        max-width: var(--content-width);
+        width: 95%;
+        margin-top: 64px;
+
+        &-header {
+            display: flex;
+            flex-direction: row;
+            gap: 6px;
+            font-family: var(--font-header);
+            font-size: 24px;
+
+            h1 {
+                color: var(--hsl-l4);
+                font-weight: 700;
+            }
+
+            p {
+                color: var(--hsl-l1);
+            }
+        }
+
+        &-body {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background-color: var(--hsl-c5);
+            border-radius: var(--corner-radius);
+            padding: 24px 40px;
+
+            &--forum {
+                display: flex;
+                flex-direction: column;
+
+                &-header {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
+                    padding: 20px;
+                    background-color: var(--hsl-c4);
+                    border-radius: var(--corner-radius);
+                    z-index: 1;
+
+                    &-title {
+                        position: relative;
+                        width: 100%;
+
+                        h1 {
+                            color: var(--hsl-l1);
+                            font-family: var(--font-header);
+                            font-size: 20px;
+                        }
+
+                        &-color {
+                            position: absolute;
+                            width: 3px;
+                            height: 16px;
+                            top: 50%;
+                            left: -8px;
+                            transform: translateY(-50%);
+                            border-radius: 100px;
+                        }
+
+                        &-chevron {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            position: absolute;
+                            top: 50%;
+                            right: 0;
+                            transform: translateY(-50%);
+                            border: none;
+                            outline: none;
+                            background-color: transparent;
+                            cursor: pointer;
+                            color: hsl(var(--base-hue), 15%, 40%);
+                            border-radius: var(--corner-radius);
+                            height: 24px;
+                            width: 24px;
+
+                            &:hover {
+                                background-color: var(--hsl-c3);
+                            }
+                        }
+                    }
+                }
+
+                &-body {
+                    margin-top: calc(-1 * var(--corner-radius));
+                    padding-top: calc(1 * var(--corner-radius) + 20px);
+                    padding-left: 20px;
+                    padding-right: 20px;
+                    padding-bottom: 20px;
+                    background-color: hsl(var(--base-hue), 15%, 8%);
+                    border-radius: var(--corner-radius);
+
+                    &-info {
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
+                        padding: 0 20px;
+                        color: var(--hsl-d1);
+                    }
+
+                    &-list {
+                        margin-top: 8px;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 8px;
+
+                        &--children {
+                            display: flex;
+                            flex-direction: row;
+                            justify-content: space-between;
+                            background-color: hsl(var(--base-hue), 20%, 11%);
+                            border-radius: var(--corner-radius);
+
+                            &-left {
+                                display: flex;
+                                flex-direction: column;
+                                gap: 4px;
+                                padding: 12px 20px;
+
+                                h1 {
+                                    color: var(--hsl-l1);
+                                    font-size: 16px;
+                                }
+
+                                p {
+                                    color: var(--hsl-d1);
+                                    font-size: 14px;
+                                }
+                            }
+
+                            &-right {
+                                width: fit-content;
+                                background-color: var(--hsl-d4);
+                                border-radius: var(--corner-radius);
+                                padding: 12px 20px;
+                                width: 368px;
+                                text-overflow: ellipsis;
+                                overflow: hidden;
+                                white-space: nowrap;
+
+                                &-content {
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: flex-end;
+                                    gap: 4px;
+                                    font-size: 14px;
+                                    width: 100%;
+
+                                    h1 {
+                                        max-width: 368px;
+                                        text-overflow: ellipsis;
+                                        overflow: hidden;
+                                        white-space: nowrap;
+                                    }
+
+                                    p {
+                                        display: flex;
+                                        flex-direction: row;
+                                        gap: 6px;
+                                        color: var(--hsl-d1);
+
+                                        a {
+                                            display: flex;
+                                            flex-direction: row;
+                                            gap: 6px;
+                                            align-items: center;
+                                            color: var(--hsl-links);
+                                            font-weight: 600;
+
+                                            span {
+                                                width: 8px;
+                                                height: 8px;
+                                                border-radius: 100px;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

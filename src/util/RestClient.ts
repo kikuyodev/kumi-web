@@ -20,7 +20,8 @@ export class RestClient {
         const response = await fetch(absoluteUrl.toString(), request);
 
         if (response.status === 200) {
-            return await response.json();
+            const json = await response.json();
+            return new ApiResponse<Keys, Values>(response.status, json.message, json.data, json.meta);
         } else if (response.status >= 500) {
             throw new ApiResponseError(response.status, "Internal server error", await response.text());
         } else {

@@ -3,7 +3,6 @@ import { Signal, createSignal } from "solid-js";
 import { ApiAccount } from "./api/ApiAccount";
 import { Debug } from "../util/Debug";
 import { RestClient } from "../util/RestClient";
-import { ApiResponse } from "../util/api/ApiResponse";
 
 interface AccountState {
     login: Signal<boolean>

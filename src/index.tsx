@@ -13,13 +13,20 @@ import { ErrorPage } from "./pages/ErrorPage";
 import { ApiResponseError } from "./util/errors/ApiResponseError";
 import { GlobalAudioProvider } from "./contexts/AudioContext";
 
-const { Notfound } = lazily(() => import("./pages/404"));
+// Single pages
 const { Home } = lazily(() => import("./pages/HomePage"));
 const { Group } = lazily(() => import("./pages/Group"));
+const { AccountPage } = lazily(() => import("./pages/AccountPage"));
+
+// Charts
 const { ChartListing } = lazily(() => import("./pages/ChartListing"));
 const { ChartPage } = lazily(() => import("./pages/ChartPage"));
-const { AccountPage } = lazily(() => import("./pages/AccountPage"));
 const { ChartModdingPage } = lazily(() => import("./pages/ChartModdingPage"));
+
+// Forums
+const { Forums } = lazily(() => import("./pages/Forums"));
+const { Forum } = lazily(() => import("./pages/forums/Forum"));
+const { Thread } = lazily(() => import("./pages/forums/Thread"));
 
 render(() => {
     if (sessionStorage.getItem("logged_in") === "true") {
@@ -54,6 +61,12 @@ render(() => {
                                                 <Route path="/" element={<Navigate href="/home" />} />
                                                 <Route path="/home" component={Home} />
                                                 <Route path="/groups/:id" component={Group} />
+                                                <Route path="/forums">
+                                                    <Route path="/" component={Forums} />
+                                                    <Route path="/:id" component={Forum} />
+                                                    <Route path="/threads/:id" component={Thread} />
+                                                    <Route path="*" element={<ErrorPage code={404} message={"The forum, thread, or topic you were looking for does not exist."} />} />
+                                                </Route>
                                                 <Route path="/accounts/:id" component={AccountPage} data={AccountData} />
                                                 <Route path="/chartsets" component={ChartListing} />
                                                 <Route path="/chartsets/:set" component={ChartPage} />

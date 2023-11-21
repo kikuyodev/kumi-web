@@ -174,32 +174,32 @@ export function Post(props: {
     let textbox: HTMLTextAreaElement | undefined = undefined;
 
     return <div id={props.post.id.toString()} class="thread--post">
-        <div class="thread--post-user">
-            <div class="thread--post-user-core">
-                <img class="thread--post-user-core-avatar" src={Util.getCdnFor("avatars", props.post.author.id)} alt="avatar" />
-                <div class="thread--post-user-core-info">
+        <div class="thread--post-account">
+            <a href={`/accounts/${props.post.author.id}`} class="thread--post-account-core">
+                <img class="thread--post-account-core-avatar" src={Util.getCdnFor("avatars", props.post.author.id)} alt="avatar" />
+                <div class="thread--post-account-core-info">
                     <h1>{props.post.author.username}</h1>
                     <Show when={props.post.author.title}>
                         <h2 style={{ color: props.post.author.primary?.color }}>{props.post.author.title}</h2>
                     </Show>
                     <Show when={props.post.author.primary}>
-                        <div class="thread--post-user-core-info-tag">
+                        <div class="thread--post-account-core-info-tag">
                             <GroupTag group={props.post.author.primary} />
                         </div>
                     </Show>
                 </div>
                 { /* eslint-disable-next-line solid/no-innerhtml */}
-                <div class="thread--post-user-core-country" innerHTML={EmojiUtil.getFlagEmoji(props.post.author.country.code)} />
-            </div>
-            <div class="thread--post-user-info">
-                <div class="thread--post-user-info-level">
+                <div class="thread--post-account-core-country" innerHTML={EmojiUtil.getFlagEmoji(props.post.author.country.code)} />
+            </a>
+            <div class="thread--post-account-info">
+                <div class="thread--post-account-info-level">
                     <p>LVL. {props.post.author.forum_statistics.level}</p>
-                    <div class="thread--post-user-info-level-progress">
-                        <span class="thread--post-user-info-level-progress-bar" style={{ width: `${props.post.author.forum_statistics.exp_progress}%` }} />
+                    <div class="thread--post-account-info-level-progress">
+                        <span class="thread--post-account-info-level-progress-bar" style={{ width: `${props.post.author.forum_statistics.exp_progress}%` }} />
                     </div>
                 </div>
-                <div class="thread--post-user-info-stats">
-                    <div class="thread--post-user-info-stats-stat">
+                <div class="thread--post-account-info-stats">
+                    <div class="thread--post-account-info-stats-stat">
                         <p>Joined</p>
                         <h1>
                             <Tooltip text={joinedFormat.format(new Date(props.post.author.created_at))}>
@@ -207,7 +207,7 @@ export function Post(props: {
                             </Tooltip>
                         </h1>
                     </div>
-                    <div class="thread--post-user-info-stats-stat">
+                    <div class="thread--post-account-info-stats-stat">
                         <p>Posts</p>
                         <h1>{props.post.author.forum_statistics.posts ?? 0}</h1>
                     </div>

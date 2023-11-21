@@ -30,6 +30,12 @@ export type ApiAccount = {
         total_playcount: number;
         maximum_combo: number;
     };
+    forum_statistics: {
+        level: number;
+        exp: number;
+        reputation: number;
+        posts?: number;
+    };
     ranking: {
         global_rank: number;
         country_rank: number;

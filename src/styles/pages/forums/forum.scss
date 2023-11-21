@@ -1,0 +1,253 @@
+.forum {
+    position: relative;
+    display: flex;
+    justify-content: center;
+
+    &--background {
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 90vh;
+        overflow: hidden;
+        opacity: 0.1;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+        }
+
+        &-overlay {
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(to bottom, hsla(var(--base-hue), 15%, 5%, 0%), hsla(var(--base-hue), 15%, 5%, 100%))
+        }
+    }
+
+    &--content {
+        display: flex;
+        flex-direction: column;
+        gap: 48px;
+        max-width: var(--content-width);
+        width: 95%;
+        margin-top: 64px;
+
+        &-header {
+            display: flex;
+            flex-direction: row;
+            gap: 6px;
+            font-family: var(--font-header);
+            font-size: 24px;
+
+            h1 {
+                color: var(--hsl-l4);
+                font-weight: 700;
+            }
+
+            p {
+                color: var(--hsl-l1);
+            }
+        }
+
+        &-body {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background-color: var(--hsl-c5);
+            border-radius: var(--corner-radius);
+            padding: 24px 0;
+
+            &-content {
+                display: flex;
+                flex-direction: column;
+                gap: 32px;
+                padding: 0 40px;
+
+                &-section {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                    
+                    &-title {
+                        position: relative;
+                        color: var(--hsl-l1);
+    
+                        span {
+                            position: absolute;
+                            width: 3px;
+                            height: 16px;
+                            top: 50%;
+                            left: -8px;
+                            transform: translateY(-50%);
+                            border-radius: 100px;
+                        }
+                    }
+
+                    &-actions {
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
+
+                        button {
+                            border: none;
+                            outline: none;
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+                            gap: 4px;
+                            height: 30px;
+                            border-radius: var(--corner-radius);
+                            background-color: var(--hsl-l6);
+                            padding: 8px 20px;
+                            color: var(--hsl-l1);
+                            cursor: pointer;
+
+                            &:hover {
+                                background-color: var(--hsl-l5);
+                            }
+                        }
+
+                        &-sort {
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+                            gap: 8px;
+                            color: hsl(var(--base-hue), 15%, 40%);
+                        }
+                    }
+
+                    &-list {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 8px;
+
+                        &--thread {
+                            display: flex;
+                            flex-direction: row;
+                            justify-content: space-between;
+                            background-color: var(--hsl-c4);
+                            border-radius: var(--corner-radius);
+
+                            &-left {
+                                display: flex;
+                                flex-direction: row;
+                                gap: 12px;
+                                align-items: center;
+
+                                &-icon {
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    height: 100%;
+                                    padding: 0 22px;
+                                    background-color: hsl(var(--base-hue), 15%, 12%);
+                                    border-radius: var(--corner-radius);
+                                    font-size: 24px;
+                                }
+
+                                &-info {
+                                    display: flex;
+                                    flex-direction: row;
+                                    gap: 12px;
+                                    align-items: center;
+
+                                    &-new {
+                                        width: 3px;
+                                        height: 16px;
+                                        background-color: #CCFFDD;
+                                        box-shadow: 0px 0px 3px 0px rgba(51, 255, 119, 0.25);
+                                        border-radius: 100px;
+                                    }
+
+                                    &-details {
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: 2px;
+
+                                        h1 {
+                                            color: var(--hsl-l1);
+                                        }
+
+                                        p {
+                                            display: flex;
+                                            flex-direction: row;
+                                            gap: 6px;
+                                            color: hsl(var(--base-hue), 15%, 40%);
+    
+                                            a {
+                                                display: flex;
+                                                flex-direction: row;
+                                                gap: 6px;
+                                                align-items: center;
+                                                color: var(--hsl-links);
+                                                font-weight: 600;
+    
+                                                span {
+                                                    width: 8px;
+                                                    height: 8px;
+                                                    border-radius: 100px;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            &-right {
+                                display: flex;
+                                flex-direction: row-reverse;
+                                gap: 32px;
+                                align-items: center;
+                                padding: 8px 20px;
+                                color: hsl(var(--base-hue), 15%, 40%);
+                                font-size: 14px;
+
+                                &-last_reply {
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: 4px;
+
+                                    p {
+                                        display: flex;
+                                        flex-direction: row;
+                                        gap: 6px;
+                                        color: hsl(var(--base-hue), 15%, 40%);
+
+                                        a {
+                                            display: flex;
+                                            flex-direction: row;
+                                            gap: 6px;
+                                            align-items: center;
+                                            color: var(--hsl-links);
+                                            font-weight: 600;
+
+                                            span {
+                                                width: 8px;
+                                                height: 8px;
+                                                border-radius: 100px;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                &-stats {
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: flex-end;
+                                    gap: 2px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,23 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-left: 40px;
+}
+
+.name {
+    position: relative;
+    width: fit-content;
+    font-family: var(--font-header);
+    font-size: 24px;
+    color: var(--hsl-l1);
+
+    span {
+        position: absolute;
+        bottom: -6px;
+        left: -40px;
+        right: 0;
+        height: 3px;
+        border-radius: 0 var(--corner-radius) var(--corner-radius) 0;
+    }
+}

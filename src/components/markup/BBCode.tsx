@@ -1,16 +1,7 @@
+import { TagNode } from "@bbob/plugin-helper";
+import { createPreset } from "@bbob/preset";
 import { ParentProps, createEffect } from "solid-js";
-
-const parsers: { [key: string]: (text: string) => string } = {
-    "b": (text) => `<strong>${text}</strong>`,
-    "i": (text) => `<em>${text}</em>`,
-    "u": (text) => `<u>${text}</u>`,
-    "s": (text) => `<s>${text}</s>`,
-    "url": (text) => `<a href="${text}">${text}</a>`,
-    "img": (text) => `<img src="${text}" />`,
-    "quote": (text) => `<blockquote>${text}</blockquote>`,
-    "code": (text) => `<code>${text}</code>`,
-    "color": (text) => `<span style="color: ${text}">${text}</span>`
-};
+import bbobHTML from "@bbob/html";
 
 export function BBCode(props: ParentProps & { children: string }) {
     let ref: HTMLDivElement | undefined = undefined;
@@ -20,14 +11,27 @@ export function BBCode(props: ParentProps & { children: string }) {
             return;
         }
 
-        // bbcode parser
-        const bbcode = ref.innerHTML;
+        // // bbcode parser
+        const bbcode = ref.innerText;
+        const processed = bbobHTML(bbcode, BBCodePreset());
+        ref.innerHTML = processed;
+    });
 
-        // replace all the bbcode with html
-        let html = bbcode;
+    return <div ref={ref} class="_markdown_">{props.children}</div>;
+}
 
-        
-    })
+export const BBCodePreset = createPreset({
+    b: (node) => new TagNode("strong", node.attrs, node.content ?? ""),
+    i: (node) => new TagNode("em", node.attrs, node.content ?? ""),
+    u: (node) => new TagNode("u", node.attrs, node.content ?? ""),
+    s: (node) => new TagNode("s", node.attrs, node.content ?? ""),
+    url: (node) => new TagNode("a", { href: getFirstAttribute(node) }, node.content ?? ""),
+    img: (node) => new TagNode("img", { src: node.content![0] as string }, ""),
+    quote: (node) => new TagNode("blockquote", node.attrs, node.content ?? ""),
+    code: (node) => new TagNode("code", node.attrs, node.content ?? ""),
+    color: (node) => new TagNode("span", { style: `color: ${getFirstAttribute(node)}` }, node.content ?? "")
+});
 
-    return <div ref={ref} class="_bbcode_">{props.children}</div>;
+function getFirstAttribute(node: TagNode) {
+    return node.attrs[Object.keys(node.attrs)[0]];
 }

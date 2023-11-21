@@ -121,8 +121,51 @@
                     align-items: center;
                 }
 
-                &-comment {
+                &-reply {
                     padding: 0 40px;
+
+                    &-textbox {
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding: 6px 0;
+                        padding-left: 20px;
+                        padding-right: 6px;
+        
+                        &-left {
+                            display: flex;
+                            flex-direction: row;
+                            gap: 4px;
+                            font-size: 12px;
+                            color: hsl(var(--base-hue), 15%, 40%);
+                        }
+        
+                        &-right {
+                            display: flex;
+                            flex-direction: row;
+                            gap: 8px;
+                            justify-content: flex-end;
+        
+                            button {
+                                font: inherit;
+                                font-size: 14px;
+                                cursor: pointer;
+                            }
+        
+                            &-post {
+                                border: none;
+                                background-color: var(--hsl-l6);
+                                padding: 4px 16px;
+                                border-radius: var(--corner-radius);
+                                color: var(--hsl-l1);
+        
+                                &:hover {
+                                    background-color: var(--hsl-l5);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -273,6 +316,85 @@
                 &-id {
                     font-weight: 600;
                     color: var(--hsl-links);
+                }
+            }
+
+            &-body {
+                flex: 1;
+                word-wrap: break-word;
+                white-space: pre-wrap;
+            }
+
+            &-textbox {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                padding: 6px 0;
+                padding-left: 20px;
+                padding-right: 6px;
+
+                &-left {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 4px;
+                    font-size: 12px;
+                    color: hsl(var(--base-hue), 15%, 40%);
+                }
+
+                &-right {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 8px;
+                    justify-content: flex-end;
+
+                    button {
+                        font: inherit;
+                        font-size: 14px;
+                        cursor: pointer;
+                    }
+
+                    &-edit {
+                        border: none;
+                        background-color: var(--hsl-l6);
+                        padding: 4px 16px;
+                        border-radius: var(--corner-radius);
+                        color: var(--hsl-l1);
+
+                        &:hover {
+                            background-color: var(--hsl-l5);
+                        }
+                    }
+
+                    &-cancel {
+                        border: 1px solid hsl(var(--base-hue), 15%, 40%);
+                        background-color: transparent;
+                        color: hsl(var(--base-hue), 15%, 40%);
+                        padding: 4px 16px;
+                        border-radius: var(--corner-radius);
+                    }
+                }
+            }
+
+            &-actions {
+                display: flex;
+                flex-direction: row;
+                gap: 8px;
+
+                button {
+                    border: none;
+                    outline: none;
+                    padding: 0;
+                    background-color: transparent;
+                    font: inherit;
+                    color: hsl(var(--base-hue), 15%, 40%);
+                    font-size: 14px;
+
+                    cursor: pointer;
+
+                    &:hover {
+                        color: hsl(var(--base-hue), 15%, 50%);
+                    }
                 }
             }
         }

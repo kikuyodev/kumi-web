@@ -26,4 +26,5 @@ export interface ApiThread extends ApiModal {
 export interface ApiThreadPost extends ApiModal {
     body: string;
     author: ApiAccount;
+    editor?: ApiAccount;
 }

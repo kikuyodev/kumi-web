@@ -277,4 +277,26 @@ class ForumApiAccess {
             return response;
         }
     }
+
+    public async createPost(threadId: string | number, body: Record<string, unknown>) {
+        const response = await this.access.rest.send<["post"], [ApiThreadPost]>(`/api/v1/forums/threads/${threadId}/posts`, {
+            method: "POST",
+            credentials: "include"
+        }, body);
+
+        if (response.code === 200) {
+            return response.data!.post;
+        }
+    }
+
+    public async editPost(threadId: string | number, id: string | number, message: string) {
+        const response = await this.access.rest.send<["post"], [ApiThreadPost]>(`/api/v1/forums/threads/${threadId}/posts/${id}`, {
+            method: "PATCH",
+            credentials: "include"
+        }, { body: message });
+
+        if (response.code === 200) {
+            return response.data!.post;
+        }
+    }
 }

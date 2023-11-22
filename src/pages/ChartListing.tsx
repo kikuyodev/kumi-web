@@ -62,7 +62,7 @@ export function ChartListing() {
         <div class="chart_listing--content">
             <div class="chart_listing--content-list">
                 <For each={charts()}>
-                    {chart => <div class="chart_listing--content-list-item" style={{ opacity: 0 }}><ChartCard {...chart} /></div>}
+                    {chart => <div class="chart_listing--content-list-item" style={{ opacity: 0 }}><ChartCard chart={chart} /></div>}
                 </For>
             </div>
             <div class="chart_listing--content-query">

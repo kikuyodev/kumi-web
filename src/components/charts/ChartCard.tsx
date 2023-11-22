@@ -1,6 +1,6 @@
 import { faDownload, faHeart, faPause, faPlay, faPlayCircle, faSyncAlt } from "@fortawesome/free-solid-svg-icons";
 import { Fa } from "solid-fa";
-import { For, Show, createEffect, createSignal } from "solid-js";
+import { For, Show, createEffect, createSignal, onMount } from "solid-js";
 import { ApiChartSet, ApiChartSetStatus } from "../../structures/api/ApiChartSet";
 import { Colors } from "../../util/Colors";
 import { Util } from "../../util/Util";
@@ -9,12 +9,24 @@ import "../../styles/components/charts/chartCard.scss";
 import anime from "animejs";
 import { useGlobalAudio } from "../../contexts/AudioContext";
 import { Song } from "../../structures/GlobalAudio";
+import { Portal } from "solid-js/web";
 
-export function ChartCard(props: ApiChartSet) {
+export function ChartCard(props: {
+    chart: ApiChartSet;
+    expanded?: boolean;
+}) {
     const [controlsVisible, setControlsVisible] = createSignal(false);
 
+    let card: HTMLDivElement | undefined = undefined;
     let statistics: HTMLDivElement | undefined = undefined;
     let controls: HTMLDivElement | undefined = undefined;
+    let expandedCard: HTMLDivElement | undefined = undefined;
+
+    onMount(() => {
+        expandedCard?.style.setProperty("display", "none");
+        expandedCard?.style.setProperty("position", "absolute");
+        expandedCard?.style.setProperty("z-index", "10000");
+    });
 
     createEffect(() => {
         anime({
@@ -36,28 +48,64 @@ export function ChartCard(props: ApiChartSet) {
         });
     });
 
-    return <a class="chart_card" href={`/chartsets/${props.id}`}>
+    return <a ref={card} class={`chart_card ${props.expanded ? "chart_card--expanded" : ""}`} href={`/chartsets/${props.chart.id}`}>
         <div class="chart_card--background">
-            <img src={Util.getCdnFor("backgrounds", props.id, { format: "card" })} alt="" />
+            <img src={Util.getCdnFor("backgrounds", props.chart.id, { format: "card" })} alt="" />
             <div class="chart_card--background-overlay" />
+            <Show when={props.expanded}>
+                <div class="chart_card--background-overlay-expanded" />
+            </Show>
         </div>
         <div class="chart_card--content">
             <div class="chart_card--content-left">
                 <div class="chart_card--content-left-info">
-                    <div class="chart_card--content-left-info-title">{props.title}</div>
-                    <div class="chart_card--content-left-info-artist">{props.artist}</div>
+                    <div class="chart_card--content-left-info-title">{props.chart.title}</div>
+                    <div class="chart_card--content-left-info-artist">{props.chart.artist}</div>
                     <div class="chart_card--content-left-info-charter">
                         <p>Charted by</p>
-                        <AccountFlyout account={props.creator}>
-                            <a href={`/accounts/${props.creator.id}`}>{props.creator.username}</a>
+                        <AccountFlyout account={props.chart.creator}>
+                            <a href={`/accounts/${props.chart.creator.id}`}>{props.chart.creator.username}</a>
                         </AccountFlyout>
                     </div>
                 </div>
-                <div class="chart_card--content-left-charts">
-                    <For each={props.charts}>
-                        {chart => <div class="chart_card--content-left-charts-chart" style={{ "background-color": Colors.difficultyColorFor(chart.difficulty.difficulty) }} />}
-                    </For>
-                </div>
+                <Show when={!props.expanded}>
+                    <div class="chart_card--content-left-charts"
+                        onMouseEnter={() => {
+                            expandedCard?.style.setProperty("display", "block");
+
+                            const rect = card!.getBoundingClientRect();
+                            const x = rect.left;
+                            const y = rect.top;
+
+                            expandedCard?.style.setProperty("left", `${x}px`);
+                            expandedCard?.style.setProperty("top", `${y}px`);
+                            expandedCard?.style.setProperty("width", `${rect.width}px`);
+                        }}
+                    >
+                        <For each={props.chart.charts}>
+                            {chart => <div class="chart_card--content-left-charts-chart" style={{ "background-color": Colors.difficultyColorFor(chart.difficulty.difficulty) }} />}
+                        </For>
+                        <Portal ref={expandedCard} mount={document.body}>
+                            <div class="chart_card--content-left-charts-expanded" onMouseLeave={() => {
+                                expandedCard?.style.setProperty("display", "none");
+                            }}>
+                                <ChartCard {...props} expanded={true} />
+                            </div>
+                        </Portal>
+                    </div>
+                </Show>
+                <Show when={props.expanded}>
+                    <div class="chart_card--content-left-charts_expanded">
+                        <For each={props.chart.charts}>
+                            {chart =>
+                                <div class="chart_card--content-left-charts_expanded-chart">
+                                    <div class="chart_card--content-left-charts_expanded-chart-difficulty" style={{ "background-color": Colors.difficultyColorFor(chart.difficulty.difficulty), color: Colors.difficultyTextColorFor(chart.difficulty.difficulty) }}>{chart.difficulty.difficulty.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                                    <p>{chart.difficulty_name}</p>
+                                </div>
+                            }
+                        </For>
+                    </div>
+                </Show>
             </div>
             <div class="chart_card--content-right" onMouseEnter={() => {
                 setControlsVisible(true);
@@ -78,9 +126,9 @@ export function ChartCard(props: ApiChartSet) {
                     <button class="chart_card--content-right-controls-control">
                         <Fa icon={faDownload} />
                     </button>
-                    <PlayButton {...props} />
+                    <PlayButton {...props.chart} />
                 </div>
-                <div class="chart_card--content-right-status" data-status={ApiChartSetStatus[props.status].toLowerCase()}>{getReadableName(props.status)}</div>
+                <div class="chart_card--content-right-status" data-status={ApiChartSetStatus[props.chart.status].toLowerCase()}>{getReadableName(props.chart.status)}</div>
             </div>
         </div>
     </a>;

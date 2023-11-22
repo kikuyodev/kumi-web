@@ -186,10 +186,10 @@ export function AccountPage() {
                         </div>
                         <div class="account--content-maps-section-list">
                             <For each={charts()?.filter(v => v.status === ApiChartSetStatus.Ranked)}>
-                                {chart => <ChartCard {...chart} />}
+                                {chart => <ChartCard chart={chart} />}
                             </For>
                             <For each={charts()?.filter(v => v.status === ApiChartSetStatus.Qualified)}>
-                                {chart => <ChartCard {...chart} />}
+                                {chart => <ChartCard chart={chart} />}
                             </For>
                         </div>
                     </div>
@@ -201,7 +201,7 @@ export function AccountPage() {
                         </div>
                         <div class="account--content-maps-section-list">
                             <For each={charts()?.filter(v => v.status === ApiChartSetStatus.Pending)}>
-                                {chart => <ChartCard {...chart} />}
+                                {chart => <ChartCard chart={chart} />}
                             </For>
                         </div>
                     </div>
@@ -213,7 +213,7 @@ export function AccountPage() {
                         </div>
                         <div class="account--content-maps-section-list">
                             <For each={charts()?.filter(v => v.status === ApiChartSetStatus.Graveyard)}>
-                                {chart => <ChartCard {...chart} />}
+                                {chart => <ChartCard chart={chart} />}
                             </For>
                         </div>
                     </div>

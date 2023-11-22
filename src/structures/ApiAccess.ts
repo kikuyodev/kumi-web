@@ -33,6 +33,17 @@ export class ApiAccess {
             return response.data!.page;
         }
     }
+
+    public async getRankings(page: number = 1) {
+        const response = await this.rest.send<["rankings"], [ApiAccount[]]>(`/api/v1/rankings?page=${page}`, {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (response.code === 200) {
+            return response;
+        }
+    }
 }
 
 class AccountApiAccess {

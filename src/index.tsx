@@ -18,6 +18,7 @@ const { Home } = lazily(() => import("./pages/HomePage"));
 const { Group } = lazily(() => import("./pages/Group"));
 const { AccountPage } = lazily(() => import("./pages/AccountPage"));
 const { Wiki } = lazily(() => import("./pages/Wiki"));
+const { Rankings } = lazily(() => import("./pages/Rankings"));
 
 // Charts
 const { ChartListing } = lazily(() => import("./pages/ChartListing"));
@@ -62,6 +63,7 @@ render(() => {
                                             <Routes>
                                                 <Route path="/" element={<Navigate href="/home" />} />
                                                 <Route path="/home" component={Home} />
+                                                <Route path="/rankings" component={Rankings} />
                                                 <Route path="/groups/:id" component={Group} />
                                                 <Route path="/forums">
                                                     <Route path="/" component={Forums} />

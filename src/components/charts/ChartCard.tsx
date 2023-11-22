@@ -78,7 +78,7 @@ export function ChartCard(props: {
                             const y = rect.top;
 
                             expandedCard?.style.setProperty("left", `${x}px`);
-                            expandedCard?.style.setProperty("top", `${y}px`);
+                            expandedCard?.style.setProperty("top", `${y + window.scrollY}px`);
                             expandedCard?.style.setProperty("width", `${rect.width}px`);
                         }}
                     >

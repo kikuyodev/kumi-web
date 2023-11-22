@@ -8,6 +8,7 @@ import { AccountFlyout } from "../flyouts/AccountFlyout";
 export interface ChartBackgroundProps {
     set?: ApiChartSet;
     currentChart: Accessor<ApiChart | undefined>;
+    requestChart?: (chart: ApiChart) => void;
 }
 
 export function ChartBackground(props: ChartBackgroundProps) {
@@ -37,6 +38,7 @@ export function ChartBackground(props: ChartBackgroundProps) {
                             background: Colors.difficultyColorFor(props.currentChart()?.difficulty.difficulty ?? 0),
                             color: Colors.difficultyTextColorFor(props.currentChart()?.difficulty.difficulty ?? 0)
                         }}
+                        onClick={() => props.requestChart?.(chart)}
                     >
                         {(props.currentChart()?.difficulty.difficulty ?? 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </button>}

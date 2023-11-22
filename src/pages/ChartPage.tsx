@@ -48,6 +48,9 @@ export function ChartPage() {
                     <ChartBackground
                         set={set()}
                         currentChart={chart}
+                        requestChart={(c) => {
+                            window.location.href = `/chartsets/${params.set}/${c.id}`;
+                        }}
                     />
                     <div class="chart--content-details--body">
                         <SegmentedControl options={["Chart", "Modding"]} selected={"Chart"} onChange={v => {

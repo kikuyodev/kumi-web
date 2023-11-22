@@ -5,6 +5,7 @@ import { ApiComment } from "./api/ApiComment";
 import { ApiForum, ApiThread, ApiThreadPost } from "./api/ApiForum";
 import { ApiModdingPost } from "./api/ApiModdingPost";
 import { RestClient } from "../util/RestClient";
+import { ApiWikiPage } from "./api/ApiWikiPage";
 
 export class ApiAccess {
     private _restClient: RestClient;
@@ -20,6 +21,17 @@ export class ApiAccess {
 
     get rest() {
         return this._restClient;
+    }
+
+    public async getWikiPage(language: string, page: string) {
+        const response = await this.rest.send<["page"], [ApiWikiPage]>(`/api/v1/wiki/${language}/${page}`, {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (response.code === 200) {
+            return response.data!.page;
+        }
     }
 }
 

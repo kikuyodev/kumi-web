@@ -17,6 +17,7 @@ import { GlobalAudioProvider } from "./contexts/AudioContext";
 const { Home } = lazily(() => import("./pages/HomePage"));
 const { Group } = lazily(() => import("./pages/Group"));
 const { AccountPage } = lazily(() => import("./pages/AccountPage"));
+const { Wiki } = lazily(() => import("./pages/Wiki"));
 
 // Charts
 const { ChartListing } = lazily(() => import("./pages/ChartListing"));
@@ -68,6 +69,7 @@ render(() => {
                                                     <Route path="/threads/:id" component={Thread} />
                                                     <Route path="*" element={<ErrorPage code={404} message={"The forum, thread, or topic you were looking for does not exist."} />} />
                                                 </Route>
+                                                <Route path="/wiki/:language/:page" component={Wiki} />
                                                 <Route path="/accounts/:id" component={AccountPage} data={AccountData} />
                                                 <Route path="/chartsets" component={ChartListing} />
                                                 <Route path="/chartsets/:set" component={ChartPage} />

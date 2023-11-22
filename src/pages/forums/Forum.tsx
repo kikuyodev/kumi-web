@@ -13,6 +13,7 @@ import { AccountFlyout } from "../../components/flyouts/AccountFlyout";
 import { Util } from "../../util/Util";
 import { PaginationMeta } from "../../util/api/ApiResponse";
 import { Pagination } from "../../components/Pagination";
+import anime from "animejs";
 
 interface ForumMeta extends PaginationMeta {
     threads: {
@@ -35,7 +36,16 @@ export function Forum() {
 
     return <div class="forum">
         <div class="forum--background">
-            <img src="" alt="" />
+            <img src="" alt="" style={{ opacity: 0 }} onLoad={(v) => {
+                anime({
+                    targets: v.target,
+                    opacity: [
+                        { value: 0, duration: 0 },
+                        { value: 1, duration: 1000 }
+                    ],
+                    easing: "linear"
+                });
+            }} />
             <div class="forum--background-overlay" />
         </div>
         <div class="forum--content">
@@ -96,7 +106,7 @@ function Thread(props: {
 
         return props.meta()?.threads[props.thread.id].is_read;
     });
-    
+
     return <a href={`/forums/threads/${props.thread.id}`} class="forum--content-body-content-section-list--thread">
         <div class="forum--content-body-content-section-list--thread-left">
             <div class={`forum--content-body-content-section-list--thread-left-icon ${isRead() ? "forum--content-body-content-section-list--thread-left-icon-read" : ""}`}>
@@ -104,7 +114,7 @@ function Thread(props: {
                     <Fa icon={faCommentAltSolid} />
                 </Show>
                 <Show when={isRead()}>
-                    <Fa icon={faCommentAltRegular}  />
+                    <Fa icon={faCommentAltRegular} />
                 </Show>
             </div>
             <div class="forum--content-body-content-section-list--thread-left-info">

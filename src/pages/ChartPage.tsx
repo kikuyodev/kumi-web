@@ -9,6 +9,7 @@ import { ApiChart } from "../structures/api/ApiChartSet";
 import { ApiComment } from "../structures/api/ApiComment";
 import { Util } from "../util/Util";
 import "../styles/pages/chart.scss";
+import anime from "animejs";
 
 export function ChartPage() {
     const params = useParams();
@@ -37,7 +38,16 @@ export function ChartPage() {
     return (
         <div class="chart">
             <div class="chart--background">
-                <img src={Util.getCdnFor("backgrounds", set()?.id, { format: "background" })} alt="background" />
+                <img src={Util.getCdnFor("backgrounds", set()?.id, { format: "background" })} alt="background" style={{ opacity: 0 }} onLoad={(v) => {
+                    anime({
+                        targets: v.target,
+                        opacity: [
+                            { value: 0, duration: 0 },
+                            { value: 1, duration: 1000 }
+                        ],
+                        easing: "linear"
+                    });
+                }} />
                 <div class="chart--background-overlay" />
             </div>
             <div class="chart--content">
@@ -54,7 +64,7 @@ export function ChartPage() {
                     />
                     <div class="chart--content-details--body">
                         <SegmentedControl options={["Chart", "Modding"]} selected={"Chart"} onChange={v => {
-                            if (v === "Chart"){
+                            if (v === "Chart") {
                                 return;
                             }
 
@@ -75,9 +85,9 @@ export function ChartPage() {
                                 if (parent) {
                                     body.parent = parent.id;
                                 }
-                                
+
                                 const result = await access.chart.sendChartSetComment(params.set, body);
-        
+
                                 if (result) {
                                     window.location.reload();
                                 }
@@ -86,7 +96,7 @@ export function ChartPage() {
                         editComment: async (comment: ApiComment, message: string) => {
                             useApi(async (access) => {
                                 const result = await access.chart.editChartSetComment(params.set, comment.id, message);
-        
+
                                 if (result) {
                                     window.location.reload();
                                 }
@@ -95,7 +105,7 @@ export function ChartPage() {
                         deleteComment: async (comment: ApiComment) => {
                             useApi(async (access) => {
                                 const result = await access.chart.deleteChartSetComment(params.set, comment.id);
-        
+
                                 if (result) {
                                     window.location.reload();
                                 }
@@ -104,7 +114,7 @@ export function ChartPage() {
                         pinComment: async (comment: ApiComment) => {
                             useApi(async (access) => {
                                 const result = await access.chart.pinChartSetComment(params.set, comment.id);
-        
+
                                 if (result) {
                                     window.location.reload();
                                 }

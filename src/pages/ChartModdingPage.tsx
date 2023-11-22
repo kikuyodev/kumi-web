@@ -9,6 +9,7 @@ import { useApi } from "../contexts/ApiAccessContext";
 import { ApiChart } from "../structures/api/ApiChartSet";
 import "../styles/pages/chart.scss";
 import { Util } from "../util/Util";
+import anime from "animejs";
 
 type MetaType = {
     can_nominate: boolean;
@@ -36,7 +37,16 @@ export function ChartModdingPage() {
     return (
         <div class="chart">
             <div class="chart--background">
-                <img src={Util.getCdnFor("backgrounds", set()?.id, { format: "background" })} alt="background" />
+                <img src={Util.getCdnFor("backgrounds", set()?.id, { format: "background" })} alt="background" style={{ opacity: 0 }} onLoad={(v) => {
+                    anime({
+                        targets: v.target,
+                        opacity: [
+                            { value: 0, duration: 0 },
+                            { value: 1, duration: 1000 }
+                        ],
+                        easing: "linear"
+                    });
+                }} />
                 <div class="chart--background-overlay" />
             </div>
             <div class="chart--content">
@@ -62,18 +72,18 @@ export function ChartModdingPage() {
                 <div class="chart--content-modding">
                     <SegmentedControl options={["General (All difficulties)", "General (This difficulty)", "Timeline", "History"]} selected="General (All difficulties)" onChange={v => {
                         switch (v) {
-                        case "General (All difficulties)":
-                            setSection("general");
-                            break;
-                        case "General (This difficulty)":
-                            setSection("chart");
-                            break;
-                        case "Timeline":
-                            setSection("timeline");
-                            break;
-                        case "History":
-                            setSection("history");
-                            break;
+                            case "General (All difficulties)":
+                                setSection("general");
+                                break;
+                            case "General (This difficulty)":
+                                setSection("chart");
+                                break;
+                            case "Timeline":
+                                setSection("timeline");
+                                break;
+                            case "History":
+                                setSection("history");
+                                break;
                         }
                     }} />
                     <Switch fallback={<div>Not found</div>}>

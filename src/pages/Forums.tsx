@@ -6,13 +6,23 @@ import { useApi } from "../contexts/ApiAccessContext";
 import { ApiForum } from "../structures/api/ApiForum";
 import { Util } from "../util/Util";
 import "../styles/pages/forums.scss";
+import anime from "animejs";
 
 export function Forums() {
     const forums = useApi(async api => await api.forum.getForums());
 
     return <div class="forums">
         <div class="forums--background">
-            <img src="" alt="" />
+            <img src="" alt="" style={{ opacity: 0 }} onLoad={(v) => {
+                anime({
+                    targets: v.target,
+                    opacity: [
+                        { value: 0, duration: 0 },
+                        { value: 1, duration: 1000 }
+                    ],
+                    easing: "linear"
+                });
+            }} />
             <div class="forums--background-overlay" />
         </div>
         <div class="forums--content">

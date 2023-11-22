@@ -3,6 +3,7 @@ import { useApi } from "../contexts/ApiAccessContext";
 import { For, createMemo } from "solid-js";
 import { Markdown } from "../components/markup/Markdown";
 import "../styles/pages/wiki.scss";
+import anime from "animejs";
 
 export function Wiki() {
     const params = useParams();
@@ -52,7 +53,16 @@ export function Wiki() {
 
     return <div class="wiki">
         <div class="wiki--background">
-            <img src="https://img3.gelbooru.com/images/bd/40/bd4052b6983ef3b3a3226bb7baea17cd.jpg" alt="" />
+            <img src="https://img3.gelbooru.com/images/bd/40/bd4052b6983ef3b3a3226bb7baea17cd.jpg" alt="" style={{ opacity: 0 }} onLoad={(v) => {
+                anime({
+                    targets: v.target,
+                    opacity: [
+                        { value: 0, duration: 0 },
+                        { value: 1, duration: 1000 }
+                    ],
+                    easing: "linear"
+                });
+            }} />
             <div class="wiki--background-overlay" />
         </div>
         <div class="wiki--header">

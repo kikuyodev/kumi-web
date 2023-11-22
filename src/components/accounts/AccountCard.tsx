@@ -4,13 +4,23 @@ import { ApiAccount } from "../../structures/api/ApiAccount";
 import { EmojiUtil } from "../../util/EmojiUtil";
 import { Util } from "../../util/Util";
 import "../../styles/components/accounts/accountCard.scss";
+import anime from "animejs";
 
 export function AccountCard(props: {
     account?: ApiAccount;
 }) {
     return <a href={`/accounts/${props.account?.id}`} class="account_card">
         <div class="account_card--background">
-            <img src={Util.getCdnFor("avatars", props.account?.id)} alt="background" />
+            <img src={Util.getCdnFor("avatars", props.account?.id)} alt="background"  style={{ opacity: 0 }} onLoad={(v) => {
+                anime({
+                    targets: v.target,
+                    opacity: [
+                        { value: 0, duration: 0 },
+                        { value: 1, duration: 1000 }
+                    ],
+                    easing: "linear"
+                });
+            }} />
             <div class="account_card--background-overlay" />
         </div>
         <div class="account_card--content">

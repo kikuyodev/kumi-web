@@ -4,6 +4,7 @@ import { Colors } from "../../util/Colors";
 import { Util } from "../../util/Util";
 import "../../styles/components/charts/chartBackground.scss";
 import { AccountFlyout } from "../flyouts/AccountFlyout";
+import anime from "animejs";
 
 export interface ChartBackgroundProps {
     set?: ApiChartSet;
@@ -15,7 +16,16 @@ export function ChartBackground(props: ChartBackgroundProps) {
     return (
         <div class="chart_background">
             <div class="chart_background--background">
-                <img src={Util.getCdnFor("backgrounds", props.set?.id, { format: "chartinfo" })} alt="chartinfo background" loading="lazy" />
+                <img src={Util.getCdnFor("backgrounds", props.set?.id, { format: "chartinfo" })} alt="chartinfo background" loading="lazy" style={{ opacity: 0 }} onLoad={(v) => {
+                    anime({
+                        targets: v.target,
+                        opacity: [
+                            { value: 0, duration: 0 },
+                            { value: 1, duration: 1000 }
+                        ],
+                        easing: "linear"
+                    });
+                }} />
                 <div class="chart_background--background-overlay" />
             </div>
             <div class="chart_background--info">

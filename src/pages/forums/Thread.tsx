@@ -17,6 +17,7 @@ import { PaginationMeta } from "../../util/api/ApiResponse";
 import { Fa } from "solid-fa";
 import { faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { Exception } from "../../util/errors/Exception";
+import anime from "animejs";
 
 interface ThreadPostMeta {
     can_edit: boolean;
@@ -61,7 +62,16 @@ export function Thread() {
 
     return <div class="thread">
         <div class="thread--background">
-            <img src="" alt="" />
+            <img src="" alt="" style={{ opacity: 0 }} onLoad={(v) => {
+                anime({
+                    targets: v.target,
+                    opacity: [
+                        { value: 0, duration: 0 },
+                        { value: 1, duration: 1000 }
+                    ],
+                    easing: "linear"
+                });
+            }} />
             <div class="thread--background-overlay" />
         </div>
         <div class="thread--content">

@@ -50,7 +50,16 @@ export function ChartCard(props: {
 
     return <a ref={card} class={`chart_card ${props.expanded ? "chart_card--expanded" : ""}`} href={`/chartsets/${props.chart.id}`}>
         <div class="chart_card--background">
-            <img src={Util.getCdnFor("backgrounds", props.chart.id, { format: "card" })} alt="" />
+            <img src={Util.getCdnFor("backgrounds", props.chart.id, { format: "card" })} alt=""  style={{ opacity: 0 }} onLoad={(v) => {
+                anime({
+                    targets: v.target,
+                    opacity: [
+                        { value: 0, duration: 0 },
+                        { value: 1, duration: 1000 }
+                    ],
+                    easing: "linear"
+                });
+            }} />
             <div class="chart_card--background-overlay" />
             <Show when={props.expanded}>
                 <div class="chart_card--background-overlay-expanded" />

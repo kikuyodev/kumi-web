@@ -11,6 +11,7 @@ import { EmojiUtil } from "../util/EmojiUtil";
 import { useApi } from "../contexts/ApiAccessContext";
 import { ApiChartSet, ApiChartSetStatus } from "../structures/api/ApiChartSet";
 import { ChartCard } from "../components/charts/ChartCard";
+import anime from "animejs";
 
 export function AccountPage() {
     const account = useRouteData<typeof AccountData>();
@@ -32,7 +33,16 @@ export function AccountPage() {
 
     return <div class="account">
         <div class="account--background">
-            <img src={"https://pbs.twimg.com/media/F-Our2oagAAuDGA?format=jpg&name=orig"} alt="background" />
+            <img src={"https://pbs.twimg.com/media/F-Our2oagAAuDGA?format=jpg&name=orig"} alt="background" style={{ opacity: 0 }} onLoad={(v) => {
+                anime({
+                    targets: v.target,
+                    opacity: [
+                        { value: 0, duration: 0 },
+                        { value: 1, duration: 1000 }
+                    ],
+                    easing: "linear"
+                });
+            }} />
             <div class="account--background-overlay" />
         </div>
         <div class="account--content">

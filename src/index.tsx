@@ -71,7 +71,7 @@ render(() => {
                                                     <Route path="/threads/:id" component={Thread} />
                                                     <Route path="*" element={<ErrorPage code={404} message={"The forum, thread, or topic you were looking for does not exist."} />} />
                                                 </Route>
-                                                <Route path="/wiki/:language/:page" component={Wiki} />
+                                                <Route path="/wiki/:language/*page" component={Wiki} />
                                                 <Route path="/accounts/:id" component={AccountPage} data={AccountData} />
                                                 <Route path="/chartsets" component={ChartListing} />
                                                 <Route path="/chartsets/:set" component={ChartPage} />

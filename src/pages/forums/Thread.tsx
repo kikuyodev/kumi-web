@@ -6,8 +6,8 @@ import { Util } from "../../util/Util";
 import "../../styles/pages/forums/thread.scss";
 import { useAccount } from "../../contexts/AccountContext";
 import { TextBox } from "../../components/controls/TextBox";
-import { For, Show, createEffect, createSignal } from "solid-js";
-import { ApiThreadPost } from "../../structures/api/ApiForum";
+import { For, Show, createEffect, createMemo, createSignal } from "solid-js";
+import { ApiThreadPost, ForumThreadFlags } from "../../structures/api/ApiForum";
 import { GroupTag } from "../../components/accounts/GroupTag";
 import { EmojiUtil } from "../../util/EmojiUtil";
 import { Tooltip } from "../../components/Tooltip";
@@ -15,8 +15,7 @@ import { BBCode } from "../../components/markup/BBCode";
 import { Pagination } from "../../components/Pagination";
 import { PaginationMeta } from "../../util/api/ApiResponse";
 import { Fa } from "solid-fa";
-import { faChevronUp } from "@fortawesome/free-solid-svg-icons";
-import { Exception } from "../../util/errors/Exception";
+import { faChevronUp, faLock, faLockOpen, faThumbTack, faThumbtack } from "@fortawesome/free-solid-svg-icons";
 import anime from "animejs";
 
 interface ThreadPostMeta {
@@ -24,8 +23,15 @@ interface ThreadPostMeta {
     can_delete: boolean;
 }
 
-interface ThreadMeta extends PaginationMeta {
+interface ThreadPostsMeta extends PaginationMeta {
     posts: ThreadPostMeta[];
+}
+
+interface ThreadMeta {
+    can_reply: boolean;
+    can_move: boolean;
+    can_pin: boolean;
+    can_lock: boolean;
 }
 
 export function Thread() {
@@ -34,9 +40,10 @@ export function Thread() {
     const [searchParams] = useSearchParams();
 
     const thread = useApi(async api => await api.forum.getForumThread(params.id));
+    const threadMeta = createMemo(() => thread()?.parseMeta<ThreadMeta>());
 
     const [posts, setPosts] = createSignal<ApiThreadPost[] | undefined>(undefined);
-    const [meta, setMeta] = createSignal<ThreadMeta | undefined>(undefined);
+    const [meta, setMeta] = createSignal<ThreadPostsMeta | undefined>(undefined);
 
     let scrollButton: HTMLButtonElement | undefined = undefined;
     let textbox: HTMLTextAreaElement | undefined = undefined;
@@ -46,7 +53,7 @@ export function Thread() {
             const posts = await api.forum.getPosts(params.id, parseInt(searchParams.page ?? "1"));
 
             setPosts(posts?.data?.posts ?? []);
-            setMeta(posts?.parseMeta<ThreadMeta>());
+            setMeta(posts?.parseMeta<ThreadPostsMeta>());
         });
     });
 
@@ -59,6 +66,19 @@ export function Thread() {
             }
         }
     });
+
+    function modifyThread(body: Record<string, boolean>) {
+        useApi(async api => {            
+            const thread = await api.forum.editForumThread(params.id, body);
+
+            if (thread) {
+                window.location.reload();
+            }
+        });
+    }
+
+    const isPinned = createMemo(() => ((thread()?.data?.thread.flags ?? 0) & ForumThreadFlags.Pin) === ForumThreadFlags.Pin);
+    const isLocked = createMemo(() => ((thread()?.data?.thread.flags ?? 0) & ForumThreadFlags.Lock) === ForumThreadFlags.Lock);
 
     return <div class="thread">
         <div class="thread--background">
@@ -83,25 +103,49 @@ export function Thread() {
             <div class="thread--content-body">
                 <div class="thread--content-body-title">
                     <div class="thread--content-body-title-header">
-                        <ForumHeader name={thread()?.forum.name ?? ""} description={`Posted ${Util.getRelativeTimeString(thread()?.created_at ? new Date(thread()!.created_at!) : new Date())}`} color="#33CCFF" fadedDescription={true} />
+                        <ForumHeader name={thread()?.data?.thread.forum.name ?? ""} description={`Posted ${Util.getRelativeTimeString(thread()?.data?.thread.created_at ? new Date(thread()!.data!.thread.created_at!) : new Date())}`} color="#33CCFF" fadedDescription={true} />
                         <div class="thread--content-body-title-header-actions">
                             <button ref={scrollButton} style={{ display: "none" }} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
                                 <Fa icon={faChevronUp} />
                             </button>
+                            <Show when={threadMeta()?.can_lock}>
+                                <Show when={!isLocked()}>
+                                    <button onClick={() => modifyThread({ lock: true })}>
+                                        <Fa icon={faLock} />
+                                    </button>
+                                </Show>
+                                <Show when={isLocked()}>
+                                    <button onClick={() => modifyThread({ unlock: true })}>
+                                        <Fa icon={faLockOpen} />
+                                    </button>
+                                </Show>
+                            </Show>
+                            <Show when={threadMeta()?.can_pin}>
+                                <Show when={!isPinned()}>
+                                    <button onClick={() => modifyThread({ pin: true })}>
+                                        <Fa icon={faThumbTack} rotate={45} />
+                                    </button>
+                                </Show>
+                                <Show when={isPinned()}>
+                                    <button onClick={() => modifyThread({ pin: false })}>
+                                        <Fa icon={faThumbtack} />
+                                    </button>
+                                </Show>
+                            </Show>
                         </div>
                     </div>
                     <ForumsBreadcrumbs crumbs={[{
-                        name: thread()?.forum.name ?? "",
-                        href: `/forums/${thread()?.forum?.id}`
+                        name: thread()?.data?.thread.forum.name ?? "",
+                        href: `/forums/${thread()?.data?.thread.forum?.id}`
                     },
                     {
-                        name: thread()?.title ?? "",
-                        href: `/forums/thread/${thread()?.id}`
+                        name: thread()?.data?.thread.title ?? "",
+                        href: `/forums/thread/${thread()?.data?.thread.id}`
                     }]} />
                 </div>
                 <div class="thread--content-body-content">
                     <div class="thread--content-body-content-list">
-                        <For each={posts()}>{post => <Post threadId={thread()?.id ?? 0} post={post} meta={meta()?.posts[post.id]} />}</For>
+                        <For each={posts()}>{post => <Post threadId={thread()?.data?.thread.id ?? 0} post={post} meta={meta()?.posts[post.id]} />}</For>
                     </div>
                     <div class="thread--content-body-content-pagination">
                         <Pagination meta={meta} requestPage={(p) => {
@@ -109,7 +153,7 @@ export function Thread() {
                                 const posts = await api.forum.getPosts(params.id, p);
 
                                 setPosts(posts?.data?.posts ?? []);
-                                setMeta(posts?.parseMeta<ThreadMeta>());
+                                setMeta(posts?.parseMeta<ThreadPostsMeta>());
 
                                 // change url but don't reload
                                 window.history.pushState({}, "", `/forums/threads/${params.id}?page=${p}`);
@@ -251,7 +295,9 @@ export function Post(props: {
                                 <button class="thread--post-content-textbox-right-cancel" onClick={() => setEditing(false)}>Cancel</button>
                                 <button class="thread--post-content-textbox-right-edit" onClick={() => {
                                     useApi(async api => {
-                                        const post = await api.forum.editPost(props.threadId, props.post.id, textbox!.value);
+                                        const post = await api.forum.editPost(props.threadId, props.post.id, {
+                                            body: textbox!.value
+                                        });
 
                                         if (post) {
                                             setEditing(false);
@@ -273,7 +319,15 @@ export function Post(props: {
                     <button onClick={() => setEditing(!editing())}>Edit</button>
                 </Show>
                 <Show when={props.meta?.can_delete}>
-                    <button>Delete</button>
+                    <button onClick={() => {
+                        useApi(async api => {
+                            const post = await api.forum.deletePost(props.threadId, props.post.id);
+
+                            if (post) {
+                                window.location.reload();
+                            }
+                        });
+                    }}>Delete</button>
                 </Show>
             </div>
         </div>

@@ -77,20 +77,22 @@ function ForumChildren(props: ApiForum) {
             <p>{props.description}</p>
         </div>
         <div class="forums--content-body--forum-body-list--children-right">
-            <div class="forums--content-body--forum-body-list--children-right-content">
-                <h1>{props.last_thread.title}</h1>
-                <p>
-                    {Util.getRelativeTimeString(new Date(props.last_thread.updated_at ?? props.last_thread.created_at!))} by
-                    <AccountFlyout account={props.last_thread.author}>
-                        <a href={`/accounts/${props.last_thread.author.id}`}>
-                            <Show when={props.last_thread.author.primary}>
-                                <span style={{ "background-color": props.last_thread.author.primary!.color }} />
-                            </Show>
-                            {props.last_thread.author.username}
-                        </a>
-                    </AccountFlyout>
-                </p>
-            </div>
+            <Show when={props.last_thread}>
+                <div class="forums--content-body--forum-body-list--children-right-content">
+                    <h1>{props.last_thread!.title}</h1>
+                    <p>
+                        {Util.getRelativeTimeString(new Date(props.last_thread?.updated_at ?? props.last_thread!.created_at!))} by
+                        <AccountFlyout account={props.last_thread!.author}>
+                            <a href={`/accounts/${props.last_thread!.author.id}`}>
+                                <Show when={props.last_thread!.author.primary}>
+                                    <span style={{ "background-color": props.last_thread!.author.primary!.color }} />
+                                </Show>
+                                {props.last_thread!.author.username}
+                            </a>
+                        </AccountFlyout>
+                    </p>
+                </div>
+            </Show>
         </div>
     </a>;
 }

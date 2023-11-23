@@ -70,7 +70,7 @@ export function AccountFlyout(props: ParentProps<{
                 const flyoutRect = flyout.getBoundingClientRect();
 
                 // check if mouse is inside the rect.
-                if (mouse.x() > flyoutRect.left && mouse.x() < flyoutRect.right && mouse.y() > flyoutRect.top && mouse.y() < flyoutRect.bottom) {
+                if (mouse.x() > flyoutRect.left && mouse.x() < flyoutRect.right && mouse.y() > flyoutRect.top + window.scrollY && mouse.y() < flyoutRect.bottom + window.scrollY) {
                     return;
                 }
             }

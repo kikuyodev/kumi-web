@@ -1,6 +1,11 @@
 import { ApiAccount } from "./ApiAccount";
 import { ApiModal } from "./ApiModal";
 
+export enum ForumThreadFlags {
+    Lock = 1 << 0,
+    Pin = 1 << 1
+}
+
 export interface ApiForum {
     id: number;
     name: string;
@@ -9,7 +14,7 @@ export interface ApiForum {
     private: boolean;
     is_category: boolean;
     parent?: ApiForum;
-    last_thread: ApiThread;
+    last_thread?: ApiThread;
     children: ApiForum[];
 }
 

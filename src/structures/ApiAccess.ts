@@ -286,6 +286,17 @@ class ForumApiAccess {
         });
 
         if (response.code === 200) {
+            return response;
+        }
+    }
+
+    public async editForumThread(threadId: string | number, body: Record<string, unknown>) {
+        const response = await this.access.rest.send<["thread"], [ApiThread]>(`/api/v1/forums/threads/${threadId}`, {
+            method: "PATCH",
+            credentials: "include"
+        }, body);
+
+        if (response.code === 200) {
             return response.data!.thread;
         }
     }
@@ -312,11 +323,22 @@ class ForumApiAccess {
         }
     }
 
-    public async editPost(threadId: string | number, id: string | number, message: string) {
+    public async editPost(threadId: string | number, id: string | number, body: Record<string, unknown>) {
         const response = await this.access.rest.send<["post"], [ApiThreadPost]>(`/api/v1/forums/threads/${threadId}/posts/${id}`, {
             method: "PATCH",
             credentials: "include"
-        }, { body: message });
+        }, body);
+
+        if (response.code === 200) {
+            return response.data!.post;
+        }
+    }
+
+    public async deletePost(threadId: string | number, id: string | number) {
+        const response = await this.access.rest.send<["post"], [ApiThreadPost]>(`/api/v1/forums/threads/${threadId}/posts/${id}`, {
+            method: "DELETE",
+            credentials: "include"
+        });
 
         if (response.code === 200) {
             return response.data!.post;

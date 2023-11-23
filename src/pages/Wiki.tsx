@@ -1,9 +1,11 @@
 import { useParams } from "@solidjs/router";
 import { useApi } from "../contexts/ApiAccessContext";
-import { For, createMemo } from "solid-js";
+import { For, Show, createMemo } from "solid-js";
 import { Markdown } from "../components/markup/Markdown";
 import "../styles/pages/wiki.scss";
 import anime from "animejs";
+import Fa from "solid-fa";
+import { faGithub } from "@fortawesome/fontawesome-free-brands";
 
 export function Wiki() {
     const params = useParams();
@@ -85,6 +87,13 @@ export function Wiki() {
             </div>
             <div class="wiki--content-hinge" />
             <div class="wiki--content-body">
+                <Show when={article() !== undefined}>
+                    <button class="wiki--content-body-source" >
+                        <a href={`https://github.com/kikuyodev/kumi-wiki/blob/main/articles/${params.page}/${params.language}.md`}> {/* TODO: move this to the api */}
+                            <Fa icon={faGithub} /> Edit Page
+                        </a>
+                    </button>
+                </Show>
                 <Markdown>
                     {article() === undefined ? "Loading..." : article()!.content}
                 </Markdown>

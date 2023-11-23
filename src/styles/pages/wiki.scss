@@ -124,15 +124,29 @@
         }
 
         &-body {
-            display: flex;
             flex: 1;
             padding: 20px 40px;
             background-color: var(--hsl-c5);
             border-radius: var(--corner-radius);
+            &-source {
+                display: flex;
+                gap: 8px;
+                margin-top: 8px;
+                float: right;
+                padding: 4px 8px;
+                background: var(--hsl-l6);
+                border-radius: var(--corner-radius);
+                border-style: none;
+                color: var(--hsl-l1);
+                font-weight: 700;
+                font-size: 12px;
+            }
         }
+
 
         ._markdown_ {
             // customary markdown styling
+                    width: 100%;
             h1, h2, h3, h4 {
                 font-weight: 700;
                 

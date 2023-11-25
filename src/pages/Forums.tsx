@@ -76,8 +76,8 @@ function ForumChildren(props: ApiForum) {
             <h1>{props.name}</h1>
             <p>{props.description}</p>
         </div>
-        <div class="forums--content-body--forum-body-list--children-right">
-            <Show when={props.last_thread}>
+        <Show when={props.last_thread}>
+            <div class="forums--content-body--forum-body-list--children-right">
                 <div class="forums--content-body--forum-body-list--children-right-content">
                     <h1>{props.last_thread!.title}</h1>
                     <p>
@@ -92,7 +92,7 @@ function ForumChildren(props: ApiForum) {
                         </AccountFlyout>
                     </p>
                 </div>
-            </Show>
-        </div>
+            </div>
+        </Show>
     </a>;
 }

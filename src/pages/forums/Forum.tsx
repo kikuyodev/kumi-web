@@ -7,7 +7,7 @@ import { Fa } from "solid-fa";
 import { faCommentAlt as faCommentAltSolid, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { faCommentAlt as faCommentAltRegular } from "@fortawesome/free-regular-svg-icons";
 import { SegmentedControl } from "../../components/controls/SegmentedControl";
-import { ApiThread } from "../../structures/api/ApiForum";
+import { ApiForum, ApiThread } from "../../structures/api/ApiForum";
 import { Accessor, For, Show, createMemo } from "solid-js";
 import { AccountFlyout } from "../../components/flyouts/AccountFlyout";
 import { Util } from "../../util/Util";
@@ -34,6 +34,35 @@ export function Forum() {
         return threads()?.parseMeta<ForumMeta>();
     });
 
+    const crumbs = createMemo(() => {
+        if (forum() === undefined) {
+            return [];
+        }
+
+        // recursively loop through the forum's parents to get the full path
+        const crumbs: { name: string; href: string }[] = [];
+        let current = forum()!;
+
+        while (current.parent != null) {
+            if (!current.parent.is_category) {
+                crumbs.push({
+                    name: current.parent.name,
+                    href: `/forums/${current.parent.id}`
+                });
+            }
+
+            current = current.parent;
+        }
+
+        crumbs.reverse();
+        crumbs.push({
+            name: forum()!.name,
+            href: `/forums/${forum()!.id}`
+        });
+
+        return crumbs;
+    });
+
     return <div class="forum">
         <div class="forum--background">
             <img src="" alt="" style={{ opacity: 0 }} onLoad={(v) => {
@@ -56,17 +85,19 @@ export function Forum() {
             </div>
             <div class="forum--content-body">
                 <ForumHeader name={forum()?.name ?? ""} description={forum()?.description ?? ""} color="#33CCFF" />
-                <ForumsBreadcrumbs crumbs={[{
-                    name: forum()?.name ?? "",
-                    href: `/forums/${forum()?.id}`
-                }]} />
+                <ForumsBreadcrumbs crumbs={crumbs()!} />
                 <div class="forum--content-body-content">
-                    <div class="forum--content-body-content-section">
-                        <div class="forum--content-body-content-section-title">
-                            <span style={{ "background-color": "#33CCFF" }} />
-                            <h1>Subforums</h1>
+                    <Show when={(forum()?.children.length ?? 0) > 0}>
+                        <div class="forum--content-body-content-section">
+                            <div class="forum--content-body-content-section-title">
+                                <span style={{ "background-color": "#33CCFF" }} />
+                                <h1>Subforums</h1>
+                            </div>
+                            <div class="forum--content-body-content-section-list">
+                                <For each={forum()?.children}>{subforum => <Subforum {...subforum} />}</For>
+                            </div>
                         </div>
-                    </div>
+                    </Show>
                     <div class="forum--content-body-content-section">
                         <div class="forum--content-body-content-section-title">
                             <span style={{ "background-color": "#33CCFF" }} />
@@ -93,6 +124,35 @@ export function Forum() {
             </div>
         </div>
     </div>;
+}
+
+function Subforum(props: ApiForum) {
+    return <a href={`/forums/${props.id}`}>
+        <div class="forum--content-body-content-section-list--subforum">
+            <div class="forum--content-body-content-section-list--subforum-left">
+                <h1>{props.name}</h1>
+                <p>{props.description}</p>
+            </div>
+            <Show when={props.last_thread !== null}>
+                <div class="forum--content-body-content-section-list--subforum-right">
+                    <div class="forum--content-body-content-section-list--subforum-right-content">
+                        <h1>{props.last_thread!.title}</h1>
+                        <p>
+                            {Util.getRelativeTimeString(new Date(props.last_thread?.updated_at ?? props.last_thread!.created_at!))} by
+                            <AccountFlyout account={props.last_thread!.author}>
+                                <a href={`/accounts/${props.last_thread!.author.id}`}>
+                                    <Show when={props.last_thread!.author.primary}>
+                                        <span style={{ "background-color": props.last_thread!.author.primary!.color }} />
+                                    </Show>
+                                    {props.last_thread!.author.username}
+                                </a>
+                            </AccountFlyout>
+                        </p>
+                    </div>
+                </div>
+            </Show>
+        </div>
+    </a>;
 }
 
 function Thread(props: {

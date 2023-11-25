@@ -249,6 +249,80 @@
                                 }
                             }
                         }
+
+                        &--subforum {
+                            display: flex;
+                            flex-direction: row;
+                            justify-content: space-between;
+                            background-color: hsl(var(--base-hue), 15%, 15%);
+                            border-radius: var(--corner-radius);
+
+                            &-left {
+                                display: flex;
+                                flex-direction: column;
+                                gap: 4px;
+                                padding: 12px 20px;
+
+                                h1 {
+                                    color: var(--hsl-l1);
+                                    font-size: 16px;
+                                }
+
+                                p {
+                                    color: hsl(var(--base-hue), 15%, 40%);
+                                    font-size: 14px;
+                                }
+                            }
+
+                            &-right {
+                                width: fit-content;
+                                background-color: var(--hsl-c4);
+                                border-radius: var(--corner-radius);
+                                padding: 12px 20px;
+                                width: 368px;
+                                text-overflow: ellipsis;
+                                overflow: hidden;
+                                white-space: nowrap;
+
+                                &-content {
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: flex-end;
+                                    gap: 4px;
+                                    font-size: 14px;
+                                    width: 100%;
+
+                                    h1 {
+                                        max-width: 368px;
+                                        text-overflow: ellipsis;
+                                        overflow: hidden;
+                                        white-space: nowrap;
+                                    }
+
+                                    p {
+                                        display: flex;
+                                        flex-direction: row;
+                                        gap: 6px;
+                                        color: hsl(var(--base-hue), 15%, 40%);
+
+                                        a {
+                                            display: flex;
+                                            flex-direction: row;
+                                            gap: 6px;
+                                            align-items: center;
+                                            color: var(--hsl-links);
+                                            font-weight: 600;
+
+                                            span {
+                                                width: 8px;
+                                                height: 8px;
+                                                border-radius: 100px;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 

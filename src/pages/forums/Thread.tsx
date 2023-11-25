@@ -7,7 +7,7 @@ import "../../styles/pages/forums/thread.scss";
 import { useAccount } from "../../contexts/AccountContext";
 import { TextBox } from "../../components/controls/TextBox";
 import { For, Show, createEffect, createMemo, createSignal } from "solid-js";
-import { ApiThreadPost, ForumThreadFlags } from "../../structures/api/ApiForum";
+import { ApiForum, ApiThreadPost, ForumThreadFlags } from "../../structures/api/ApiForum";
 import { GroupTag } from "../../components/accounts/GroupTag";
 import { EmojiUtil } from "../../util/EmojiUtil";
 import { Tooltip } from "../../components/Tooltip";
@@ -17,6 +17,8 @@ import { PaginationMeta } from "../../util/api/ApiResponse";
 import { Fa } from "solid-fa";
 import { faChevronUp, faLock, faLockOpen, faThumbTack, faThumbtack } from "@fortawesome/free-solid-svg-icons";
 import anime from "animejs";
+import { Modal } from "../../components/Modal";
+import { ModalButton } from "../../components/modals/ModalButton";
 
 interface ThreadPostMeta {
     can_edit: boolean;
@@ -29,6 +31,7 @@ interface ThreadPostsMeta extends PaginationMeta {
 
 interface ThreadMeta {
     can_reply: boolean;
+    can_delete: boolean;
     can_move: boolean;
     can_pin: boolean;
     can_lock: boolean;
@@ -39,14 +42,32 @@ export function Thread() {
     const params = useParams();
     const [searchParams] = useSearchParams();
 
+    const threads = useApi(async api => await api.forum.getForums());
     const thread = useApi(async api => await api.forum.getForumThread(params.id));
     const threadMeta = createMemo(() => thread()?.parseMeta<ThreadMeta>());
 
     const [posts, setPosts] = createSignal<ApiThreadPost[] | undefined>(undefined);
     const [meta, setMeta] = createSignal<ThreadPostsMeta | undefined>(undefined);
+    const [movePopup, setMovePopup] = createSignal(false);
 
     let scrollButton: HTMLButtonElement | undefined = undefined;
     let textbox: HTMLTextAreaElement | undefined = undefined;
+    let moveSelect: HTMLSelectElement | undefined = undefined;
+
+    const getThreadsForDropdown = createMemo(() => {
+        if (threads() === undefined) {
+            return [];
+        }
+
+        // Recursively flatten the forums thread's children into a single array
+        const flatten = (forums: ApiForum[]): ApiForum[] => {
+            return forums.reduce((acc, forum) => {
+                return [...acc, forum, ...flatten(forum.children)];
+            }, [] as ApiForum[]);
+        };
+
+        return flatten(threads() ?? []).filter(forum => forum.id !== thread()!.data!.thread.id && !forum.is_category);
+    });
 
     createEffect(() => {
         useApi(async api => {
@@ -68,7 +89,7 @@ export function Thread() {
     });
 
     function modifyThread(body: Record<string, boolean>) {
-        useApi(async api => {            
+        useApi(async api => {
             const thread = await api.forum.editForumThread(params.id, body);
 
             if (thread) {
@@ -103,7 +124,7 @@ export function Thread() {
             <div class="thread--content-body">
                 <div class="thread--content-body-title">
                     <div class="thread--content-body-title-header">
-                        <ForumHeader name={thread()?.data?.thread.forum.name ?? ""} description={`Posted ${Util.getRelativeTimeString(thread()?.data?.thread.created_at ? new Date(thread()!.data!.thread.created_at!) : new Date())}`} color="#33CCFF" fadedDescription={true} />
+                        <ForumHeader name={thread()?.data?.thread.title ?? ""} description={`Posted ${Util.getRelativeTimeString(thread()?.data?.thread.created_at ? new Date(thread()!.data!.thread.created_at!) : new Date())}`} color="#33CCFF" fadedDescription={true} />
                         <div class="thread--content-body-title-header-actions">
                             <button ref={scrollButton} style={{ display: "none" }} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
                                 <Fa icon={faChevronUp} />
@@ -131,6 +152,11 @@ export function Thread() {
                                         <Fa icon={faThumbtack} />
                                     </button>
                                 </Show>
+                            </Show>
+                            <Show when={threadMeta()?.can_move}>
+                                <button onClick={() => setMovePopup(true)}>
+                                    Move
+                                </button>
                             </Show>
                         </div>
                     </div>
@@ -190,6 +216,28 @@ export function Thread() {
                 </div>
             </div>
         </div>
+        <Modal
+            title="Move forum"
+            visible={movePopup()}
+            buttons={[
+                <ModalButton text="Cancel" is="primary" onClick={() => setMovePopup(false)} />,
+                <ModalButton text="Move" is="primary" onClick={() => {
+                    useApi(async api => {
+                        const post = await api.forum.editForumThread(params.id, {
+                            forum: parseInt(moveSelect!.value)
+                        });
+
+                        if (post) {
+                            window.location.reload();
+                        }
+                    });
+                }} />,
+            ]} close={() => setMovePopup(false)}
+        >
+            <select ref={moveSelect}>
+                <For each={getThreadsForDropdown()}>{forum => <option value={forum.id}>{forum.name}</option>}</For>
+            </select>
+        </Modal>
     </div>;
 }
 

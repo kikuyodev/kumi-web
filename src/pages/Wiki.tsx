@@ -88,11 +88,13 @@ export function Wiki() {
             <div class="wiki--content-hinge" />
             <div class="wiki--content-body">
                 <Show when={article() !== undefined}>
-                    <button class="wiki--content-body-source" >
-                        <a href={`https://github.com/kikuyodev/kumi-wiki/blob/main/articles/${params.page}/${params.language}.md`}> {/* TODO: move this to the api */}
-                            <Fa icon={faGithub} /> Edit Page
-                        </a>
-                    </button>
+                    <div class="wiki--content-body-buttons">
+                        <button class="wiki--content-body-button" >
+                            <a href={`https://github.com/kikuyodev/kumi-wiki/blob/main/articles/${params.page}/${params.language}.md`}> {/* TODO: move this to the api */}
+                                Edit Page
+                            </a>
+                        </button>
+                    </div>
                 </Show>
                 <Markdown>
                     {article() === undefined ? "Loading..." : article()!.content}

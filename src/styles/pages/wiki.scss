@@ -128,11 +128,15 @@
             padding: 20px 40px;
             background-color: var(--hsl-c5);
             border-radius: var(--corner-radius);
-            &-source {
+
+            &-buttons {
                 display: flex;
                 gap: 8px;
-                margin-top: 8px;
                 float: right;
+                margin-top: 8px;
+            }
+
+            &-button {
                 padding: 4px 8px;
                 background: var(--hsl-l6);
                 border-radius: var(--corner-radius);

@@ -64,6 +64,17 @@ class AccountApiAccess {
         }
     }
 
+    public async getWebsocketToken() {
+        const response = await this.access.rest.send<["token"], [string]>("/api/v1/websocket/token", {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (response.code === 200) {
+            return response.data!.token;
+        }
+    }
+
     public async getGroup(id: string | number) {
         const response = await this.access.rest.send<["group", "members"], [ApiGroup, ApiAccount[]]>(`/api/v1/groups/${id}`, {
             method: "GET",

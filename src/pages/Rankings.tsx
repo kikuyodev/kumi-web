@@ -8,7 +8,7 @@ import { PaginationMeta } from "../util/api/ApiResponse";
 import { EmojiUtil } from "../util/EmojiUtil";
 import "../styles/pages/rankings.scss";
 import Fa from "solid-fa";
-import { faCaretDown, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { AccountFlyout } from "../components/flyouts/AccountFlyout";
 
 export function Rankings() {

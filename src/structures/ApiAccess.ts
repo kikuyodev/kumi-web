@@ -6,10 +6,12 @@ import { ApiForum, ApiThread, ApiThreadPost } from "./api/ApiForum";
 import { ApiModdingPost } from "./api/ApiModdingPost";
 import { RestClient } from "../util/RestClient";
 import { ApiWikiPage } from "./api/ApiWikiPage";
+import { ApiNews } from "./api/ApiNews";
 
 export class ApiAccess {
     private _restClient: RestClient;
 
+    public home: HomeApiAccess = new HomeApiAccess(this);
     public account: AccountApiAccess = new AccountApiAccess(this);
     public chart: ChartApiAccess = new ChartApiAccess(this);
     public modding: ModdingApiAccess = new ModdingApiAccess(this);
@@ -42,6 +44,42 @@ export class ApiAccess {
 
         if (response.code === 200) {
             return response;
+        }
+    }
+}
+
+class HomeApiAccess {
+    private access: ApiAccess;
+
+    constructor(access: ApiAccess) {
+        this.access = access;
+    }
+
+    public async getStats() {
+        const response = await this.access.rest.send<["statistics"], [{
+            accounts: {
+                total: number;
+                online: number;
+            };
+            charts: number;
+        }]>("/api/v1/meta/stats", {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (response.code === 200) {
+            return response.data!.statistics;
+        }
+    }
+
+    public async getNews() {
+        const response = await this.access.rest.send<["posts"], [ApiNews[]]>("/api/v1/news", {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (response.code === 200) {
+            return response.data!.posts;
         }
     }
 }

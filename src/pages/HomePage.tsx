@@ -2,21 +2,18 @@ import { faArrowAltCircleDown } from "@fortawesome/free-regular-svg-icons";
 import anime from "animejs";
 import { Fa } from "solid-fa";
 import "../styles/pages/home.scss";
+import { useApi } from "../contexts/ApiAccessContext";
+import { ApiNews } from "../structures/api/ApiNews";
+import { For, createMemo } from "solid-js";
 
 export function Home() {
+    const stats = useApi(async api => await api.home.getStats());
+    const news = useApi(async api => await api.home.getNews());
+
     return <div class="home">
         <div class="home--hero">
             <div class="home--hero-background">
-                <img src="https://pbs.twimg.com/media/F_esPzEaUAAzbeL?format=jpg&name=orig" alt="" style={{ opacity: 0 }} onLoad={(v) => {
-                    anime({
-                        targets: v.target,
-                        opacity: [
-                            { value: 0, duration: 0 },
-                            { value: 1, duration: 1000 }
-                        ],
-                        easing: "linear"
-                    });
-                }} />
+                <div class="home--hero-background-image" style={{ "background-image": "url(\"https://pbs.twimg.com/media/F_esPzEaUAAzbeL?format=jpg&name=orig\")" }} />
                 <div class="home--hero-background-overlay" />
             </div>
             <div class="home--hero-content">
@@ -27,9 +24,9 @@ export function Home() {
                     <p>Download now!</p>
                 </button>
                 <div class="home--hero-content-info">
-                    <strong>1</strong> registered players, <strong>none</strong> currently online
+                    <strong>{stats()?.accounts.total}</strong> registered players, <strong>{stats()?.accounts.online}</strong> currently online
                     <br />
-                    playing <strong>0</strong> charts with <strong>-1</strong> scores
+                    playing <strong>{stats()?.charts}</strong> charts with <strong>-1</strong> scores
                 </div>
             </div>
         </div>
@@ -39,49 +36,65 @@ export function Home() {
                 <div class="home--content-news-container">
                     <div class="home--content-news-track" />
                     <div class="home--content-news-list">
-                        <div class="home--content-news-list--item">
-                            <div class="home--content-news-list--item-track">
-                                <div class="home--content-news-list--item-track-circle">
-                                    <div class="home--content-news-list--item-track-circle-inner" />
-                                </div>
-                                <div class="home--content-news-list--item-track-date">
-                                    <span class="home--content-news-list--item-track-date-line" />
-                                    <div class="home--content-news-list--item-track-date-content">
-                                        <h1>22</h1>
-                                        <p>Nov 2023</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="home--content-news-list--item-body">
-                                <div class="home--content-news-list--item-body-header">
-                                    <div class="home--content-news-list--item-body-header-background">
-                                        <img src="https://pbs.twimg.com/media/F_esPzEaUAAzbeL?format=jpg&name=orig" alt="" style={{ opacity: 0 }} onLoad={(v) => {
-                                            anime({
-                                                targets: v.target,
-                                                opacity: [
-                                                    { value: 0, duration: 0 },
-                                                    { value: 1, duration: 1000 }
-                                                ],
-                                                easing: "linear"
-                                            });
-                                        }} />
-                                        <div class="home--content-news-list--item-body-header-background-overlay" />
-                                    </div>
-                                    <div class="home--content-news-list--item-body-header-content">
-                                        <h1>News title</h1>
-                                        <p>written by <a href="#">Saryu</a></p>
-                                    </div>
-                                </div>
-                                <div class="home--content-news-list--item-body-content">
-                                    Lorem ipsum dolor sit amet consectetur. Massa sociis cras tincidunt viverra orci tempor ut tristique. Bibendum aliquam pharetra condimentum eget massa tincidunt non quis sed. Rhoncus a lorem lectus in. Velit tellus sollicitudin consequat amet aliquet egestas odio felis diam. Volutpat.
-                                </div>
-                            </div>
-                        </div>
+                        <For each={news()}>
+                            {news => <NewsItem {...news} />}
+                        </For>
                     </div>
                 </div>
             </div>
             <div class="home--content-recent">
                 <h1>Recently ranked charts</h1>
+            </div>
+        </div>
+    </div>;
+}
+
+export function NewsItem(props: ApiNews) {
+    const date = createMemo(() => {
+        console.log(Date.parse(props.posted_at));
+        return new Date(Date.parse(props.posted_at));
+    });
+
+    const dateFormat = Intl.DateTimeFormat("en", {
+        year: "numeric",
+        month: "short",
+    });
+    
+    return <div class="home--content-news-list--item">
+        <div class="home--content-news-list--item-track">
+            <div class="home--content-news-list--item-track-circle">
+                <div class="home--content-news-list--item-track-circle-inner" />
+            </div>
+            <div class="home--content-news-list--item-track-date">
+                <span class="home--content-news-list--item-track-date-line" />
+                <div class="home--content-news-list--item-track-date-content">
+                    <h1>{date().getDay()}</h1>
+                    <p>{dateFormat.format(date())}</p>
+                </div>
+            </div>
+        </div>
+        <div class="home--content-news-list--item-body">
+            <div class="home--content-news-list--item-body-header">
+                <div class="home--content-news-list--item-body-header-background">
+                    <img src={props.banner} alt="" style={{ opacity: 0 }} onLoad={(v) => {
+                        anime({
+                            targets: v.target,
+                            opacity: [
+                                { value: 0, duration: 0 },
+                                { value: 1, duration: 1000 }
+                            ],
+                            easing: "linear"
+                        });
+                    }} />
+                    <div class="home--content-news-list--item-body-header-background-overlay" />
+                </div>
+                <div class="home--content-news-list--item-body-header-content">
+                    <h1>{props.title}</h1>
+                    <p>Written by {props.author}</p>
+                </div>
+            </div>
+            <div class="home--content-news-list--item-body-content">
+                {props.headline}
             </div>
         </div>
     </div>;

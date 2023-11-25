@@ -14,10 +14,13 @@
             inset: 0;
             z-index: -1;
 
-            img {
+            &-image {
                 width: 100%;
                 height: 100%;
-                object-fit: cover;
+                background-position: top;
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
             }
 
             &-overlay {
@@ -115,11 +118,13 @@
                 flex-direction: column;
                 gap: 12px;
                 margin-left: 14px;
+                width: 100%;
 
                 &--item {
                     display: flex;
                     flex-direction: row;
                     gap: 12px;
+                    width: 100%;
 
                     &-track {
                         position: relative;
@@ -150,7 +155,7 @@
                         }
 
                         &-date {
-                            margin-top: 14px;
+                            margin-top: 18px;
                             position: relative;
                             margin-left: 4px;
                             display: flex;
@@ -194,6 +199,7 @@
                         background-color: var(--hsl-c5);
                         border-radius: var(--corner-radius);
                         overflow: hidden;
+                        width: 100%;
 
                         &-header {
                             position: relative;

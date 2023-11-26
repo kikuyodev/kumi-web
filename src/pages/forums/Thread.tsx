@@ -59,10 +59,10 @@ export function Thread() {
             return [];
         }
 
-        // Recursively flatten the forums thread's children into a single array
-        const flatten = (forums: ApiForum[]): ApiForum[] => {
+        // Recursively flatten the forums thread's children into a single array, while also including the depth of the forum
+        const flatten = (forums: ApiForum[], depth: number = 0): (ApiForum & { depth?: number })[] => {
             return forums.reduce((acc, forum) => {
-                return [...acc, forum, ...flatten(forum.children)];
+                return [...acc, { ...forum, depth }, ...flatten(forum.children, depth + 1)];
             }, [] as ApiForum[]);
         };
 
@@ -235,7 +235,16 @@ export function Thread() {
             ]} close={() => setMovePopup(false)}
         >
             <select ref={moveSelect}>
-                <For each={getThreadsForDropdown()}>{forum => <option value={forum.id}>{forum.name}</option>}</For>
+                <For each={getThreadsForDropdown()}>{forum => <option value={forum.id}>
+                    {/* eslint-disable-next-line solid/prefer-for */}
+                    {Array.from({ length: (forum.depth! - 1) }).map(() => <>&nbsp;&nbsp;&nbsp;&nbsp;</>)}
+                    <Show when={forum.depth === 1}>
+                        <strong>{forum.name}</strong>
+                    </Show>
+                    <Show when={forum.depth !== 1}>
+                        {forum.name}
+                    </Show>
+                </option>}</For>
             </select>
         </Modal>
     </div>;
@@ -359,14 +368,16 @@ export function Post(props: {
 
                 </Show>
                 <Show when={!editing()}>
-                    <BBCode>{props.post.body}</BBCode>
+                    <div style={{ opacity: props.post.deleted ? 0.5 : 1 }}>
+                        <BBCode>{props.post.body}</BBCode>
+                    </div>
                 </Show>
             </div>
             <div class="thread--post-content-actions">
-                <Show when={props.meta?.can_edit}>
+                <Show when={props.meta?.can_edit && !props.post.deleted}>
                     <button onClick={() => setEditing(!editing())}>Edit</button>
                 </Show>
-                <Show when={props.meta?.can_delete}>
+                <Show when={props.meta?.can_delete && !props.post.deleted}>
                     <button onClick={() => {
                         useApi(async api => {
                             const post = await api.forum.deletePost(props.threadId, props.post.id);

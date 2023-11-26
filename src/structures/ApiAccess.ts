@@ -6,7 +6,7 @@ import { ApiForum, ApiThread, ApiThreadPost } from "./api/ApiForum";
 import { ApiModdingPost } from "./api/ApiModdingPost";
 import { RestClient } from "../util/RestClient";
 import { ApiWikiPage } from "./api/ApiWikiPage";
-import { ApiNews } from "./api/ApiNews";
+import { ApiNewsArticle } from "./api/ApiNewsArticle";
 
 export class ApiAccess {
     private _restClient: RestClient;
@@ -46,6 +46,28 @@ export class ApiAccess {
             return response;
         }
     }
+
+    public async getNews() {
+        const response = await this.rest.send<["posts"], [ApiNewsArticle[]]>("/api/v1/news", {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (response.code === 200) {
+            return response.data!.posts;
+        }
+    }
+
+    public async getNewsArticle(slug: string) {
+        const response = await this.rest.send<["post"], [ApiNewsArticle]>(`/api/v1/news/${slug}`, {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (response.code === 200) {
+            return response.data!.post;
+        }
+    }
 }
 
 class HomeApiAccess {
@@ -69,17 +91,6 @@ class HomeApiAccess {
 
         if (response.code === 200) {
             return response.data!.statistics;
-        }
-    }
-
-    public async getNews() {
-        const response = await this.access.rest.send<["posts"], [ApiNews[]]>("/api/v1/news", {
-            method: "GET",
-            credentials: "include"
-        });
-
-        if (response.code === 200) {
-            return response.data!.posts;
         }
     }
 }
@@ -336,6 +347,17 @@ class ForumApiAccess {
 
         if (response.code === 200) {
             return response;
+        }
+    }
+
+    public async createForumThread(id: string | number, body: Record<string, unknown>) {
+        const response = await this.access.rest.send<["thread"], [ApiThread]>(`/api/v1/forums/${id}/threads`, {
+            method: "POST",
+            credentials: "include"
+        }, body);
+
+        if (response.code === 200) {
+            return response.data!.thread;
         }
     }
 

@@ -32,4 +32,6 @@ export interface ApiThreadPost extends ApiModal {
     body: string;
     author: ApiAccount;
     editor?: ApiAccount;
+    deleted: boolean;
+    deleted_at?: string;
 }

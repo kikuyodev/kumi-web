@@ -1,5 +1,5 @@
 import { A } from "@solidjs/router";
-import { Show, onMount } from "solid-js";
+import { Show, createEffect, createSignal, onMount } from "solid-js";
 import { Portal } from "solid-js/web";
 import { LoginFlyout } from "./flyouts/LoginFlyout";
 import "../styles/components/navbar.scss";
@@ -14,35 +14,35 @@ export function Navbar() {
     let flyoutMenu: HTMLDivElement | undefined = undefined;
     let avatar: HTMLImageElement | undefined = undefined;
 
-    onMount(() => {
-        flyoutMenu?.style.setProperty("display", "none");
+    let [showFlyout, setShowFlyout] = createSignal(false);
 
-        avatar!.onclick = () => {
-            if (!FLYOUT_OPEN) {
-                FLYOUT_OPEN = true;
+    createEffect(() => {
+        if (showFlyout()) {
+            const avatarRect = avatar?.getBoundingClientRect();
+            flyoutMenu?.style.setProperty("display", "block");
+
+            const flyoutRect = flyoutMenu!.children[0]!.getBoundingClientRect();
+
+            flyoutMenu?.style.setProperty("position", "absolute");
+            flyoutMenu?.style.setProperty("top", `${(avatarRect?.bottom ?? 0) + 4}px`);
+            flyoutMenu?.style.setProperty("left", `${Math.abs(((avatarRect?.left ?? 0) + (avatarRect?.width ?? 0)) - (flyoutRect?.width ?? 0))}px`);
+            flyoutMenu?.style.setProperty("z-index", "10000");
+
+            window.addEventListener("resize", () => {
                 const avatarRect = avatar?.getBoundingClientRect();
-                flyoutMenu?.style.setProperty("display", "block");
-
                 const flyoutRect = flyoutMenu!.children[0]!.getBoundingClientRect();
 
                 flyoutMenu?.style.setProperty("position", "absolute");
                 flyoutMenu?.style.setProperty("top", `${(avatarRect?.bottom ?? 0) + 4}px`);
                 flyoutMenu?.style.setProperty("left", `${Math.abs(((avatarRect?.left ?? 0) + (avatarRect?.width ?? 0)) - (flyoutRect?.width ?? 0))}px`);
-                flyoutMenu?.style.setProperty("z-index", "10000");
+            });
+        } else {
+            flyoutMenu?.style.setProperty("display", "none");
+        }
+    }, [showFlyout()]);
 
-                window.addEventListener("resize", () => {
-                    const avatarRect = avatar?.getBoundingClientRect();
-                    const flyoutRect = flyoutMenu!.children[0]!.getBoundingClientRect();
-
-                    flyoutMenu?.style.setProperty("position", "absolute");
-                    flyoutMenu?.style.setProperty("top", `${(avatarRect?.bottom ?? 0) + 4}px`);
-                    flyoutMenu?.style.setProperty("left", `${Math.abs(((avatarRect?.left ?? 0) + (avatarRect?.width ?? 0)) - (flyoutRect?.width ?? 0))}px`);
-                });
-            } else {
-                FLYOUT_OPEN = false;
-                flyoutMenu?.style.setProperty("display", "none");
-            }
-        };
+    onMount(() => {
+        flyoutMenu?.style.setProperty("display", "none");
 
         document.addEventListener("click", (e) => {
             if (e.target !== avatar && FLYOUT_OPEN) {
@@ -78,13 +78,15 @@ export function Navbar() {
                         </div>
                         <div class="navbar--content-flex-account-avatar">
                             <Show when={account.isLoggedIn()}>
-                                <img ref={avatar} src={`${import.meta.env.KUMI_API_URL}cdn/avatars/${account.apiAccount!.id}`} alt="" />
+                                <img ref={avatar} src={`${import.meta.env.KUMI_API_URL}cdn/avatars/${account.apiAccount!.id}`} alt="" onClick={() => setShowFlyout(!showFlyout())} />
                                 <Portal ref={flyoutMenu} mount={document.body}>
-                                    <AccountNavbarFlyout />
+                                    <Show when={showFlyout()}>
+                                        <AccountNavbarFlyout />
+                                    </Show>
                                 </Portal>
                             </Show>
                             <Show when={!account.isLoggedIn()}>
-                                <img ref={avatar} src={`${import.meta.env.KUMI_API_URL}cdn/avatars/default`} alt="" />
+                                <img ref={avatar} src={`${import.meta.env.KUMI_API_URL}cdn/avatars/default`} alt="" onClick={() => setShowFlyout(!showFlyout())} />
                                 <Portal ref={flyoutMenu} mount={document.body}>
                                     <LoginFlyout />
                                 </Portal>

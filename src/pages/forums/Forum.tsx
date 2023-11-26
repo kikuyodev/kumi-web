@@ -14,6 +14,7 @@ import { Util } from "../../util/Util";
 import { PaginationMeta } from "../../util/api/ApiResponse";
 import { Pagination } from "../../components/Pagination";
 import anime from "animejs";
+import { useAccount } from "../../contexts/AccountContext";
 
 interface ForumMeta extends PaginationMeta {
     threads: {
@@ -22,6 +23,7 @@ interface ForumMeta extends PaginationMeta {
 }
 
 export function Forum() {
+    const account = useAccount();
     const params = useParams();
     const forum = useApi(async api => await api.forum.getForum(params.id));
     const threads = useApi(async api => await api.forum.getForumThreads(params.id));
@@ -104,10 +106,16 @@ export function Forum() {
                             <h1>Threads</h1>
                         </div>
                         <div class="forum--content-body-content-section-actions">
-                            <button>
-                                <Fa icon={faPlus} />
-                                <p>New thread</p>
-                            </button>
+                            <Show when={account.isLoggedIn()}>
+                                <button onClick={() => window.location.href = `/forums/${params.id}/create`}>
+                                    <Fa icon={faPlus} />
+                                    <p>New thread</p>
+                                </button>
+                            </Show>
+                            <Show when={!account.isLoggedIn()}>
+                                { /* At least have something here just so that we can push the sort by element to the right. */ }
+                                <p />
+                            </Show>
                             <div class="forum--content-body-content-section-actions-sort">
                                 <p>Sort by</p>
                                 <SegmentedControl options={["Last reply", "Created"]} selected="Created" />

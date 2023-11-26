@@ -350,6 +350,17 @@ class ForumApiAccess {
         }
     }
 
+    public async createForumThread(id: string | number, body: Record<string, unknown>) {
+        const response = await this.access.rest.send<["thread"], [ApiThread]>(`/api/v1/forums/${id}/threads`, {
+            method: "POST",
+            credentials: "include"
+        }, body);
+
+        if (response.code === 200) {
+            return response.data!.thread;
+        }
+    }
+
     public async editForumThread(threadId: string | number, body: Record<string, unknown>) {
         const response = await this.access.rest.send<["thread"], [ApiThread]>(`/api/v1/forums/threads/${threadId}`, {
             method: "PATCH",

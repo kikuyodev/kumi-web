@@ -29,6 +29,7 @@ const { ChartModdingPage } = lazily(() => import("./pages/ChartModdingPage"));
 const { Forums } = lazily(() => import("./pages/Forums"));
 const { Forum } = lazily(() => import("./pages/forums/Forum"));
 const { Thread } = lazily(() => import("./pages/forums/Thread"));
+const { ThreadCreate } = lazily(() => import("./pages/forums/ThreadCreate"));
 
 // News
 const { News } = lazily(() => import("./pages/News"));
@@ -72,6 +73,7 @@ render(() => {
                                                 <Route path="/forums">
                                                     <Route path="/" component={Forums} />
                                                     <Route path="/:id" component={Forum} />
+                                                    <Route path="/:id/create" component={ThreadCreate} />
                                                     <Route path="/threads/:id" component={Thread} />
                                                     <Route path="*" element={<ErrorPage code={404} message={"The forum, thread, or topic you were looking for does not exist."} />} />
                                                 </Route>

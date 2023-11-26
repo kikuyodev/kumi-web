@@ -30,6 +30,10 @@ const { Forums } = lazily(() => import("./pages/Forums"));
 const { Forum } = lazily(() => import("./pages/forums/Forum"));
 const { Thread } = lazily(() => import("./pages/forums/Thread"));
 
+// News
+const { News } = lazily(() => import("./pages/News"));
+const { Article } = lazily(() => import("./pages/news/Article"));
+
 render(() => {
     if (sessionStorage.getItem("logged_in") === "true") {
         // check if the account is logged in.
@@ -70,6 +74,11 @@ render(() => {
                                                     <Route path="/:id" component={Forum} />
                                                     <Route path="/threads/:id" component={Thread} />
                                                     <Route path="*" element={<ErrorPage code={404} message={"The forum, thread, or topic you were looking for does not exist."} />} />
+                                                </Route>
+                                                <Route path="/news">
+                                                    <Route path="/" component={News} />
+                                                    <Route path="/:slug" component={Article} />
+                                                    <Route path="*" element={<ErrorPage code={404} message={"The article you were looking for does not exist."} />} />
                                                 </Route>
                                                 <Route path="/wiki/:language/*page" component={Wiki} />
                                                 <Route path="/accounts/:id" component={AccountPage} data={AccountData} />

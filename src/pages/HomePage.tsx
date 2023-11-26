@@ -3,12 +3,12 @@ import anime from "animejs";
 import { Fa } from "solid-fa";
 import "../styles/pages/home.scss";
 import { useApi } from "../contexts/ApiAccessContext";
-import { ApiNews } from "../structures/api/ApiNews";
+import { ApiNewsArticle } from "../structures/api/ApiNewsArticle";
 import { For, createMemo } from "solid-js";
 
 export function Home() {
     const stats = useApi(async api => await api.home.getStats());
-    const news = useApi(async api => await api.home.getNews());
+    const news = useApi(async api => await api.getNews());
 
     return <div class="home">
         <div class="home--hero">
@@ -49,7 +49,7 @@ export function Home() {
     </div>;
 }
 
-export function NewsItem(props: ApiNews) {
+export function NewsItem(props: ApiNewsArticle) {
     const date = createMemo(() => {
         return new Date(Date.parse(props.posted_at));
     });
@@ -72,7 +72,7 @@ export function NewsItem(props: ApiNews) {
                 </div>
             </div>
         </div>
-        <div class="home--content-news-list--item-body">
+        <a href={`/news/${props.slug}`} class="home--content-news-list--item-body">
             <div class="home--content-news-list--item-body-header">
                 <div class="home--content-news-list--item-body-header-background">
                     <img src={props.banner} alt="" style={{ opacity: 0 }} onLoad={(v) => {
@@ -95,6 +95,6 @@ export function NewsItem(props: ApiNews) {
             <div class="home--content-news-list--item-body-content">
                 {props.headline}
             </div>
-        </div>
+        </a>
     </div>;
 }

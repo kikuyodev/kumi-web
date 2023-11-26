@@ -45,43 +45,46 @@
             color: var(--hsl-l2);
             border-radius: 1000px;
 
-            $buttonAccent: (100%, 75%);
+            $buttonAccent: (
+                100%,
+                75%
+            );
 
-            &-primary {
-                color: var(--hsl-c6);
-                background-color: hsl(var(--base-hue), #{nth($buttonAccent, 1)}, #{nth($buttonAccent, 2)});
-            }
+        &-primary {
+            color: var(--hsl-c6);
+            background-color: hsl(var(--base-hue), #{nth($buttonAccent, 1)}, #{nth($buttonAccent, 2)});
+        }
 
-            &-success {
-                color: var(--hsl-c6);
-                background-color: hsl(calc(var(--base-hue) - 80), #{nth($buttonAccent, 1)}, #{nth($buttonAccent, 2)});
-            }
+        &-success {
+            color: var(--hsl-c6);
+            background-color: hsl(calc(var(--base-hue) - 80), #{nth($buttonAccent, 1)}, #{nth($buttonAccent, 2)});
+        }
 
-            &-danger {
-                color: var(--hsl-c6);
-                background-color: hsl(calc(var(--base-hue) - 195), #{nth($buttonAccent, 1)}, #{nth($buttonAccent, 2)});
-            }
+        &-danger {
+            color: var(--hsl-c6);
+            background-color: hsl(calc(var(--base-hue) - 195), #{nth($buttonAccent, 1)}, #{nth($buttonAccent, 2)});
+        }
 
-            &-warning {
-                color: var(--hsl-c6);
-                background-color: hsl(calc(var(--base-hue) - 150), #{nth($buttonAccent, 1)}, #{nth($buttonAccent, 2)});
-            }
+        &-warning {
+            color: var(--hsl-c6);
+            background-color: hsl(calc(var(--base-hue) - 150), #{nth($buttonAccent, 1)}, #{nth($buttonAccent, 2)});
         }
     }
+}
 
-    &--background {
-        background-color: rgba(0, 0, 0, 0.275);
+&--background {
+    background-color: rgba(0, 0, 0, 0.275);
 
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        
-        position: fixed;
-        align-items: center;
-        justify-content: center;
-        z-index: 10000; // thanks nora
-    }
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    position: fixed;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000; // thanks nora
+}
 
 
 }

@@ -31,10 +31,7 @@ const { Forum } = lazily(() => import("./pages/forums/Forum"));
 const { Thread } = lazily(() => import("./pages/forums/Thread"));
 
 render(() => {
-    if (sessionStorage.getItem("logged_in") === "true") {
-        // check if the account is logged in.
-        useAccount().me();
-    }
+    useAccount().me();
 
     return (
         <GlobalAudioProvider>

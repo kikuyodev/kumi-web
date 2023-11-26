@@ -51,7 +51,6 @@ export function Home() {
 
 export function NewsItem(props: ApiNews) {
     const date = createMemo(() => {
-        console.log(Date.parse(props.posted_at));
         return new Date(Date.parse(props.posted_at));
     });
 
@@ -68,7 +67,7 @@ export function NewsItem(props: ApiNews) {
             <div class="home--content-news-list--item-track-date">
                 <span class="home--content-news-list--item-track-date-line" />
                 <div class="home--content-news-list--item-track-date-content">
-                    <h1>{date().getDay()}</h1>
+                    <h1>{date().getDate()}</h1>
                     <p>{dateFormat.format(date())}</p>
                 </div>
             </div>

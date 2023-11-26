@@ -1,0 +1,91 @@
+.account_navbar_flyout {
+    position: fixed;
+    top: calc(56px + 12px);
+    display: flex;
+    flex-direction: column;
+    background-color: var(--hsl-c5);
+    border-radius: var(--corner-radius);
+    max-width: 272px;
+    width: 272px;
+
+    &--card {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+        background-color: var(--hsl-c4);
+        border-radius: var(--corner-radius);
+        padding: 8px;
+
+        img {
+            width: 64px;
+            height: 64px;
+            border-radius: var(--corner-radius);
+            object-fit: cover;
+        }
+
+        &-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 64px;
+
+            &-username {
+                color: var(--hsl-l1);
+                font-size: 18px;
+                font-weight: 600;
+                font-family: var(--font-header);
+            }
+
+            &-groups {
+                display: flex;
+                flex-direction: row;
+                gap: 2px;
+
+                img {
+                    height: 20px;
+                    width: auto;
+                }
+            }
+
+            &-status {
+                position: relative;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+
+                p {
+                    margin-left: 8px;
+                    font-size: 12px;
+                }
+            }
+        }
+
+
+    }
+
+    &--buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 8px;
+
+        button {
+            border: none;
+            outline: none;
+            font-family: inherit;
+            font-size: inherit;
+            cursor: pointer;
+            background-color: transparent;
+            border-radius: var(--corner-radius);
+            padding: 4px 8px;
+            color: hsl(var(--base-hue), 15%, 40%);
+            text-align: left;
+
+            &:hover {
+                background-color: var(--hsl-c4);
+                color: var(--hsl-l1);
+            }
+        }
+    }
+}

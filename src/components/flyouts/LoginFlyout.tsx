@@ -6,13 +6,9 @@ import { useAccount } from "../../contexts/AccountContext";
 import { ApiResponseError } from "../../util/errors/ApiResponseError";
 
 export function LoginFlyout() {
-    // eslint-disable-next-line prefer-const
     let signin: HTMLButtonElement | undefined = undefined;
-    // eslint-disable-next-line prefer-const
     let username: HTMLInputElement | undefined = undefined;
-    // eslint-disable-next-line prefer-const
     let password: HTMLInputElement | undefined = undefined;
-    // eslint-disable-next-line prefer-const
     let info: HTMLParagraphElement | undefined = undefined;
 
     onMount(() => {

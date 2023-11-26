@@ -4,15 +4,14 @@ import { Portal } from "solid-js/web";
 import { LoginFlyout } from "./flyouts/LoginFlyout";
 import "../styles/components/navbar.scss";
 import { useAccount } from "../contexts/AccountContext";
+import { AccountNavbarFlyout } from "./flyouts/AccountNavbarFlyout";
 
 let FLYOUT_OPEN = false;
 
 export function Navbar() {
     const account = useAccount();
 
-    // eslint-disable-next-line prefer-const
     let flyoutMenu: HTMLDivElement | undefined = undefined;
-    // eslint-disable-next-line prefer-const
     let avatar: HTMLImageElement | undefined = undefined;
 
     onMount(() => {
@@ -75,13 +74,14 @@ export function Navbar() {
                         <div class="navbar--content-flex-account-details">
                             <Show when={account.isLoggedIn()}>
                                 <div class="navbar--content-flex-account-details-username">{account.apiAccount?.username ?? "Saryu"}</div>
-                                {/*<Portal ref={flyoutMenu} mount={document.body}>
-                                </Portal>*/}
                             </Show>
                         </div>
                         <div class="navbar--content-flex-account-avatar">
                             <Show when={account.isLoggedIn()}>
                                 <img ref={avatar} src={`${import.meta.env.KUMI_API_URL}cdn/avatars/${account.apiAccount!.id}`} alt="" />
+                                <Portal ref={flyoutMenu} mount={document.body}>
+                                    <AccountNavbarFlyout />
+                                </Portal>
                             </Show>
                             <Show when={!account.isLoggedIn()}>
                                 <img ref={avatar} src={`${import.meta.env.KUMI_API_URL}cdn/avatars/default`} alt="" />

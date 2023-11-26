@@ -137,6 +137,17 @@ class AccountApiAccess {
             };
         }
     }
+
+    public async logout() {
+        const response = await this.access.rest.send<["success"], [boolean]>("/api/v1/accounts/logout", {
+            method: "POST",
+            credentials: "include"
+        });
+
+        if (response.code === 200) {
+            return response.data!.success;
+        }
+    }
 }
 
 class ChartApiAccess {

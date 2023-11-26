@@ -65,11 +65,6 @@ export function Thread() {
                 return [...acc, { ...forum, depth }, ...flatten(forum.children, depth + 1)];
             }, [] as ApiForum[]);
         };
-        // const flatten = (forums: ApiForum[],): ApiForum[] => {
-        //     return forums.reduce((acc, forum) => {
-        //         return [...acc, forum, ...flatten(forum.children)];
-        //     }, [] as ApiForum[]);
-        // };
 
         return flatten(threads() ?? []).filter(forum => forum.id !== thread()!.data!.thread.id && !forum.is_category);
     });
@@ -241,7 +236,7 @@ export function Thread() {
         >
             <select ref={moveSelect}>
                 <For each={getThreadsForDropdown()}>{forum => <option value={forum.id}>
-                    {/* eslint-disable-next-line solid/prefer-for */ }
+                    {/* eslint-disable-next-line solid/prefer-for */}
                     {Array.from({ length: (forum.depth! - 1) }).map(() => <>&nbsp;&nbsp;&nbsp;&nbsp;</>)}
                     <Show when={forum.depth === 1}>
                         <strong>{forum.name}</strong>
@@ -373,14 +368,16 @@ export function Post(props: {
 
                 </Show>
                 <Show when={!editing()}>
-                    <BBCode>{props.post.body}</BBCode>
+                    <div style={{ opacity: props.post.deleted ? 0.5 : 1 }}>
+                        <BBCode>{props.post.body}</BBCode>
+                    </div>
                 </Show>
             </div>
             <div class="thread--post-content-actions">
-                <Show when={props.meta?.can_edit}>
+                <Show when={props.meta?.can_edit && !props.post.deleted}>
                     <button onClick={() => setEditing(!editing())}>Edit</button>
                 </Show>
-                <Show when={props.meta?.can_delete}>
+                <Show when={props.meta?.can_delete && !props.post.deleted}>
                     <button onClick={() => {
                         useApi(async api => {
                             const post = await api.forum.deletePost(props.threadId, props.post.id);

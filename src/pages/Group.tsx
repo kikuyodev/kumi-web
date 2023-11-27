@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "@solidjs/router";
+import { useParams } from "@solidjs/router";
 import { For, createEffect, createSignal } from "solid-js";
 import { AccountCard } from "../components/accounts/AccountCard";
 import { GroupTag } from "../components/accounts/GroupTag";
@@ -10,7 +10,6 @@ import { ApiAccount } from "../structures/api/ApiAccount";
 import { Exception } from "../util/errors/Exception";
 
 export function Group() {
-    const navigate = useNavigate();
     const params = useParams();
     const group = useApi(async (access) => access.account.getGroup(params.id));
 
@@ -29,7 +28,6 @@ export function Group() {
         const members = group()?.members.filter((account) => status() === "all" || account.status === status()).sort((a, b) => a.username.localeCompare(b.username));
 
         setAccounts(members ?? []);
-        console.log(members);
     });
 
     return <div class="group">

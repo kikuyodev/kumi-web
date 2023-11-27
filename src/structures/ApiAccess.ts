@@ -124,6 +124,30 @@ class AccountApiAccess {
         }
     }
 
+    public async getGroups() {
+        const response = await this.access.rest.send<["data"], [ApiGroup[]]>("/api/v1/groups", {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (response.code === 200) {
+            return response.data!.data;
+        }
+    }
+
+    public async getGroupMembers() {
+        const response = await this.access.rest.send<["groups"], [(ApiGroup & { members: ApiAccount[] })[]]>("/api/v1/groups/members", {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (response.code === 200) {
+            return {
+                groups: response.data!.groups,
+            };
+        }
+    }
+
     public async getGroup(id: string | number) {
         const response = await this.access.rest.send<["group", "members"], [ApiGroup, ApiAccount[]]>(`/api/v1/groups/${id}`, {
             method: "GET",

@@ -39,7 +39,7 @@ export function Navbar() {
         } else {
             flyoutMenu?.style.setProperty("display", "none");
         }
-    }, [showFlyout()]);
+    });
 
     onMount(() => {
         flyoutMenu?.style.setProperty("display", "none");

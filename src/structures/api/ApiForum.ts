@@ -13,6 +13,7 @@ export interface ApiForum {
     order: number;
     private: boolean;
     is_category: boolean;
+    color?: string;
     parent?: ApiForum;
     last_thread?: ApiThread;
     children: ApiForum[];

@@ -1,0 +1,117 @@
+.teams {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &--content {
+        display: flex;
+        flex-direction: column;
+        width: 95%;
+        max-width: var(--content-width);
+        margin-top: 40px;
+        gap: 32px;
+
+        &-header {
+            display: flex;
+            flex-direction: row;
+            gap: 6px;
+            font-family: var(--font-header);
+            font-size: 24px;
+
+            h1 {
+                color: var(--hsl-l4);
+                font-weight: 700;
+            }
+
+            p {
+                color: var(--hsl-l1);
+            }
+        }
+
+        &-body {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background-color: var(--hsl-c5);
+            border-radius: var(--corner-radius);
+            padding: 20px 40px;
+
+            &--team {
+                display: flex;
+                flex-direction: row;
+                background-color: hsl(var(--base-hue), 15%, 8%);
+                border-radius: var(--corner-radius);
+
+                &-details {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                    width: 336px;
+                    max-width: 336px;
+                    background-color: var(--hsl-c4);
+                    border-radius: var(--corner-radius);
+                    padding: 16px 20px;
+
+                    &-header {
+                        display: flex;
+                        flex-direction: row;
+                        gap: 4px;
+                        align-items: center;
+
+                        &-light {
+                            width: 3px;
+                            height: 16px;
+                            border-radius: 100px;
+                        }
+
+                        h1 {
+                            color: var(--hsl-l1);
+                            font-family: var(--font-header);
+                        }
+                    }
+
+                    &-description {
+                        font-size: 14px;
+                    }
+                }
+
+                &-members {
+                    padding: 16px 20px;
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    flex: 1;
+                    gap: 16px;
+
+                    .account_flyout--hoverable {
+                        // fuck you
+                        width: inherit;
+                    }
+                    
+                    &--member {
+                        display: flex;
+                        flex-direction: row;
+                        gap: 8px;
+                        align-items: center;
+
+                        img {
+                            width: 48px;
+                            height: 48px;
+                            border-radius: var(--corner-radius);
+                        }
+
+                        &-info {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 2px;
+
+                            h1 {
+                                color: var(--hsl-l1);
+                                font-weight: 600;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

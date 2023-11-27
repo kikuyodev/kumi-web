@@ -36,7 +36,7 @@ export function ChartListing() {
 
     const queryInput = Util.debounce(() => {
         const value = input?.value ?? "";
-        
+
         useApi(async (access) => {
             const charts = await access.chart.searchCharts(value);
             setCharts(charts?.data?.results ?? []);
@@ -60,14 +60,19 @@ export function ChartListing() {
             <div class="chart_listing--background-overlay" />
         </div>
         <div class="chart_listing--content">
-            <div class="chart_listing--content-list">
-                <For each={charts()}>
-                    {chart => <div class="chart_listing--content-list-item" style={{ opacity: 0 }}><ChartCard chart={chart} /></div>}
-                </For>
+            <div class="chart_listing--content-search">
+                <input ref={input} type="text" placeholder="Search (title, artist, creator...)" name="query" class="chart_listing--content-search-bar" />
+                <span class="chart_listing--content-search-flavor">You can also filter with "title=...", "artist=...", "creator=...", "group=...", "difficulty=...", "level=...", "bpm=...", "length=...", "mode=...", "status=...", "rank=...", "date=...", "dateFrom=...", "dateTo=...", "sort=...", "order=...", "limit=...", "offset=..."</span>
             </div>
-            <div class="chart_listing--content-query">
-                <input ref={input} type="text" placeholder="Search (title, artist, creator...)" name="query" class="chart_listing--query-text" />
-                {/* TODO: other controls */}
+            <div class="chart_listing--content-listing">
+                <div class="chart_listing--content-list">
+                    <For each={charts()}>
+                        {chart => <div class="chart_listing--content-list-item" style={{ opacity: 0 }}><ChartCard chart={chart} /></div>}
+                    </For>
+                </div>
+                <div class="chart_listing--content-query">
+                    {/* TODO: other controls */}
+                </div>
             </div>
         </div>
     </div>;
